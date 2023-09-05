@@ -41,9 +41,6 @@ local_settings.py
 # Windows-specific
 Thumbs.db
 
-# Ignore migrations unless they are in the "migrations" folder inside an app
-**/migrations/*.py
-**/migrations/*.pyc
 
 # Ignore database file
 db.sqlite3
