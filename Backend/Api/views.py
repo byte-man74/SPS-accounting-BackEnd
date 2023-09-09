@@ -17,12 +17,24 @@ class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
 
-
-class ResetPasswordView(APIView):
-    pass
 #post request
 # capture the email address from the request and process it   
 # we wan search if the email address exists for the database
 # if the email doesnt exist return 400
-# if the email exist now then we go process the email      
+# if the email exist now then we go process the email     
+# 
+class ResetPasswordView(APIView):
+    def post(self, request, email):
+        try:
+            email = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = CustomUserSerializer(data=request.data)
+        if serializer.is_valid():
+            new_password = '123456'
+            request.data.password = new_password
+            return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
 
