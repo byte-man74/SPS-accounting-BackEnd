@@ -188,6 +188,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+#will change later
 CELERY_APP = "Background_Tasks"
 CELERY_BROKER_URL = "redis://default:NZpAOkwbhMeiihHhDICi@containers-us-west-90.railway.app:7278"
 CELERY_RESULT_BACKEND = "redis://default:NZpAOkwbhMeiihHhDICi@containers-us-west-90.railway.app:7278"
@@ -199,10 +200,11 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
 
-#celery configuration
+#celery for background task configuration 
+#! (Check this later)
 CELERY_BEAT_SCHEDULE = {
-    'process_trending_topics': {
-        'task': 'Background_Tasks.tasks.process_trending_topics',
-        'schedule': crontab(hour=5, minute=0),
-    },
+    # 'process_trending_topics': {
+    #     'task': 'Background_Tasks.tasks.process_trending_topics',
+    #     'schedule': crontab(hour=5, minute=0),
+    # },
 }
