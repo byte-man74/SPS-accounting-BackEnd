@@ -12,8 +12,6 @@ from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 
 
-
-
-#✅create resend otp mail too
+#? This api is responsible for Login in an returning a token when the user credentials are valid
 class EmailTokenObtainPairView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
