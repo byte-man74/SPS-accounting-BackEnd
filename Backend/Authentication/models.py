@@ -39,7 +39,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     account_type = models.CharField(
         _("Account Type"), max_length=50, choices=ACCOUNT_TYPE_CHOICES, default="Free Account")
     is_staff = models.BooleanField(default=False)
-
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
