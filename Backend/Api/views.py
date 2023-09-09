@@ -13,5 +13,5 @@ from django.shortcuts import get_object_or_404
 
 
 #? This api is responsible for Login in an returning a token when the user credentials are valid
-class EmailTokenObtainPairView(TokenObtainPairView):
+class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
