@@ -1,1 +1,5 @@
 - forgot password configuration
+
+- send email to abdulHameed
+
+- Payment reciept 

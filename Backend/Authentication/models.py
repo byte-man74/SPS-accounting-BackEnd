@@ -35,7 +35,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', unique=True)
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     account_type = models.CharField(
         _("Account Type"), max_length=50, choices=ACCOUNT_TYPE_CHOICES, default="Free Account")
     is_staff = models.BooleanField(default=False)

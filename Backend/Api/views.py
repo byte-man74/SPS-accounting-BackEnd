@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK
 from .serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
@@ -16,4 +16,13 @@ from django.shortcuts import get_object_or_404
 class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
+
+
+class ResetPasswordView(APIView):
+    pass
+#post request
+# capture the email address from the request and process it   
+# we wan search if the email address exists for the database
+# if the email doesnt exist return 400
+# if the email exist now then we go process the email      
 
