@@ -28,3 +28,11 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
             pass
 
     return taxroll_staffs
+
+
+def generate_staffroll (school):
+    # staffs inside the schol with active acount
+    # create empty list
+    # loop through all the staffs
+    
+    pass

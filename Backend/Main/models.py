@@ -8,6 +8,7 @@ class School(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     email_address = models.EmailField(max_length=50)
+    #django media settings
     logo = models.ImageField()
 
     def __str__(self):
@@ -97,7 +98,7 @@ class Operations_account_transaction_record (models.Model):
         if self.transaction_type == "Transfer":
 
             # Check if account number and receiver name are provided
-            if not self.account_number_of_reciever or not self.name_of_reciever:
+            if not self.account_number_of_reciever and not self.name_of_reciever:
                 raise ValueError(
                     "Both account number and receiver name must be provided for a Transfer transaction.")
 
@@ -129,7 +130,7 @@ class Capital_account_transaction_history (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
 
-class Paticulars (models.Model):
+class Particulars (models.Model):
     name = models.CharField(max_length=100)
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
@@ -169,7 +170,13 @@ class Staff (models.Model):
             staff.salary_deduction = 0
             staff.save()
 
+    def get_staf_total_payment (self):
+        basic_salary = self.staff_type.basic_salary
+        tax = self.staff_type.tax
+        salary_deduction = self.salary_deduction
+        salary_to_be_paid = basic_salary - (tax + salary_deduction)
 
+        return salary_to_be_paid
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -187,7 +194,7 @@ class Payroll(models.Model):
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, choices=Status)
+    status = models.CharField(max_length=100, choices=Status, default="Pending")
     # Change staffs field to a JSONField
     staffs = models.JSONField()
 
@@ -198,6 +205,7 @@ class Payroll(models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
 
+    #!
     def add_staff(self, staff_data_list):
         if "staffs" not in self.staffs:
             self.staffs = []
@@ -205,6 +213,8 @@ class Payroll(models.Model):
         self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
 
 
+    #! method to calculate the total amount paid for tax
+    #! method to calculate the total amount paid for salary
 
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
@@ -267,10 +277,24 @@ class Taxroll(models.Model):
     # Create a one-to-one relationship with the Payroll model
     payroll = models.OneToOneField("Main.Payroll", on_delete=models.CASCADE)
 
+
+    def add_staff(self, staff_data_list):
+        if "staffs" not in self.staffs:
+            self.staffs = []
+
+        self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
+
+
+    def save(self, *args, **kwargs):
+        # Convert staffs list to JSON before saving
+        if isinstance(self.staffs, list):
+            self.staffs = json.dumps(self.staffs)
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
         return self.name
     
-
 
     @staticmethod
     def generate_taxroll_out_of_payroll(payroll_id):
