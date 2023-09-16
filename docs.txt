@@ -37,6 +37,25 @@ staffs_list = json.loads(x.staffs)
 
 
 
+'''the model class can be added like this'''
+payroll = Payroll.objects.get(id=<your_payroll_id>)
+
+single_staff_data = {
+    "staff_name": "New Staff",
+    "rank": "teacher",
+    "tax": 15000,
+    "basic_salary": 55000,
+    "deduction": 0,
+    "salary_to_be_paid": 3500,
+    "account_number": 123456789,
+    "bank": "Sample Bank",
+    "account_name": "NEW NAME",
+    "payment_status": "PENDING",
+}
+
+payroll.add_staff([single_staff_data])  # Wrap the single staff data in a list
+payroll.save()
+
 
 
 
