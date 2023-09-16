@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 import json
-
+from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
 
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -138,8 +138,6 @@ class Paticulars (models.Model):
 
 
 
-
-
 '''Staff section'''
 class Staff_type (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
@@ -161,7 +159,7 @@ class Staff (models.Model):
     staff_type = models.ForeignKey(Staff_type, on_delete=models.SET_NULL)
     salary_deduction = models.BigIntegerField()
     is_active = models.BooleanField(default=True)
-
+    tin_number = models.CharField(max_length=50)
 
     @staticmethod
     def reset_salary_deduction_for_staffs_in_a_school (school_id):
@@ -177,8 +175,6 @@ class Staff (models.Model):
         return f'{self.first_name} {self.last_name}'
     
 
-
-
 '''payroll'''
 class Payroll(models.Model):
     Status = {
@@ -191,7 +187,7 @@ class Payroll(models.Model):
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
-    status = models.CharField(max_length=100)
+    status = models.CharField(max_length=100, choices=Status)
     # Change staffs field to a JSONField
     staffs = models.JSONField()
 
@@ -201,8 +197,6 @@ class Payroll(models.Model):
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
 
     def add_staff(self, staff_data_list):
         if "staffs" not in self.staffs:
@@ -227,10 +221,83 @@ class Payroll(models.Model):
                 failed_staffs.append(staff)
 
         return failed_staffs
+    
+    def get_payment_summary(self):
+        total_amount_for_tax = self.total_amount_for_tax
+        total_amount_for_salary = self.total_amount_for_salary
+        total_staffs = len(self.staffs)
+        successful_staffs = sum(1 for staff in self.staffs if staff.get("status") == "SUCCESS")
+        failed_staffs = sum(1 for staff in self.staffs if staff.get("status") == "FAILED")
 
+        return {
+            "total_amount_for_tax": total_amount_for_tax,
+            "total_amount_for_salary": total_amount_for_salary,
+            "total_staffs": total_staffs,
+            "successful_staffs": successful_staffs,
+            "failed_staffs": failed_staffs,
+        }
 
     def save(self, *args, **kwargs):
         # Convert staffs list to JSON before saving
         if isinstance(self.staffs, list):
             self.staffs = json.dumps(self.staffs)
         super().save(*args, **kwargs)
+
+
+
+    def __str__(self):
+        return self.name
+
+
+
+class Taxroll(models.Model):
+    Status = {
+        "Pending": "Pending",
+        "Success": "Success",
+        "Failed": "Failed",
+        "Reconciliation": "Reconciliation",
+    }
+    
+    name = models.CharField(max_length=100)
+    amount_paid_for_tax = models.BigIntegerField()
+    date_initiated = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=100, choices=Status)
+    staffs = models.JSONField()
+
+    # Create a one-to-one relationship with the Payroll model
+    payroll = models.OneToOneField("Main.Payroll", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+    
+
+
+    @staticmethod
+    def generate_taxroll_out_of_payroll(payroll_id):
+        try:
+            payroll = Payroll.objects.select_related('school').get(id=payroll_id)
+            staffs_on_payroll = json.loads(payroll.staffs)
+            
+            # Generate taxroll staffs from payroll staffs
+            taxroll_staffs = generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll)
+
+            # Create a Taxroll instance
+            taxroll_name = f'Taxroll for {payroll.name}'
+            taxroll = Taxroll.objects.create(
+                name=taxroll_name,
+                amount_paid_for_tax=payroll.total_amount_for_tax,
+                status=Payroll.Status['Success'],
+                staffs=taxroll_staffs,
+                payroll=payroll
+            )
+            taxroll.save()
+            return ("SUCCESS")  # Successful generation
+        except Payroll.DoesNotExist:
+            return ("ERROR_404")
+        except Exception as e:
+            print(f"Error generating Taxroll: {str(e)}")
+            return ("ERROR_502")  # Error occurred during generation
+
+
+
+
