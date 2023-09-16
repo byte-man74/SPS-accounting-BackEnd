@@ -205,23 +205,32 @@ class Payroll(models.Model):
         return self.name
 
     def add_staff(self, staff_data_list):
-        """
-        Add a list of staff data to the staffs JSONField.
-        staff_data_list should be a list of dictionaries with the desired structure.
-        """
         if "staffs" not in self.staffs:
             self.staffs = []
 
         self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
+
+
+
+    def remove_staff_by_id(self, staff_id):
+        if "staffs" not in self.staffs:
+            return  # If staffs is not a list, nothing to remove
+
+        updated_staffs = [staff for staff in self.staffs if staff.get("staff_id") != staff_id]
+        self.staffs = updated_staffs
+
+
+    def get_all_failed_staff_payment(self):
+        failed_staffs = []
+        for staff in self.staffs:
+            if staff.get("status") == "Failed":
+                failed_staffs.append(staff)
+
+        return failed_staffs
+
 
     def save(self, *args, **kwargs):
         # Convert staffs list to JSON before saving
         if isinstance(self.staffs, list):
             self.staffs = json.dumps(self.staffs)
         super().save(*args, **kwargs)
-
-# class Reconciliation (models.Model):
-#     pass
-
-
-
