@@ -1,1 +1,48 @@
-?
+?How do i use the payroll class 
+
+
+'''the model instance can be created like this'''
+
+payroll = Payroll.objects.create(name="Payroll 1", status="Pending")
+
+staff_data_list = [
+    {
+        "staff_name": "Mohammed Hammed",
+        "staff_id" : ID,
+        "rank": "teacher",
+        "tax": 20000,
+        "basic_salary": 50000,
+        "deduction": 0,
+        "salary_to_be_paid": 3000,
+        "account_number": 348488283,
+        "bank": "Free Bank",
+        "account_name": "NAME",
+        "payment_status": "PENDING",
+    },
+    # Add more staff data dictionaries here...
+]
+
+payroll.add_staff(staff_data_list)
+payroll.save()
+
+''''''''''''''''''''''''''
+
+
+
+
+'''the model class can be rretrieved like this'''
+x = Payroll.objects.get(id)
+staffs_list = json.loads(x.staffs)
+
+
+
+
+
+
+
+
+'''staffs can be removed from the payroll like this''
+payroll = Payroll.objects.get(id=<your_payroll_id>)
+staff_id_to_remove = "12345"  # Replace with the actual staff_id you want to remove
+payroll.remove_staff_by_id(staff_id_to_remove)
+payroll.save()
