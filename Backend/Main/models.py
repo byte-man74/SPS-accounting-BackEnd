@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+import json
 
 
 class School(models.Model):
@@ -179,18 +180,48 @@ class Staff (models.Model):
 
 
 '''payroll'''
-class Payroll_type (models.Model):
+class Payroll(models.Model):
+    Status = {
+        "Pending": "Pending",
+        "Success": "Success",
+        "Failed": "Failed",
+        "Reconciliation": "Reconciliation",
+    }
+
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
+    status = models.CharField(max_length=100)
+    # Change staffs field to a JSONField
+    staffs = models.JSONField()
 
     #financials
     total_amount_for_tax = models.BigIntegerField()
     total_amount_for_salary = models.BigIntegerField()
 
-
-
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+    def add_staff(self, staff_data_list):
+        """
+        Add a list of staff data to the staffs JSONField.
+        staff_data_list should be a list of dictionaries with the desired structure.
+        """
+        if "staffs" not in self.staffs:
+            self.staffs = []
+
+        self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
+
+    def save(self, *args, **kwargs):
+        # Convert staffs list to JSON before saving
+        if isinstance(self.staffs, list):
+            self.staffs = json.dumps(self.staffs)
+        super().save(*args, **kwargs)
+
+# class Reconciliation (models.Model):
+#     pass
+
+
+
