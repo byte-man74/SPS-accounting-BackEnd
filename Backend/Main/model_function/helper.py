@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from Main.models import Staff
+from Main.models import Staff, School
 
 def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     taxroll_staffs = []
@@ -30,9 +30,32 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     return taxroll_staffs
 
 
-def generate_staffroll (school):
+def generate_staffroll (school_name):
+    staff_payroll = []
     # staffs inside the schol with active acount
     # create empty list
     # loop through all the staffs
-    
-    pass
+    staffs = Staff.objects.filter(school=school_name)
+    for staff in staffs:
+        try:
+            if staff.is_active == "True": 
+                staff_payroll = {
+                    "staff_firstname": staff.first_name,
+                    "staff_lastname": staff.last_name,
+                    "staff_phonenumber": staff.phone_number,
+                    "staff_id": staff.get('staff_id'),
+                    "rank": staff.get('rank'),
+                    "tax_payable": staff.Staff_type.tax,
+                    "basic_salary": staff.Staff_type.basic_salary,
+                    "Annual_Income": staff['basic_salary'] * 12,
+                    "school": staff.school,
+                    "TIN": staff.tin_number,
+                    "account_number": staff.account_number, 
+                    "bank": staff.bank_name,     
+                }
+
+            staff_payroll.append(staff_payroll)
+        except ObjectDoesNotExist:
+            # Handle the case where the staff with the specified staff_id does not exist
+            pass
+    return staff_payroll
