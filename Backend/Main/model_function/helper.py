@@ -35,7 +35,7 @@ def generate_staffroll (school_name):
     # staffs inside the schol with active acount
     # create empty list
     # loop through all the staffs
-    staffs = Staff.objects.filter(school=school_name)
+    staffs = Staff.objects.select_related("staff_type").filter(school=school_name)
     for staff in staffs:
         try:
             if staff.is_active == "True": 
