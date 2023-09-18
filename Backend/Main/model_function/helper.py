@@ -30,32 +30,29 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     return taxroll_staffs
 
 
-def generate_staffroll (school_name):
+def generate_staffroll(school_name):
     staff_payroll = []
-    # staffs inside the schol with active acount
-    # create empty list
-    # loop through all the staffs
-    staffs = Staff.objects.select_related("staff_type").filter(school=school_name)
+    
+    staffs = Staff.objects.select_related("staff_type").filter(school=school_name, is_active=True)
+    
     for staff in staffs:
         try:
-            if staff.is_active == "True": 
-                staff_payroll = {
-                    "staff_firstname": staff.first_name,
-                    "staff_lastname": staff.last_name,
-                    "staff_phonenumber": staff.phone_number,
-                    "staff_id": staff.get('staff_id'),
-                    "rank": staff.get('rank'),
-                    "tax_payable": staff.Staff_type.tax,
-                    "basic_salary": staff.Staff_type.basic_salary,
-                    "Annual_Income": staff['basic_salary'] * 12,
-                    "school": staff.school,
-                    "TIN": staff.tin_number,
-                    "account_number": staff.account_number, 
-                    "bank": staff.bank_name,     
-                }
-
-            staff_payroll.append(staff_payroll)
+            staff_payroll.append({
+                "staff_firstname": staff.first_name,
+                "staff_lastname": staff.last_name,
+                "staff_phonenumber": staff.phone_number,
+                "staff_id": staff.staff_id,  # Use staff.staff_id instead of staff.get('staff_id')
+                "rank": staff.rank,  # Use staff.rank instead of staff.get('rank')
+                "tax_payable": staff.staff_type.tax,
+                "basic_salary": staff.staff_type.basic_salary,
+                "Annual_Income": staff.staff_type.basic_salary * 12,  # Use staff.staff_type.basic_salary
+                "school": staff.school,
+                "TIN": staff.tin_number,
+                "account_number": staff.account_number,
+                "bank": staff.bank_name,
+            })
         except ObjectDoesNotExist:
             # Handle the case where the staff with the specified staff_id does not exist
             pass
+    
     return staff_payroll
