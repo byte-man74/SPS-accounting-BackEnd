@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
-from Main.models import Staff, School
+from django.apps import apps
 
 def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     taxroll_staffs = []
-    
+    Staff = apps.get_model('Main', 'Staff')
     for staff_data in staffs_on_payroll:
         try:
             staff_object = Staff.objects.get(id=staff_data['staff_id'])
