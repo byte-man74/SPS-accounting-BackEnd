@@ -26,3 +26,14 @@ class OperationsAccountCashTransactionRecordSerializer(serializers.ModelSerializ
     class Meta:
         model = Operations_account_transaction_record
         fields = ('time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'is_approved' )
+
+
+class CashTransactionReadSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Operations_account_transaction_record
+        fields = ('time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'is_approved' )
+
+class CashTransactionWriteSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Operations_account_transaction_record
+        fields = ('time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'is_approved' )

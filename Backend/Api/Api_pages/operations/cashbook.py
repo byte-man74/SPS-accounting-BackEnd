@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from Main.models import Operations_account, Operations_account_transaction_record, School
 from Api.helper_functions.main import *
 from Api.Api_pages.operations.serializers import *
+from django.http import Http404
 
 
 # Api to get amount available in cash in the operations account
@@ -69,6 +70,7 @@ class GetTransactionSevenDaysAgo (APIView):
 
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
+# tested✅😊
 class GetAllCashTransactions (APIView):
     def get(self, request):
         user_school = get_user_school(request.user)
@@ -80,6 +82,29 @@ class GetAllCashTransactions (APIView):
         return Response (serializer.data, status=HTTP_200_OK)
         
 
+
+class ViewCreateAndModifyCashTransaction (APIView):
+    def get_object(self, id):
+        try:
+            return Operations_account_transaction_record.objects.get(id=id)
+        except Operations_account_transaction_record.DoesNotExist:
+            raise Http404
+        
+
+    def get(self, request, id, format=None):
+        transaction_record = self.get_object(id)
+        serializer = CashTransactionReadSerializer(transaction_record)
+        return Response(serializer.data, status=HTTP_200_OK)
+
+    def put(self, request, id, format=None):
+        transaction_record = self.get_object(id)
+        serializer = CashTransactionWriteSerializer(transaction_record, data=request.data)
+
+        
+        if serializer.is_valid():
+            serializer.save(is_approved=False)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
 
 #  API to get the summary of amount spent in the operatins account for a particular
 
