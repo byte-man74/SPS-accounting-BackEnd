@@ -48,5 +48,72 @@ def get_unarranged_transaction_seven_days_ago(school_id):
 
 
 
-def arrange_transaction_list_by_days_of_the_week (transaction_list):
-    pass
+
+def format_date(date):
+    # Create a dictionary for mapping month numbers to month names
+    month_names = {
+        1: "January", 2: "February", 3: "March", 4: "April", 5: "May",
+        6: "June", 7: "July", 8: "August", 9: "September", 10: "October",
+        11: "November", 12: "December"
+    }
+
+
+    day_of_week = date.strftime("%A")
+
+
+    day_of_month = date.strftime("%d")
+    if day_of_month.endswith("1") and day_of_month != "11":
+        day_of_month += "st"
+    elif day_of_month.endswith("2") and day_of_month != "12":
+        day_of_month += "nd"
+    elif day_of_month.endswith("3") and day_of_month != "13":
+        day_of_month += "rd"
+    else:
+        day_of_month += "th"
+
+
+    month = month_names[date.month]
+
+
+    year = date.strftime("%Y")
+
+    formatted_date = f"{day_of_week}, {day_of_month} {month} {year}"
+
+    return formatted_date
+
+
+
+def process_and_sort_transactions(transactions):
+
+    daily_totals = {}
+    for transaction in transactions:
+        transaction_date = transaction['time'].date()
+        total_amount = daily_totals.get(transaction_date, 0)
+        total_amount += transaction['amount']
+
+        daily_totals[transaction_date] = total_amount
+    
+
+    sorted_daily_totals = sorted(daily_totals.items(), key=lambda x: x[0])
+    
+    result = [{'date': format_date(date), 'total_amount': total} for date, total in sorted_daily_totals]
+    
+    return result
+
+
+def calculate_cash_and_transfer_transaction_total(transactions):
+    cash_total = 0
+    transfer_total = 0
+
+    for transaction in transactions:
+        # Check if the transaction has a 'transaction_type' field and it is "Cash"
+        if 'transaction_type' in transaction and transaction['transaction_type'] == "Cash":
+            cash_total += transaction['amount']
+
+        if 'transaction_type' in transaction and transaction['transaction_type'] == "Transfer":
+            transfer_total += transaction['amount']
+
+    return cash_total, transfer_total
+
+
+

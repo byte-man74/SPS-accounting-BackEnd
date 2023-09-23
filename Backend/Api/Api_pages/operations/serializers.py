@@ -10,3 +10,13 @@ class OperationsAccountSerializer(serializers.ModelSerializer):
 
     def get_total_amount_available(self, obj):
         return obj.get_total_amount_available()
+
+
+class TransactionSerializer(serializers.Serializer):
+    date = serializers.CharField()
+    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+
+class CashandTransactionTotalSerializer (serializers.Serializer):
+    cash_total =  serializers.IntegerField()
+    transfer_total = serializers.IntegerField()
