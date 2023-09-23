@@ -67,7 +67,6 @@ class GetTransactionSevenDaysAgo (APIView):
         return Response(data, status=HTTP_200_OK)
 
 
-
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
 # tested✅😊
@@ -76,37 +75,52 @@ class GetAllCashTransactions (APIView):
         user_school = get_user_school(request.user)
         operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
             school=user_school, transaction_type="Cash")
-        print (operations_account_cash_transaction)
-        serializer = OperationsAccountCashTransactionRecordSerializer(operations_account_cash_transaction, many=True)
+        print(operations_account_cash_transaction)
+        serializer = OperationsAccountCashTransactionRecordSerializer(
+            operations_account_cash_transaction, many=True)
 
-        return Response (serializer.data, status=HTTP_200_OK)
-        
+        return Response(serializer.data, status=HTTP_200_OK)
 
 
-class ViewCreateAndModifyCashTransaction (APIView):
+# API to edit a particular cash transaction
+# API to create a cash transaction
+# tested✅😊
+class ViewAndModifyCashTransaction(APIView):
     def get_object(self, id):
         try:
             return Operations_account_transaction_record.objects.get(id=id)
         except Operations_account_transaction_record.DoesNotExist:
             raise Http404
-        
 
+    # tested✅😊
     def get(self, request, id, format=None):
         transaction_record = self.get_object(id)
         serializer = CashTransactionReadSerializer(transaction_record)
         return Response(serializer.data, status=HTTP_200_OK)
 
+    # tested✅😊
     def put(self, request, id, format=None):
         transaction_record = self.get_object(id)
-        serializer = CashTransactionWriteSerializer(transaction_record, data=request.data)
+        serializer = CashTransactionWriteSerializer(
+            transaction_record, data=request.data, partial=True)
 
-        
         if serializer.is_valid():
             serializer.save(is_approved=False)
+            # initiate a notification here later to head teacher
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # tested✅😊
+class CreateCashTransaction (APIView):
+
+    def post(self, request, format=None):
+        serializer = CashTransactionWriteSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save(is_approved=False, school=get_user_school(
+                request.user), transaction_type="Cash", transaction_category="Debit")
+            # initiate a notification here later to the head teacher
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #  API to get the summary of amount spent in the operatins account for a particular
-
-# API to edit a particular cash transaction
-# API to create a cash transaction
