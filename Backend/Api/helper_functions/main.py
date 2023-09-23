@@ -24,7 +24,7 @@ def get_unarranged_transaction_seven_days_ago(school_id):
             start_date=seven_days_ago,
             end_date=current_date,
             school=school_id
-        )
+        ).filter(is_approved=True)
 
         return(transaction_records)
 
