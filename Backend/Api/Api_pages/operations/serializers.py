@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Main.models import Operations_account
+from Main.models import *
 
 class OperationsAccountSerializer(serializers.ModelSerializer):
     total_amount_available = serializers.SerializerMethodField()
@@ -12,7 +12,7 @@ class OperationsAccountSerializer(serializers.ModelSerializer):
         return obj.get_total_amount_available()
 
 
-class TransactionSerializer(serializers.Serializer):
+class SummaryTransactionSerializer(serializers.Serializer):
     date = serializers.CharField()
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
 
@@ -20,3 +20,9 @@ class TransactionSerializer(serializers.Serializer):
 class CashandTransactionTotalSerializer (serializers.Serializer):
     cash_total =  serializers.IntegerField()
     transfer_total = serializers.IntegerField()
+
+
+class OperationsAccountCashTransactionRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Operations_account_transaction_record
+        fields = ('time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'is_approved' )

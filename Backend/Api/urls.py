@@ -9,7 +9,8 @@ urlpatterns = [
     path('login', LoginView.as_view(), name='login'),  #?✅ API responsible for the login functionality
     path('refresh_token', TokenRefreshView.as_view(), name='refresh'),  #✅? API responsible for the refresh functionality
     path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations
-    path ('get_cash_and_transfer_record', GetTransactionSevenDaysAgo.as_view(), name='get_cash_and transfer_record_seven_days_ago'), #
+    path ('get_cash_and_transfer_record', GetTransactionSevenDaysAgo.as_view(), name='get_cash_and transfer_record_seven_days_ago'), ##✅ 
+    path ('get_all_cash_transactions', GetAllCashTransactions.as_view(), name='get_all_cash_transactions'), #
 ]
 
 if DEBUG:

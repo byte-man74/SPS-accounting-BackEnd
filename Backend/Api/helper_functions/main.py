@@ -1,7 +1,8 @@
-from Main.models import Operations_account_transaction_record
+from Main.models import *
 from Authentication.models import CustomUser
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
+from Authentication.models import CustomUser
 
 
 def get_school_from_user(user_id):
@@ -117,3 +118,5 @@ def calculate_cash_and_transfer_transaction_total(transactions):
 
 
 
+def get_user_school(user):
+    return get_object_or_404(School, id=get_school_from_user(user.id))
