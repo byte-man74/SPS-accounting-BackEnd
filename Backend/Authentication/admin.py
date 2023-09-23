@@ -9,7 +9,7 @@ from .models import CustomUser
 class EmailUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (('Personal info'), {'fields': ('first_name', 'last_name', 'school')}),
         (('Permissions'), {
             'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
         }),
@@ -22,7 +22,7 @@ class EmailUserAdmin(UserAdmin):
     )
     list_display = ('email', 'first_name', 'last_name', 'is_staff')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
-    search_fields = ('email', 'first_name', 'last_name')
+    search_fields = ('email', 'first_name', 'last_name', 'school')
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
 
