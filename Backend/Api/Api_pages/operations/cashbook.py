@@ -10,12 +10,15 @@ from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
 from Main.models import Operations_account, Operations_account_transaction_record, School
-from Api.helper_functions.main import get_school_from_user
+from Api.helper_functions.main import get_school_from_user, get_unarranged_transaction_seven_days_ago
 from Api.Api_pages.operations.serializers import OperationsAccountSerializer
+
+
 
 # Api to get amount available in cash in the operations account
 # API to get amount available to transfer in the operations account
-#Untested⚠️
+# API to get the tootal amount available in the operations account
+#tested✅😊
 class GetAmountAvailableOperationsAccount(APIView):
     def get(self, request):
         user_school = get_object_or_404(School, id=get_school_from_user(request.user.id))
@@ -28,14 +31,21 @@ class GetAmountAvailableOperationsAccount(APIView):
 
 
 
-
-
-
-
-
-
-# API to get the tootal amount available in the operations account
 # API to get the total transcations that has happened in the past the past 7 days both transfer abd cash transactions in the operations account
+class GetTransactionSevenDaysAgo (APIView):
+    
+    def get(self, request):
+        user_school = get_object_or_404(School, id=get_school_from_user(request.user.id))
+        unarranged_transaction_list = get_unarranged_transaction_seven_days_ago(user_school)
+
+#get the transaction list and filter it by active
+#
+
+
+
+
+
+
 # functionality to get the sum of money spent in the past 7 days both in cash and transfer 
 # API to calculate monthly income summary in the operations account / API to calculate monthly debit in the operations account
 #  API to get the summary of amount spent in the operatins account for a particular

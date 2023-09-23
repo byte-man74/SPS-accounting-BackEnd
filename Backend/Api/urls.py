@@ -6,9 +6,10 @@ from Backend.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_RO
 from django.conf.urls.static import static 
 
 urlpatterns = [
-    path('login', LoginView.as_view(), name='login'),  #? API responsible for the login functionality
-    path('refresh_token', TokenRefreshView.as_view(), name='refresh'),  #? API responsible for the refresh functionality
-    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #? API responsible for gettting amount available operations
+    path('login', LoginView.as_view(), name='login'),  #?✅ API responsible for the login functionality
+    path('refresh_token', TokenRefreshView.as_view(), name='refresh'),  #✅? API responsible for the refresh functionality
+    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations
+    
 ]
 
 if DEBUG:

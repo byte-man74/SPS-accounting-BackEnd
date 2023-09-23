@@ -2,6 +2,8 @@ import uuid
 from django.db import models
 import json
 from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
+from datetime import datetime
+
 
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -49,7 +51,7 @@ class Operations_account_transaction_record (models.Model):
         ("Retrying", "Retrying"),
     )
 
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(default=datetime.now)
     amount = models.BigIntegerField()
 
     transaction_type = models.CharField(
@@ -93,7 +95,7 @@ class Operations_account_transaction_record (models.Model):
         if school:
             query = query.filter(school=school)
 
-            
+
         return query
 
 
