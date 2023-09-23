@@ -41,11 +41,11 @@ def generate_staffroll(school_name):
                 "staff_firstname": staff.first_name,
                 "staff_lastname": staff.last_name,
                 "staff_phonenumber": staff.phone_number,
-                "staff_id": staff.staff_id,  # Use staff.staff_id instead of staff.get('staff_id')
-                "rank": staff.rank,  # Use staff.rank instead of staff.get('rank')
+                "staff_id": staff.staff_id,  
+                "rank": staff.rank, 
                 "tax_payable": staff.staff_type.tax,
                 "basic_salary": staff.staff_type.basic_salary,
-                "Annual_Income": staff.staff_type.basic_salary * 12,  # Use staff.staff_type.basic_salary
+                "Annual_Income": staff.staff_type.basic_salary * 12,  
                 "school": staff.school,
                 "TIN": staff.tin_number,
                 "account_number": staff.account_number,
