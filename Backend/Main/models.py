@@ -72,7 +72,7 @@ class Operations_account_transaction_record (models.Model):
     # ? Methods
 
     @staticmethod
-    def get_transaction(transaction_type=None, transaction_category=None, start_date=None, end_date=None, status=None):
+    def get_transaction(transaction_type=None, transaction_category=None, start_date=None, end_date=None, status=None, school= None):
         query = Operations_account_transaction_record.objects.all()
 
         if transaction_type:
@@ -90,6 +90,10 @@ class Operations_account_transaction_record (models.Model):
         if status:
             query = query.filter(status=status)
 
+        if school:
+            query = query.filter(school=school)
+
+            
         return query
 
 
