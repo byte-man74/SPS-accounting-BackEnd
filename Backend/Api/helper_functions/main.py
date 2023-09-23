@@ -26,11 +26,25 @@ def get_unarranged_transaction_seven_days_ago(school_id):
             school=school_id
         ).filter(is_approved=True)
 
-        return(transaction_records)
+        # Convert the queryset to a list of dictionaries
+        transaction_records_list = [
+            {
+                "time": record.time,
+                "amount": record.amount,
+                "transaction_type": record.transaction_type,
+                "status": record.status,
+                "name_of_reciever": record.name_of_reciever,
+                "particulars": record.particulars
+
+                # Add more fields as needed
+            }
+            for record in transaction_records
+        ]
+
+        return transaction_records_list
 
     except Operations_account_transaction_record.DoesNotExist:
         return None
-    
 
 
 
