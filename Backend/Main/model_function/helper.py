@@ -32,7 +32,7 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
 
 def generate_staffroll(school_name):
     staff_payroll = []
-    
+    Staff = apps.get_model('Main', 'Staff')
     staffs = Staff.objects.select_related("staff_type").filter(school=school_name, is_active=True)
     
     for staff in staffs:
