@@ -64,8 +64,8 @@ class Operations_account_transaction_record (models.Model):
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
-    name_of_reciever = models.CharField(max_length=100)
-    account_number_of_reciever = models.CharField(max_length=20)
+    name_of_reciever = models.CharField(max_length=100, blank=False, null=False)
+    account_number_of_reciever = models.CharField(max_length=20, null=False, blank=True)
     reciever_bank = models.CharField(max_length=50, null=True, blank=True)
 
     # the transaction will only start working after approval
