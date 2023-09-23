@@ -18,7 +18,7 @@ from Api.Api_pages.operations.serializers import OperationsAccountSerializer
 #Untested⚠️
 class GetAmountAvailableOperationsAccount(APIView):
     def get(self, request):
-        user_school = get_object_or_404(School, id=get_school_from_user(request.user))
+        user_school = get_object_or_404(School, id=get_school_from_user(request.user.id))
         operations_account = get_object_or_404(Operations_account, school=user_school)
 
         serializer = OperationsAccountSerializer(operations_account)
