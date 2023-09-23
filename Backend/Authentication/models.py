@@ -39,7 +39,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     account_type = models.CharField(
         _("Account Type"), max_length=50, choices=ACCOUNT_TYPE_CHOICES, default="Free Account")
     is_staff = models.BooleanField(default=False)
-    school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
+    school = models.ForeignKey("Main.School", on_delete=models.CASCADE, null=True)
     objects = CustomUserManager()
 
 
