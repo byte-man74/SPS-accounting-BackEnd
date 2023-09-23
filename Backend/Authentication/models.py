@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils.translation import gettext as _
-
+from Main.models import School
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -40,6 +40,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         _("Account Type"), max_length=50, choices=ACCOUNT_TYPE_CHOICES, default="Free Account")
     is_staff = models.BooleanField(default=False)
     objects = CustomUserManager()
+    school = models.ForeignKey(School, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
