@@ -33,21 +33,21 @@ class Operations_account (models.Model):
 
 class Operations_account_transaction_record (models.Model):
 
-    Transaction_type = {
-        "Transfer": "Transfer",
-        "Cash": "Cash",
-    }
-    Transaction_category = {
-        "Credit": "Credit",
-        "Debit": "Debit",
-    }
-    Status_choice = {
-        "Pending": "Pending",
-        "Success": "Success",
-        "Failed": "Failed",
-        "Cancelled": "Cancelled",
-        "Retrying": "Retrying",
-    }
+    Transaction_type = (
+        ("Transfer", "Transfer"),
+        ("Cash", "Cash"),
+    )
+    Transaction_category = (
+        ("Credit", "Credit"),
+        ("Debit", "Debit"),
+    )
+    Status_choice = (
+        ("Pending", "Pending"),
+        ("Success", "Success"),
+        ("Failed", "Failed"),
+        ("Cancelled", "Cancelled"),
+        ("Retrying", "Retrying"),
+    )
 
     time = models.DateTimeField(auto_now_add=True)
     amount = models.BigIntegerField()
@@ -120,11 +120,10 @@ class Capital_Account (models.Model):
 
 
 class Capital_account_transaction_history (models.Model):
-    Transaction_category = {
-        "Credit": "Credit",
-        "Debit": "Debit",
-    }
-
+    Transaction_category = (
+        ("Credit", "Credit"),
+        ("Debit", "Debit"),
+    )
     time = models.DateTimeField(auto_now_add=True)
     amount = models.BigIntegerField()
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
@@ -157,7 +156,7 @@ class Staff (models.Model):
     account_number = models.CharField(max_length=50)
     bank_name = models.CharField(max_length=40)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    staff_type = models.ForeignKey(Staff_type, on_delete=models.SET_NULL)
+    staff_type = models.ForeignKey(Staff_type, on_delete=models.SET_NULL, null=True)
     salary_deduction = models.BigIntegerField()
     is_active = models.BooleanField(default=True)
     tin_number = models.CharField(max_length=50)
@@ -184,12 +183,12 @@ class Staff (models.Model):
 
 '''payroll'''
 class Payroll(models.Model):
-    Status = {
-        "Pending": "Pending",
-        "Success": "Success",
-        "Failed": "Failed",
-        "Reconciliation": "Reconciliation",
-    }
+    Status = (
+        ("Pending", "Pending"),
+        ("Success", "Success"),
+        ("Failed", "Failed"),
+        ("Reconciliation", "Reconciliation"),
+    )
 
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
@@ -270,12 +269,12 @@ class Payroll(models.Model):
 
 
 class Taxroll(models.Model):
-    Status = {
-        "Pending": "Pending",
-        "Success": "Success",
-        "Failed": "Failed",
-        "Reconciliation": "Reconciliation",
-    }
+    Status = (
+        ("Pending", "Pending"),
+        ("Success", "Success"),
+        ("Failed", "Failed"),
+        ("Reconciliation", "Reconciliation"),
+    )
     
     name = models.CharField(max_length=100)
     amount_paid_for_tax = models.BigIntegerField()
