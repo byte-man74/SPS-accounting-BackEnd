@@ -48,8 +48,6 @@ def get_unarranged_transaction_seven_days_ago(school_id):
         return None
 
 
-
-
 def format_date(date):
     # Create a dictionary for mapping month numbers to month names
     month_names = {
@@ -59,7 +57,6 @@ def format_date(date):
     }
 
     day_of_week = date.strftime("%A")
-
 
     day_of_month = date.strftime("%d")
     if day_of_month.endswith("1") and day_of_month != "11":
@@ -71,16 +68,13 @@ def format_date(date):
     else:
         day_of_month += "th"
 
-
     month = month_names[date.month]
-
 
     year = date.strftime("%Y")
 
     formatted_date = f"{day_of_week}, {day_of_month} {month} {year}"
 
     return formatted_date
-
 
 
 def process_and_sort_transactions(transactions):
@@ -92,12 +86,12 @@ def process_and_sort_transactions(transactions):
         total_amount += transaction['amount']
 
         daily_totals[transaction_date] = total_amount
-    
 
     sorted_daily_totals = sorted(daily_totals.items(), key=lambda x: x[0])
-    
-    result = [{'date': format_date(date), 'total_amount': total} for date, total in sorted_daily_totals]
-    
+
+    result = [{'date': format_date(date), 'total_amount': total}
+              for date, total in sorted_daily_totals]
+
     return result
 
 
@@ -116,19 +110,19 @@ def calculate_cash_and_transfer_transaction_total(transactions):
     return cash_total, transfer_total
 
 
-
 def get_user_school(user):
     return get_object_or_404(School, id=get_school_from_user(user.id))
-
-
 
 
 def get_transaction_summary_by_header(transactions):
     transaction_summary = {}
 
     for transaction in transactions:
-        # Get the particulars name from the transaction
-        particulars_name = transaction['particulars_name']
+        # Get the particulars object associated with the transaction
+        particulars = transaction.particulars
+
+        # Get the name of the particulars
+        particulars_name = particulars.name
 
         # Check if a summary for this particulars already exists
         if particulars_name in transaction_summary:
@@ -137,16 +131,20 @@ def get_transaction_summary_by_header(transactions):
             # If not, initialize a new summary dictionary
             summary = {
                 'total_amount': 0,
-                'transaction_count': 0,
-                'transactions': []
+                'percentage': 0,
             }
 
         # Update the summary for this particulars
-        summary['total_amount'] += transaction['amount']
-        summary['transaction_count'] += 1
-        summary['transactions'].append(transaction)
+        summary['total_amount'] += transaction.amount
 
         # Update or add the summary to the transaction_summary dictionary
         transaction_summary[particulars_name] = summary
+
+    all_amount = sum(summary['total_amount'] for summary in transaction_summary.values())
+
+    # Calculate the percentage for each particulars
+    for particulars_name, summary in transaction_summary.items():
+        percentage = (summary['total_amount'] / all_amount) * 100
+        summary['percentage'] = percentage
 
     return transaction_summary

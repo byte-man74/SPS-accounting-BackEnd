@@ -39,3 +39,14 @@ class CashTransactionWriteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Operations_account_transaction_record
         fields = ('time', 'amount', 'particulars', 'name_of_reciever', 'is_approved' )
+
+
+
+# class TransactionSummarySerializer(serializers.Serializer):
+#     total_amount = serializers.IntegerField()
+#     percentage = serializers.FloatField()
+
+# class PercentageSummarySerializer (serializers.Serializer):
+#     particulars = serializers.DictField(
+#         child=TransactionSummarySerializer(many=True)
+#     )

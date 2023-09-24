@@ -124,5 +124,17 @@ class CreateCashTransaction (APIView):
             # initiate a notification here later to the head teacher
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 
 #  API to get the summary of amount spent in the operatins account for a particular
+# class GetPercentageSummary (APIView):
+
+#     def get(self, request):
+#         user_school = get_user_school(request.user)
+#         operations_account_tansaction_list = Operations_account_transaction_record.get_transaction().filter(school=user_school)
+
+#         summary = get_transaction_summary_by_header(operations_account_tansaction_list)
+#         serializer = PercentageSummarySerializer(summary, many=True)
+#         return Response(serializer.data, status=HTTP_200_OK)
