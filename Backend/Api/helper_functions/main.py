@@ -58,7 +58,6 @@ def format_date(date):
         11: "November", 12: "December"
     }
 
-
     day_of_week = date.strftime("%A")
 
 
@@ -120,3 +119,34 @@ def calculate_cash_and_transfer_transaction_total(transactions):
 
 def get_user_school(user):
     return get_object_or_404(School, id=get_school_from_user(user.id))
+
+
+
+
+def get_transaction_summary_by_header(transactions):
+    transaction_summary = {}
+
+    for transaction in transactions:
+        # Get the particulars name from the transaction
+        particulars_name = transaction['particulars_name']
+
+        # Check if a summary for this particulars already exists
+        if particulars_name in transaction_summary:
+            summary = transaction_summary[particulars_name]
+        else:
+            # If not, initialize a new summary dictionary
+            summary = {
+                'total_amount': 0,
+                'transaction_count': 0,
+                'transactions': []
+            }
+
+        # Update the summary for this particulars
+        summary['total_amount'] += transaction['amount']
+        summary['transaction_count'] += 1
+        summary['transactions'].append(transaction)
+
+        # Update or add the summary to the transaction_summary dictionary
+        transaction_summary[particulars_name] = summary
+
+    return transaction_summary
