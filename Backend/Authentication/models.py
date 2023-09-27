@@ -26,10 +26,10 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     ACCOUNT_TYPE_CHOICES = [
-        ('Operations', _('Operations')),
-        ('Accountant', _('Accountant')),
-        ('Principal', _('Principal')),
-        ('Director', _('Director')),
+        ('OPERATIONS', _('OPERATIONS')),
+        ('ACCOUNTANT', _('ACCOUNTANT')),
+        ('PRINCIPAL', _('PRINCIPAL')),
+        ('DIRECTOR', _('DIRECTOR')),
     ]
     
     email = models.EmailField(verbose_name='email address', unique=True)
