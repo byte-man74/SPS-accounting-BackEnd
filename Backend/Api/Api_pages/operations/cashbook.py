@@ -50,35 +50,38 @@ class GetTransactionSevenDaysAgo (APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_school = get_user_school(request.user)
-        unarranged_transaction_list = get_unarranged_transaction_seven_days_ago(
-            user_school)
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            unarranged_transaction_list = get_unarranged_transaction_seven_days_ago(
+                user_school)
 
-        if unarranged_transaction_list is None:
-            return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transactions have been made for the past seven days."})
+            if unarranged_transaction_list is None:
+                return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transactions have been made for the past seven days."})
 
-        processed_data = process_and_sort_transactions(
-            unarranged_transaction_list)
-        cash_total, transfer_total = calculate_cash_and_transfer_transaction_total(
-            unarranged_transaction_list)
+            processed_data = process_and_sort_transactions(
+                unarranged_transaction_list)
+            cash_total, transfer_total = calculate_cash_and_transfer_transaction_total(
+                unarranged_transaction_list)
 
-        cash_and_transaction_data = {
-            "cash_total": cash_total,
-            "transfer_total": transfer_total
-        }
+            cash_and_transaction_data = {
+                "cash_total": cash_total,
+                "transfer_total": transfer_total
+            }
 
-        transaction_serializer = SummaryTransactionSerializer(
-            processed_data, many=True)
-        cash_and_transfer_total_serializer = CashandTransactionTotalSerializer(
-            cash_and_transaction_data)
+            transaction_serializer = SummaryTransactionSerializer(
+                processed_data, many=True)
+            cash_and_transfer_total_serializer = CashandTransactionTotalSerializer(
+                cash_and_transaction_data)
 
-        data = {
-            "summary": cash_and_transfer_total_serializer.data,
-            "transfer_list": transaction_serializer.data
-        }
+            data = {
+                "summary": cash_and_transfer_total_serializer.data,
+                "transfer_list": transaction_serializer.data
+            }
 
-        return Response(data, status=HTTP_200_OK)
-
+            return Response(data, status=HTTP_200_OK)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
@@ -87,15 +90,18 @@ class GetAllCashTransactions (APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user_school = get_user_school(request.user)
-        operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
-            school=user_school, transaction_type="Cash")
-        print(operations_account_cash_transaction)
-        serializer = OperationsAccountCashTransactionRecordSerializer(
-            operations_account_cash_transaction, many=True)
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
+                school=user_school, transaction_type="Cash")
+            print(operations_account_cash_transaction)
+            serializer = OperationsAccountCashTransactionRecordSerializer(
+                operations_account_cash_transaction, many=True)
 
-        return Response(serializer.data, status=HTTP_200_OK)
-
+            return Response(serializer.data, status=HTTP_200_OK)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
 # API to edit a particular cash transaction
 # API to create a cash transaction
@@ -111,22 +117,28 @@ class ViewAndModifyCashTransaction(APIView):
 
     # tested✅😊
     def get(self, request, id, format=None):
-        transaction_record = self.get_object(id)
-        serializer = CashTransactionReadSerializer(transaction_record)
-        return Response(serializer.data, status=HTTP_200_OK)
+        try:
+            check_account_type(request.user, account_type)
+            transaction_record = self.get_object(id)
+            serializer = CashTransactionReadSerializer(transaction_record)
+            return Response(serializer.data, status=HTTP_200_OK)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
     # tested✅😊
     def put(self, request, id, format=None):
-        transaction_record = self.get_object(id)
-        serializer = CashTransactionWriteSerializer(
-            transaction_record, data=request.data, partial=True)
+        try:
+            transaction_record = self.get_object(id)
+            serializer = CashTransactionWriteSerializer(
+                transaction_record, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save(is_approved=False)
-            # initiate a notification here later to head teacher
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            if serializer.is_valid():
+                serializer.save(is_approved=False)
+                # initiate a notification here later to head teacher
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
     # tested✅😊
 
 
@@ -134,15 +146,17 @@ class CreateCashTransaction (APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        serializer = CashTransactionWriteSerializer(data=request.data)
+        try:
+            serializer = CashTransactionWriteSerializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save(is_approved=False, school=get_user_school(
-                request.user), transaction_type="Cash", transaction_category="Debit")
-            # initiate a notification here later to the head teacher
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            if serializer.is_valid():
+                serializer.save(is_approved=False, school=get_user_school(
+                    request.user), transaction_type="Cash", transaction_category="Debit")
+                # initiate a notification here later to the head teacher
+                return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
 #  API to get the summary of amount spent in the operatins account for a particular
 # class GetPercentageSummary (APIView):
