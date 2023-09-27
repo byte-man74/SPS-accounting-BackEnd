@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_200_OK, HTTP_404_NOT_FOUND
+from rest_framework.status import *
 from Api.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
@@ -9,10 +9,12 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Main.models import Operations_account, Operations_account_transaction_record, School
+from Main.models import Operations_account, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.Api_pages.operations.serializers import *
 from django.http import Http404
+from rest_framework.permissions import IsAuthenticated
+
 
 
 # Api to get amount available in cash in the operations account
@@ -20,6 +22,9 @@ from django.http import Http404
 # API to get the tootal amount available in the operations account
 # tested✅😊
 class GetAmountAvailableOperationsAccount(APIView):
+    permission_classes = [IsAuthenticated]
+
+
     def get(self, request):
         user_school = get_user_school(request.user)
         operations_account = get_object_or_404(
@@ -71,6 +76,8 @@ class GetTransactionSevenDaysAgo (APIView):
 # API to get all pending cash transactions
 # tested✅😊
 class GetAllCashTransactions (APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         user_school = get_user_school(request.user)
         operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
@@ -86,6 +93,8 @@ class GetAllCashTransactions (APIView):
 # API to create a cash transaction
 # tested✅😊
 class ViewAndModifyCashTransaction(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, id):
         try:
             return Operations_account_transaction_record.objects.get(id=id)
@@ -114,7 +123,8 @@ class ViewAndModifyCashTransaction(APIView):
 
     # tested✅😊
 class CreateCashTransaction (APIView):
-
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request, format=None):
         serializer = CashTransactionWriteSerializer(data=request.data)
 
