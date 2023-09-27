@@ -40,6 +40,7 @@ class GetAmountAvailableOperationsAccount(APIView):
 # functionality to get the sum of money spent in the past 7 days both in cash and transfer
 # tested✅😊
 class GetTransactionSevenDaysAgo (APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user_school = get_user_school(request.user)
@@ -124,7 +125,7 @@ class ViewAndModifyCashTransaction(APIView):
     # tested✅😊
 class CreateCashTransaction (APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, format=None):
         serializer = CashTransactionWriteSerializer(data=request.data)
 
