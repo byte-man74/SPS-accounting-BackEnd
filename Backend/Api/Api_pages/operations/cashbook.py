@@ -22,7 +22,7 @@ from django.contrib.auth import get_user_model
 # API to get the tootal amount available in the operations account
 # tested✅😊
 
-account_type = "OPERATION"
+account_type = "OPERATIONS"
 
 
 class GetAmountAvailableOperationsAccount(APIView):
