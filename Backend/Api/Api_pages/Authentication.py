@@ -15,3 +15,12 @@ from django.shortcuts import get_object_or_404
 #? This api is responsible for Login in an returning a token when the user credentials are valid
 class LoginView(TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
+
+
+class GetUserType(APIView):
+    def get (self, request):
+        user = request.user
+        user_model = get_user_model()
+        user = user_model.objects.get(id=user.id)
+
+        return Response (user.account_type)
