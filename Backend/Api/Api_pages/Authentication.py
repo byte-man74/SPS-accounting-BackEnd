@@ -23,4 +23,4 @@ class GetUserType(APIView):
         user_model = get_user_model()
         user = user_model.objects.get(id=user.id)
 
-        return Response (user.account_type)
+        return Response ({ "account_type": user.account_type})
