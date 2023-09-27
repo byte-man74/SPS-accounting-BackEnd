@@ -3,6 +3,23 @@ from Authentication.models import CustomUser
 from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 from Authentication.models import CustomUser
+from django.contrib.auth import get_user_model
+from rest_framework.response import Response
+from rest_framework.status import *
+from rest_framework.exceptions import PermissionDenied 
+
+
+
+def check_account_type(user, account_type):
+    def get_user_type(user, account_type):
+        user_model = get_user_model()
+        user = user_model.objects.get(id=user.id)
+
+        if user.account_type != account_type:
+            raise PermissionDenied()  # Raise an exception if unauthorized
+
+    get_user_type(user, account_type)  # Call the inner function
+
 
 
 def get_school_from_user(user_id):

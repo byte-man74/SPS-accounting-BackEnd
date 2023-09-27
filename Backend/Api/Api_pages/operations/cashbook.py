@@ -14,26 +14,33 @@ from Api.helper_functions.main import *
 from Api.Api_pages.operations.serializers import *
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
-
+from django.contrib.auth import get_user_model
 
 
 # Api to get amount available in cash in the operations account
 # API to get amount available to transfer in the operations account
 # API to get the tootal amount available in the operations account
 # tested✅😊
+
+account_type = "OPERATION"
+
+
 class GetAmountAvailableOperationsAccount(APIView):
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request):
-        user_school = get_user_school(request.user)
-        operations_account = get_object_or_404(
-            Operations_account, school=user_school)
+        try:
+            check_account_type(request.user, account_type)
+            
+            user_school = get_user_school(request.user)
+            operations_account = get_object_or_404(
+                Operations_account, school=user_school)
 
-        serializer = OperationsAccountSerializer(operations_account)
+            serializer = OperationsAccountSerializer(operations_account)
 
-        return Response(serializer.data, status=HTTP_200_OK)
-
+            return Response(serializer.data, status=HTTP_200_OK)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
 # API to get the total transcations that has happened in the past the past 7 days both transfer abd cash transactions in the operations account
 # get the transaction list and filter it by active
@@ -120,9 +127,9 @@ class ViewAndModifyCashTransaction(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
     # tested✅😊
+
+
 class CreateCashTransaction (APIView):
     permission_classes = [IsAuthenticated]
 
@@ -135,8 +142,6 @@ class CreateCashTransaction (APIView):
             # initiate a notification here later to the head teacher
             return Response(status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
 
 
 #  API to get the summary of amount spent in the operatins account for a particular
