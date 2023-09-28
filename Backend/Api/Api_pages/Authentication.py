@@ -24,3 +24,19 @@ class GetUserType(APIView):
         user = user_model.objects.get(id=user.id)
 
         return Response ({ "account_type": user.account_type})
+
+
+class GetUserDetails (APIView):
+    def get (self, request):
+        user = request.user
+        user_model = get_user_model()
+        user = user_model.objects.get(id=user.id)
+
+        first_name = user.first_name
+        last_name = user.last_name
+
+        data = {
+            "name" : first_name + " " + last_name
+        }
+
+        return Response(data, status=HTTP_200_OK)
