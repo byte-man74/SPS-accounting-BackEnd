@@ -19,7 +19,7 @@ account_type = "OPERATIONS"
 
 
 # tested✅😊
-# todo: later also pass expense data here
+# todo: later also pass expense data to
 class GetMonthlyTransaction(APIView):
     permission_classes = [IsAuthenticated]
 
