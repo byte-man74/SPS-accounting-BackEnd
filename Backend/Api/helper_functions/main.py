@@ -6,8 +6,8 @@ from Authentication.models import CustomUser
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.status import *
-from rest_framework.exceptions import PermissionDenied 
-
+from rest_framework.exceptions import PermissionDenied
+from dateutil.relativedelta import relativedelta
 
 
 def check_account_type(user, account_type):
@@ -21,7 +21,6 @@ def check_account_type(user, account_type):
     get_user_type(user, account_type)  # Call the inner function
 
 
-
 def get_school_from_user(user_id):
     try:
         custom_user = get_object_or_404(CustomUser, id=user_id)
@@ -29,6 +28,33 @@ def get_school_from_user(user_id):
         return user_school.id
     except CustomUser.DoesNotExist:
         # Handle the case where the user does not exist
+        return None
+
+
+def get_unarranged_transaction_six_months_ago(school_id):
+    try:
+        current_date = datetime.now()
+        six_months_ago = current_date - relativedelta(months=6)
+
+        # Use the model class directly to filter records
+        transaction_records = Operations_account_transaction_record.get_transaction(
+            start_date=six_months_ago,
+            end_date=current_date,
+            school=school_id
+        ).filter(is_approved=True)
+
+        transaction_records_list = [
+            {
+                "time": record.time,
+                "amount": record.amount,
+                "transaction_type": record.transaction_type,
+            }
+            for record in transaction_records
+        ]
+
+        return transaction_records_list
+
+    except Operations_account_transaction_record.DoesNotExist:
         return None
 
 
@@ -94,7 +120,11 @@ def format_date(date):
     return formatted_date
 
 
-def process_and_sort_transactions(transactions):
+def process_and_sort_transactions_by_months (transactions):
+    pass
+
+
+def process_and_sort_transactions_by_days(transactions):
 
     daily_totals = {}
     for transaction in transactions:
@@ -157,7 +187,8 @@ def get_transaction_summary_by_header(transactions):
         # Update or add the summary to the transaction_summary dictionary
         transaction_summary[particulars_name] = summary
 
-    all_amount = sum(summary['total_amount'] for summary in transaction_summary.values())
+    all_amount = sum(summary['total_amount']
+                     for summary in transaction_summary.values())
 
     # Calculate the percentage for each particulars
     for particulars_name, summary in transaction_summary.items():
