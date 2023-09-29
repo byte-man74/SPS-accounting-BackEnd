@@ -120,8 +120,33 @@ def format_date(date):
     return formatted_date
 
 
-def process_and_sort_transactions_by_months (transactions):
-    pass
+def process_and_sort_transactions_by_months(transactions):
+    import calendar
+
+    monthly_totals = {}
+
+    for transaction in transactions:
+        # Get the month from the transaction's date in full name format
+        transaction_date = transaction.time
+        month_name = calendar.month_name[transaction_date.month]
+
+        # Check if the month already exists in the dictionary, and if not, initialize it
+        if month_name not in monthly_totals:
+            monthly_totals[month_name] = {
+                'month': month_name,
+                'total_amount': 0,
+            }
+
+        # Update the total amount for the corresponding month
+        monthly_totals[month_name]['total_amount'] += transaction.amount
+
+    # Sort the monthly totals by month name
+    sorted_monthly_totals = sorted(
+        monthly_totals.values(),
+        key=lambda x: list(calendar.month_name).index(x['month'])
+    )
+
+    return sorted_monthly_totals
 
 
 def process_and_sort_transactions_by_days(transactions):
