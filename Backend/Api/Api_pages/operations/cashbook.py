@@ -18,24 +18,29 @@ from django.contrib.auth import get_user_model
 account_type = "OPERATIONS"
 
 
-
 class GetMontlyTransaction(APIView):
     permission_classes = [IsAuthenticated]
 
-
-    def get (self, request):
+    def get(self, request):
         try:
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
             unarranged_transaction_list = get_unarranged_transaction_six_months_ago(
                 user_school)
-            
+
             if unarranged_transaction_list is None:
                 return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transactions have been made for the past six months."})
 
-        except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            processed_data = process_and_sort_transactions_by_months(
+                unarranged_transaction_list)
 
+            transaction_serializer = SummaryTransactionSerializer(
+                processed_data, many=True)
+
+            return Response(transaction_serializer, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
 # Api to get amount available in cash in the operations account
@@ -48,7 +53,7 @@ class GetAmountAvailableOperationsAccount(APIView):
     def get(self, request):
         try:
             check_account_type(request.user, account_type)
-            
+
             user_school = get_user_school(request.user)
             operations_account = get_object_or_404(
                 Operations_account, school=user_school)
@@ -57,12 +62,14 @@ class GetAmountAvailableOperationsAccount(APIView):
 
             return Response(serializer.data, status=HTTP_200_OK)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 # API to get the total transcations that has happened in the past the past 7 days both transfer abd cash transactions in the operations account
 # get the transaction list and filter it by active
 # functionality to get the sum of money spent in the past 7 days both in cash and transfer
 # tested✅😊
+
+
 class GetTransactionSevenDaysAgo (APIView):
     permission_classes = [IsAuthenticated]
 
@@ -98,8 +105,8 @@ class GetTransactionSevenDaysAgo (APIView):
 
             return Response(data, status=HTTP_200_OK)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
-        
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
 
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
@@ -119,11 +126,13 @@ class GetAllCashTransactions (APIView):
 
             return Response(serializer.data, status=HTTP_200_OK)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 # API to edit a particular cash transaction
 # API to create a cash transaction
 # tested✅😊
+
+
 class ViewAndModifyCashTransaction(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -141,7 +150,7 @@ class ViewAndModifyCashTransaction(APIView):
             serializer = CashTransactionReadSerializer(transaction_record)
             return Response(serializer.data, status=HTTP_200_OK)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
     # tested✅😊
     def put(self, request, id, format=None):
@@ -156,7 +165,7 @@ class ViewAndModifyCashTransaction(APIView):
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
     # tested✅😊
 
 
@@ -174,7 +183,7 @@ class CreateCashTransaction (APIView):
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 #  API to get the summary of amount spent in the operatins account for a particular
 # class GetPercentageSummary (APIView):
