@@ -41,7 +41,7 @@ def get_unarranged_transaction_six_months_ago(school_id):
             start_date=six_months_ago,
             end_date=current_date,
             school=school_id
-        ).filter(is_approved=True)
+        ).filter(is_approved=True, transaction_category = "Debit")
 
         transaction_records_list = [
             {
@@ -49,6 +49,7 @@ def get_unarranged_transaction_six_months_ago(school_id):
                 "amount": record.amount,
                 "transaction_type": record.transaction_type,
             }
+
             for record in transaction_records
         ]
 
@@ -79,8 +80,6 @@ def get_unarranged_transaction_seven_days_ago(school_id):
                 "status": record.status,
                 "name_of_reciever": record.name_of_reciever,
                 "particulars": record.particulars
-
-                # Add more fields as needed
             }
             for record in transaction_records
         ]
@@ -126,8 +125,8 @@ def process_and_sort_transactions_by_months(transactions):
     monthly_totals = {}
 
     for transaction in transactions:
-        # Get the month from the transaction's date in full name format
-        transaction_date = transaction.time
+        print(transaction)
+        transaction_date = transaction['time']
         month_name = calendar.month_name[transaction_date.month]
 
         # Check if the month already exists in the dictionary, and if not, initialize it
@@ -138,7 +137,7 @@ def process_and_sort_transactions_by_months(transactions):
             }
 
         # Update the total amount for the corresponding month
-        monthly_totals[month_name]['total_amount'] += transaction.amount
+        monthly_totals[month_name]['total_amount'] += transaction['amount']
 
     # Sort the monthly totals by month name
     sorted_monthly_totals = sorted(
@@ -146,6 +145,7 @@ def process_and_sort_transactions_by_months(transactions):
         key=lambda x: list(calendar.month_name).index(x['month'])
     )
 
+    print(sorted_monthly_totals)
     return sorted_monthly_totals
 
 
