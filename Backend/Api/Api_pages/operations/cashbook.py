@@ -18,7 +18,9 @@ from django.contrib.auth import get_user_model
 account_type = "OPERATIONS"
 
 
-class GetMontlyTransaction(APIView):
+# tested✅😊
+# todo: later also pass expense data here
+class GetMonthlyTransaction(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -34,10 +36,10 @@ class GetMontlyTransaction(APIView):
             processed_data = process_and_sort_transactions_by_months(
                 unarranged_transaction_list)
 
-            transaction_serializer = SummaryTransactionSerializer(
+            transaction_serializer = MonthlyTransactionSerializer(
                 processed_data, many=True)
 
-            return Response(transaction_serializer, status=HTTP_200_OK)
+            return Response(transaction_serializer.data, status=HTTP_200_OK)
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
