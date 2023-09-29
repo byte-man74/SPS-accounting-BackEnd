@@ -25,7 +25,14 @@ class GetMontlyTransaction(APIView):
 
     def get (self, request):
         try:
-            pass
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            unarranged_transaction_list = get_unarranged_transaction_six_months_ago(
+                user_school)
+            
+            if unarranged_transaction_list is None:
+                return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transactions have been made for the past six months."})
+
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
 
@@ -69,7 +76,7 @@ class GetTransactionSevenDaysAgo (APIView):
             if unarranged_transaction_list is None:
                 return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transactions have been made for the past seven days."})
 
-            processed_data = process_and_sort_transactions(
+            processed_data = process_and_sort_transactions_by_days(
                 unarranged_transaction_list)
             cash_total, transfer_total = calculate_cash_and_transfer_transaction_total(
                 unarranged_transaction_list)
