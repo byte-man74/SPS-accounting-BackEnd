@@ -16,6 +16,7 @@ urlpatterns = [
 
     #Operation
     path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations
+    path ('get_cash_transaction_six_months_ago', GetMonthlyTransaction.as_view(), name="get_monthly_transaction"), ###✅ 
     path ('get_cash_and_transfer_record_seven_days_ago', GetTransactionSevenDaysAgo.as_view(), name='get_cash_and transfer_record_seven_days_ago'), ##✅ 
     path ('get_all_cash_transactions', GetAllCashTransactions.as_view(), name='get_all_cash_transactions'), ###✅ 
     path ('view_create_modify_cash_transaction/<str:id>', ViewAndModifyCashTransaction.as_view(), name='view_create_cash_transaction'), ###✅ 
