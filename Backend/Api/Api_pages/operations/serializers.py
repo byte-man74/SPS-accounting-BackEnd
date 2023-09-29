@@ -17,6 +17,10 @@ class SummaryTransactionSerializer(serializers.Serializer):
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
 
 
+class MonthlyTransactionSerializer(serializers.Serializer):
+    month = serializers.CharField()
+    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
 class CashandTransactionTotalSerializer (serializers.Serializer):
     cash_total =  serializers.IntegerField()
     transfer_total = serializers.IntegerField()
