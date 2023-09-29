@@ -15,16 +15,26 @@ from Api.Api_pages.operations.serializers import *
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+account_type = "OPERATIONS"
+
+
+
+class GetMontlyTransaction(APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def get (self, request):
+        try:
+            pass
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+
 
 
 # Api to get amount available in cash in the operations account
 # API to get amount available to transfer in the operations account
 # API to get the tootal amount available in the operations account
 # tested✅😊
-
-account_type = "OPERATIONS"
-
-
 class GetAmountAvailableOperationsAccount(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -82,6 +92,7 @@ class GetTransactionSevenDaysAgo (APIView):
             return Response(data, status=HTTP_200_OK)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED) 
+        
 
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
