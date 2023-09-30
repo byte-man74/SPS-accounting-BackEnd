@@ -61,6 +61,7 @@ class Operations_account_transaction_record (models.Model):
         max_length=50, choices=Transaction_category)
     particulars = models.ForeignKey(
         "Main.Particulars", on_delete=models.CASCADE)
+    reason = models.TextField(null=True)
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
