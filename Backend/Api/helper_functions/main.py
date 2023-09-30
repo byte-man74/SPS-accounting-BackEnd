@@ -48,7 +48,7 @@ def get_unarranged_transaction_six_months_ago(school_id):
             {
                 "time": record.time,
                 "amount": record.amount,
-                "transaction_type": record.transaction_type,
+                "transaction_type": record.transaction_type
             }
 
             for record in transaction_records
@@ -79,6 +79,7 @@ def get_unarranged_transaction_seven_days_ago(school_id):
                 "amount": record.amount,
                 "transaction_type": record.transaction_type,
                 "status": record.status,
+                 "reason": record.reason,
                 "name_of_reciever": record.name_of_reciever,
                 "particulars": record.particulars
             }
@@ -158,6 +159,7 @@ def process_and_sort_transactions_by_days(transactions):
         data = {
             "particulars": transaction['particulars'].name,
             "amount": transaction['amount'],
+            "reason": transaction['reason']
         }
 
         daily_totals[transaction_date]["date"] = format_date(transaction_date)
