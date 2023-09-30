@@ -14,7 +14,7 @@ class OperationsAccountSerializer(serializers.ModelSerializer):
 
 class SummaryTransactionSerializer(serializers.Serializer):
     date = serializers.CharField()
-    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    transaction_data = serializers.ListField(child=serializers.DictField())
 
 
 class MonthlyTransactionSerializer(serializers.Serializer):
