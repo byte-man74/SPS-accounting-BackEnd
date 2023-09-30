@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.exceptions import PermissionDenied
 from dateutil.relativedelta import relativedelta
+from collections import defaultdict
 
 
 def check_account_type(user, account_type):
@@ -41,7 +42,7 @@ def get_unarranged_transaction_six_months_ago(school_id):
             start_date=six_months_ago,
             end_date=current_date,
             school=school_id
-        ).filter(is_approved=True, transaction_category = "Debit")
+        ).filter(is_approved=True, transaction_category="Debit")
 
         transaction_records_list = [
             {
@@ -150,22 +151,19 @@ def process_and_sort_transactions_by_months(transactions):
 
 
 def process_and_sort_transactions_by_days(transactions):
+    daily_totals = defaultdict(lambda: {"date": None, "transaction_data": []})
 
-    daily_totals = {}
     for transaction in transactions:
         transaction_date = transaction['time'].date()
+        data = {
+            "particulars": transaction['particulars'].name,
+            "amount": transaction['amount'],
+        }
 
-        if transaction_date in daily_totals:
-            pass
-        else: 
-            data = {
-                "transaction_date": transaction_date,
-                "transaction_data": {
-                    "particulars": transaction['particulars'],
-                    "amount": transaction['amount'],
-                    
-                }
-            }
+        daily_totals[transaction_date]["date"] = format_date(transaction_date)
+        daily_totals[transaction_date]["transaction_data"].append(data)
+
+    return list(daily_totals.values())
 
     #     total_transaction = daily_totals.get(transaction_date, 0)
     #     total_amount += transaction['amount']
@@ -180,24 +178,12 @@ def process_and_sort_transactions_by_days(transactions):
     # return result
 
 
-
-
-
-
-
 # loop through all the transaction
 # check if date exists in a new dictionary
 # if the date exists do something with it
 # if the date doesn't exist then create a new one as a dictionary
 # but if the date exists then append the transaction information as the data variable of the data
 # when it is done then format the data
-
-
-
-
-
-
-
 
 
 def calculate_cash_and_transfer_transaction_total(transactions):
@@ -254,3 +240,5 @@ def get_transaction_summary_by_header(transactions):
         summary['percentage'] = percentage
 
     return transaction_summary
+
+
