@@ -154,17 +154,50 @@ def process_and_sort_transactions_by_days(transactions):
     daily_totals = {}
     for transaction in transactions:
         transaction_date = transaction['time'].date()
-        total_amount = daily_totals.get(transaction_date, 0)
-        total_amount += transaction['amount']
 
-        daily_totals[transaction_date] = total_amount
+        if transaction_date in daily_totals:
+            pass
+        else: 
+            data = {
+                "transaction_date": transaction_date,
+                "transaction_data": {
+                    "particulars": transaction['particulars'],
+                    "amount": transaction['amount'],
+                    
+                }
+            }
 
-    sorted_daily_totals = sorted(daily_totals.items(), key=lambda x: x[0])
+    #     total_transaction = daily_totals.get(transaction_date, 0)
+    #     total_amount += transaction['amount']
 
-    result = [{'date': format_date(date), 'total_amount': total}
-              for date, total in sorted_daily_totals]
+    #     daily_totals[transaction_date] = total_amount
 
-    return result
+    # sorted_daily_totals = sorted(daily_totals.items(), key=lambda x: x[0])
+
+    # result = [{'date': format_date(date), 'total_amount': total}
+    #           for date, total in sorted_daily_totals]
+
+    # return result
+
+
+
+
+
+
+
+# loop through all the transaction
+# check if date exists in a new dictionary
+# if the date exists do something with it
+# if the date doesn't exist then create a new one as a dictionary
+# but if the date exists then append the transaction information as the data variable of the data
+# when it is done then format the data
+
+
+
+
+
+
+
 
 
 def calculate_cash_and_transfer_transaction_total(transactions):

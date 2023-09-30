@@ -164,6 +164,7 @@ class ViewAndModifyCashTransaction(APIView):
             if serializer.is_valid():
                 serializer.save(is_approved=False)
                 # initiate a notification here later to head teacher
+                #! reduce amount from operations account
                 return Response(serializer.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
