@@ -10,7 +10,7 @@ class School(models.Model):
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     email_address = models.EmailField(max_length=50)
-    #django media settings
+    # django media settings
     logo = models.ImageField()
 
     def __str__(self):
@@ -36,19 +36,19 @@ class Operations_account (models.Model):
 class Operations_account_transaction_record (models.Model):
 
     Transaction_type = (
-        ("Transfer", "Transfer"),
-        ("Cash", "Cash"),
+        ("TRANSFER", "TRANSFER"),
+        ("CASH", "CASH"),
     )
     Transaction_category = (
-        ("Credit", "Credit"),
-        ("Debit", "Debit"),
+        ("CREDIT", "CREDIT"),
+        ("DEBIT", "DEBIT"),
     )
     Status_choice = (
-        ("Pending", "Pending"),
-        ("Success", "Success"),
-        ("Failed", "Failed"),
-        ("Cancelled", "Cancelled"),
-        ("Retrying", "Retrying"),
+        ("PENDING", "PENDING"),
+        ("SUCCESS", "SUCCESS"),
+        ("FAILED", "FAILED"),
+        ("CANCELLED", "CANCELLED"),
+        ("RETRYING", "RETRYING"),
     )
 
     time = models.DateTimeField(default=datetime.now)
@@ -65,8 +65,10 @@ class Operations_account_transaction_record (models.Model):
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
-    name_of_reciever = models.CharField(max_length=100, blank=False, null=False)
-    account_number_of_reciever = models.CharField(max_length=20, null=False, blank=True)
+    name_of_reciever = models.CharField(
+        max_length=100, blank=False, null=False)
+    account_number_of_reciever = models.CharField(
+        max_length=20, null=False, blank=True)
     reciever_bank = models.CharField(max_length=50, null=True, blank=True)
 
     # the transaction will only start working after approval
@@ -75,7 +77,7 @@ class Operations_account_transaction_record (models.Model):
     # ? Methods
 
     @staticmethod
-    def get_transaction(transaction_type=None, transaction_category=None, start_date=None, end_date=None, status=None, school= None):
+    def get_transaction(transaction_type=None, transaction_category=None, start_date=None, end_date=None, status=None, school=None):
         query = Operations_account_transaction_record.objects.all()
 
         if transaction_type:
@@ -96,9 +98,7 @@ class Operations_account_transaction_record (models.Model):
         if school:
             query = query.filter(school=school)
 
-
         return query
-
 
     def save(self, *args, **kwargs):
         # Check if it's a "Transfer" transaction type
@@ -128,8 +128,8 @@ class Capital_Account (models.Model):
 
 class Capital_account_transaction_history (models.Model):
     Transaction_category = (
-        ("Credit", "Credit"),
-        ("Debit", "Debit"),
+        ("CREDIT", "CREDIT"),
+        ("DEBIT", "DEBIT"),
     )
     time = models.DateTimeField(auto_now_add=True)
     amount = models.BigIntegerField()
@@ -144,8 +144,9 @@ class Particulars (models.Model):
         return self.name
 
 
-
 '''Staff section'''
+
+
 class Staff_type (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     basic_salary = models.BigIntegerField()
@@ -154,7 +155,7 @@ class Staff_type (models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Staff (models.Model):
     first_name = models.CharField(max_length=100)
@@ -163,20 +164,21 @@ class Staff (models.Model):
     account_number = models.CharField(max_length=50)
     bank_name = models.CharField(max_length=40)
     school = models.ForeignKey(School, on_delete=models.CASCADE)
-    staff_type = models.ForeignKey(Staff_type, on_delete=models.SET_NULL, null=True)
+    staff_type = models.ForeignKey(
+        Staff_type, on_delete=models.SET_NULL, null=True)
     salary_deduction = models.BigIntegerField()
     is_active = models.BooleanField(default=True)
     tin_number = models.CharField(max_length=50)
 
     @staticmethod
-    def reset_salary_deduction_for_staffs_in_a_school (school_id):
+    def reset_salary_deduction_for_staffs_in_a_school(school_id):
         staffs = Staff.objects.filter(school=school_id)
 
         for staff in staffs:
             staff.salary_deduction = 0
             staff.save()
 
-    def get_staf_total_payment (self):
+    def get_staf_total_payment(self):
         basic_salary = self.staff_type.basic_salary
         tax = self.staff_type.tax
         salary_deduction = self.salary_deduction
@@ -186,58 +188,62 @@ class Staff (models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
-    
+
 
 '''payroll'''
+
+
 class Payroll(models.Model):
     Status = (
-        ("Pending", "Pending"),
-        ("Success", "Success"),
-        ("Failed", "Failed"),
-        ("Reconciliation", "Reconciliation"),
+        ("PENDING", "PENDING"),
+        ("SUCCESS", "SUCCESS"),
+        ("FAILED", "FAILED"),
+        ("RECONCILIATION", "RECONCILIATION"),
     )
 
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
-    status = models.CharField(max_length=100, choices=Status, default="Pending")
+    status = models.CharField(
+        max_length=100, choices=Status, default="Pending")
     # Change staffs field to a JSONField
     staffs = models.JSONField()
 
-    #financials
+    # financials
     total_amount_for_tax = models.BigIntegerField()
     total_amount_for_salary = models.BigIntegerField()
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
-
     #!
+
     def add_staff(self, staff_data_list):
         if "staffs" not in self.staffs:
             self.staffs = []
 
-        self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
-
+        # Use extend to add all elements in the list
+        self.staffs.extend(staff_data_list)
 
     #! method to calculate the total amount paid for tax
+
     def total_tax_paid(self):
-        total_tax = [ total_tax + staff.Staff.get_staff_total_payment.tax for staff in self.staffs ]
+        total_tax = [
+            total_tax + staff.Staff.get_staff_total_payment.tax for staff in self.staffs]
         return total_tax
-    
+
     #! method to calculate the total amount paid for salary
     def total_salary_paid(self):
-        total_salary = [ total_salary + staff.Staff.get_staff_total_payment.salary_to_be_paid for staff in self.staffs ]
+        total_salary = [
+            total_salary + staff.Staff.get_staff_total_payment.salary_to_be_paid for staff in self.staffs]
         return total_salary
-    
-    
 
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
             return  # If staffs is not a list, nothing to remove
 
-        updated_staffs = [staff for staff in self.staffs if staff.get("staff_id") != staff_id]
+        updated_staffs = [
+            staff for staff in self.staffs if staff.get("staff_id") != staff_id]
         self.staffs = updated_staffs
-
 
     def get_all_failed_staff_payment(self):
         failed_staffs = []
@@ -246,13 +252,15 @@ class Payroll(models.Model):
                 failed_staffs.append(staff)
 
         return failed_staffs
-    
+
     def get_payment_summary(self):
         total_amount_for_tax = self.total_amount_for_tax
         total_amount_for_salary = self.total_amount_for_salary
         total_staffs = len(self.staffs)
-        successful_staffs = sum(1 for staff in self.staffs if staff.get("status") == "SUCCESS")
-        failed_staffs = sum(1 for staff in self.staffs if staff.get("status") == "FAILED")
+        successful_staffs = sum(
+            1 for staff in self.staffs if staff.get("status") == "SUCCESS")
+        failed_staffs = sum(
+            1 for staff in self.staffs if staff.get("status") == "FAILED")
 
         return {
             "total_amount_for_tax": total_amount_for_tax,
@@ -268,21 +276,18 @@ class Payroll(models.Model):
             self.staffs = json.dumps(self.staffs)
         super().save(*args, **kwargs)
 
-
-
     def __str__(self):
         return self.name
 
 
-
 class Taxroll(models.Model):
     Status = (
-        ("Pending", "Pending"),
-        ("Success", "Success"),
-        ("Failed", "Failed"),
-        ("Reconciliation", "Reconciliation"),
+        ("PENDING", "PENDING"),
+        ("SUCCESS", "SUCCESS"),
+        ("FAILED", "FAILED"),
+        ("RECONCILIATION", "RECONCILIATION"),
     )
-    
+
     name = models.CharField(max_length=100)
     amount_paid_for_tax = models.BigIntegerField()
     date_initiated = models.DateTimeField(auto_now_add=True)
@@ -292,13 +297,12 @@ class Taxroll(models.Model):
     # Create a one-to-one relationship with the Payroll model
     payroll = models.OneToOneField("Main.Payroll", on_delete=models.CASCADE)
 
-
     def add_staff(self, staff_data_list):
         if "staffs" not in self.staffs:
             self.staffs = []
 
-        self.staffs.extend(staff_data_list)  # Use extend to add all elements in the list
-
+        # Use extend to add all elements in the list
+        self.staffs.extend(staff_data_list)
 
     def save(self, *args, **kwargs):
         # Convert staffs list to JSON before saving
@@ -306,19 +310,19 @@ class Taxroll(models.Model):
             self.staffs = json.dumps(self.staffs)
         super().save(*args, **kwargs)
 
-
     def __str__(self):
         return self.name
-    
 
     @staticmethod
     def generate_taxroll_out_of_payroll(payroll_id):
         try:
-            payroll = Payroll.objects.select_related('school').get(id=payroll_id)
+            payroll = Payroll.objects.select_related(
+                'school').get(id=payroll_id)
             staffs_on_payroll = json.loads(payroll.staffs)
-            
+
             # Generate taxroll staffs from payroll staffs
-            taxroll_staffs = generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll)
+            taxroll_staffs = generate_taxroll_staff_table_out_of_payroll(
+                staffs_on_payroll)
 
             # Create a Taxroll instance
             taxroll_name = f'Taxroll for {payroll.name}'
@@ -336,7 +340,3 @@ class Taxroll(models.Model):
         except Exception as e:
             print(f"Error generating Taxroll: {str(e)}")
             return ("ERROR_502")  # Error occurred during generation
-
-
-
-

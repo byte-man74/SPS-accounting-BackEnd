@@ -66,12 +66,11 @@ class GetAmountAvailableOperationsAccount(APIView):
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
+
 # API to get the total transcations that has happened in the past the past 7 days both transfer abd cash transactions in the operations account
 # get the transaction list and filter it by active
 # functionality to get the sum of money spent in the past 7 days both in cash and transfer
 # tested✅😊
-
-
 class GetTransactionSevenDaysAgo (APIView):
     permission_classes = [IsAuthenticated]
 
@@ -121,7 +120,7 @@ class GetAllCashTransactions (APIView):
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
             operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
-                school=user_school, transaction_type="Cash")
+                school=user_school, transaction_type="CASH")
             print(operations_account_cash_transaction)
             serializer = OperationsAccountCashTransactionRecordSerializer(
                 operations_account_cash_transaction, many=True)
@@ -162,7 +161,7 @@ class ViewAndModifyCashTransaction(APIView):
                 transaction_record, data=request.data, partial=True)
 
             if serializer.is_valid():
-                serializer.save(is_approved=False)
+                serializer.save(status="PENDING")
                 # initiate a notification here later to head teacher
                 #! reduce amount from operations account
                 return Response(serializer.data)
@@ -181,10 +180,24 @@ class CreateCashTransaction (APIView):
 
             if serializer.is_valid():
                 serializer.save(is_approved=False, school=get_user_school(
-                    request.user), transaction_type="Cash", transaction_category="Debit")
+                    request.user), transaction_type="CASH", transaction_category="DEBIT")
                 # initiate a notification here later to the head teacher
                 return Response(status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
+
+class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        try: 
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 

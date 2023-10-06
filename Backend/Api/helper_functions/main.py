@@ -35,14 +35,16 @@ def get_school_from_user(user_id):
 def get_unarranged_transaction_six_months_ago(school_id):
     try:
         current_date = datetime.now()
+        print(current_date)
         six_months_ago = current_date - relativedelta(months=6)
+        print(six_months_ago)
 
         # Use the model class directly to filter records
         transaction_records = Operations_account_transaction_record.get_transaction(
             start_date=six_months_ago,
             end_date=current_date,
             school=school_id
-        ).filter(is_approved=True, transaction_category="Debit")
+        ).filter(status="SUCCESS", transaction_category="DEBIT")
 
         transaction_records_list = [
             {
@@ -70,7 +72,7 @@ def get_unarranged_transaction_seven_days_ago(school_id):
             start_date=seven_days_ago,
             end_date=current_date,
             school=school_id
-        ).filter(is_approved=True)
+        ).filter(status="SUCCESS")
 
         # Convert the queryset to a list of dictionaries
         transaction_records_list = [
@@ -127,7 +129,6 @@ def process_and_sort_transactions_by_months(transactions):
     monthly_totals = {}
 
     for transaction in transactions:
-        print(transaction)
         transaction_date = transaction['time']
         month_name = calendar.month_name[transaction_date.month]
 
@@ -147,7 +148,6 @@ def process_and_sort_transactions_by_months(transactions):
         key=lambda x: list(calendar.month_name).index(x['month'])
     )
 
-    print(sorted_monthly_totals)
     return sorted_monthly_totals
 
 
@@ -175,10 +175,10 @@ def calculate_cash_and_transfer_transaction_total(transactions):
 
     for transaction in transactions:
         # Check if the transaction has a 'transaction_type' field and it is "Cash"
-        if 'transaction_type' in transaction and transaction['transaction_type'] == "Cash":
+        if 'transaction_type' in transaction and transaction['transaction_type'] == "CASH":
             cash_total += transaction['amount']
 
-        if 'transaction_type' in transaction and transaction['transaction_type'] == "Transfer":
+        if 'transaction_type' in transaction and transaction['transaction_type'] == "TRANSFER":
             transfer_total += transaction['amount']
 
     return cash_total, transfer_total
@@ -225,3 +225,8 @@ def get_transaction_summary_by_header(transactions):
     return transaction_summary
 
 
+def get_cash_left_and_month_summary (school_id):
+    operation_account = get_object_or_404(Operations_account, school=school_id)
+    cash_amount_left = operation_account.amount_available_cash 
+
+    Operations_account_transaction_record.get_transaction()
