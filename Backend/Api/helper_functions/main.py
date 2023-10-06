@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404
 from datetime import datetime, timedelta
 from Authentication.models import CustomUser
 from django.contrib.auth import get_user_model
-from rest_framework.response import Response
+from django.utils import timezone
 from rest_framework.status import *
 from rest_framework.exceptions import PermissionDenied
 from dateutil.relativedelta import relativedelta
 from collections import defaultdict
+from django.db.models import Sum
 
 
 def check_account_type(user, account_type):
@@ -81,7 +82,7 @@ def get_unarranged_transaction_seven_days_ago(school_id):
                 "amount": record.amount,
                 "transaction_type": record.transaction_type,
                 "status": record.status,
-                 "reason": record.reason,
+                "reason": record.reason,
                 "name_of_reciever": record.name_of_reciever,
                 "particulars": record.particulars
             }
@@ -168,7 +169,6 @@ def process_and_sort_transactions_by_days(transactions):
     return list(daily_totals.values())
 
 
-
 def calculate_cash_and_transfer_transaction_total(transactions):
     cash_total = 0
     transfer_total = 0
@@ -225,8 +225,17 @@ def get_transaction_summary_by_header(transactions):
     return transaction_summary
 
 
-def get_cash_left_and_month_summary (school_id):
+def get_cash_left_and_month_summary(school_id):
     operation_account = get_object_or_404(Operations_account, school=school_id)
-    cash_amount_left = operation_account.amount_available_cash 
+    cash_amount_left = operation_account.amount_available_cash
 
-    Operations_account_transaction_record.get_transaction()
+    current_date = timezone.now()
+    beginning_of_month = timezone.make_aware(
+        timezone.datetime(current_date.year, current_date.month, 1)
+    )
+
+    total_amount = Operations_account_transaction_record.objects.filter(
+        time__range=(beginning_of_month, current_date)
+    ).aggregate(Sum('amount'))
+
+    print(total_amount)
