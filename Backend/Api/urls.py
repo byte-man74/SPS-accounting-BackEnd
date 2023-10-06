@@ -21,6 +21,7 @@ urlpatterns = [
     path ('get_all_cash_transactions', GetAllCashTransactions.as_view(), name='get_all_cash_transactions'), ###✅ 
     path ('view_create_modify_cash_transaction/<str:id>', ViewAndModifyCashTransaction.as_view(), name='view_create_cash_transaction'), ###✅ 
     path ('create_cash_transaction', CreateCashTransaction.as_view(), name='create_cash_transaction'), ###✅ 
+    path ('view_cash_transction_summary', GetCashLeftInSafeAndCurrentMonthCashSummary.as_view(), name="View cash transaction summary"),
     # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
 ]
 

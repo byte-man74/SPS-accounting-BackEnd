@@ -45,6 +45,10 @@ class CashTransactionWriteSerializer (serializers.ModelSerializer):
         fields = ('time', 'amount', 'particulars', 'name_of_reciever', 'status' )
 
 
+class CashTransactionDetailsSerializer (serializers.Serializer):
+    cash_amount =  serializers.IntegerField()
+    total_amount = serializers.IntegerField()
+
 
 # class TransactionSummarySerializer(serializers.Serializer):
 #     total_amount = serializers.IntegerField()

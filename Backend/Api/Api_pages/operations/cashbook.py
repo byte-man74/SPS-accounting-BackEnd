@@ -191,13 +191,14 @@ class CreateCashTransaction (APIView):
 class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request):
         try: 
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
+            data = get_cash_left_and_month_summary(user_school)
 
-
+            serializer = CashTransactionDetailsSerializer(data)
+            return Response(serializer.data, status=HTTP_200_OK)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
