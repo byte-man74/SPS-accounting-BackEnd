@@ -57,7 +57,7 @@ class Operations_account_transaction_record (models.Model):
 
     transaction_type = models.CharField(
         max_length=100, choices=Transaction_type)
-    status = models.CharField(choices=Status_choice, max_length=50)
+    status = models.CharField(choices=Status_choice, max_length=50, default="PENDING")
     transaction_category = models.CharField(
         max_length=50, choices=Transaction_category)
     particulars = models.ForeignKey(
@@ -204,7 +204,7 @@ class Payroll(models.Model):
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
-        max_length=100, choices=Status, default="Pending")
+        max_length=100, choices=Status, default="PENDING")
     # Change staffs field to a JSONField
     staffs = models.JSONField()
 
