@@ -179,7 +179,7 @@ class CreateCashTransaction (APIView):
             serializer = CashTransactionWriteSerializer(data=request.data)
 
             if serializer.is_valid():
-                serializer.save(is_approved=False, school=get_user_school(
+                serializer.save(status="PENDING", school=get_user_school(
                     request.user), transaction_type="CASH", transaction_category="DEBIT")
                 # initiate a notification here later to the head teacher
                 return Response(status=status.HTTP_201_CREATED)

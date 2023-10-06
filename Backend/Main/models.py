@@ -45,6 +45,7 @@ class Operations_account_transaction_record (models.Model):
     )
     Status_choice = (
         ("PENDING", "PENDING"),
+        ("INITIALIZED", "INITIALIZED"),
         ("SUCCESS", "SUCCESS"),
         ("FAILED", "FAILED"),
         ("CANCELLED", "CANCELLED"),
@@ -71,8 +72,6 @@ class Operations_account_transaction_record (models.Model):
         max_length=20, null=False, blank=True)
     reciever_bank = models.CharField(max_length=50, null=True, blank=True)
 
-    # the transaction will only start working after approval
-    is_approved = models.BooleanField(default=False)
 
     # ? Methods
 
@@ -196,6 +195,7 @@ class Staff (models.Model):
 class Payroll(models.Model):
     Status = (
         ("PENDING", "PENDING"),
+        ("INITIALIZED", "INITIALIZED"),
         ("SUCCESS", "SUCCESS"),
         ("FAILED", "FAILED"),
         ("RECONCILIATION", "RECONCILIATION"),
@@ -203,7 +203,6 @@ class Payroll(models.Model):
 
     name = models.CharField(max_length=100)
     date_initiated = models.DateTimeField(auto_now_add=True)
-    is_approved = models.BooleanField(default=False)
     status = models.CharField(
         max_length=100, choices=Status, default="Pending")
     # Change staffs field to a JSONField
@@ -283,6 +282,7 @@ class Payroll(models.Model):
 class Taxroll(models.Model):
     Status = (
         ("PENDING", "PENDING"),
+        ("INITIALIZED", "INITIALIZED"),
         ("SUCCESS", "SUCCESS"),
         ("FAILED", "FAILED"),
         ("RECONCILIATION", "RECONCILIATION"),
