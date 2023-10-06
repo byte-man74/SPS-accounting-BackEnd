@@ -229,13 +229,22 @@ def get_cash_left_and_month_summary(school_id):
     operation_account = get_object_or_404(Operations_account, school=school_id)
     cash_amount_left = operation_account.amount_available_cash
 
+    # Get the current date and time in the appropriate time zone
     current_date = timezone.now()
+
+    # Calculate the beginning of the current month
     beginning_of_month = timezone.make_aware(
         timezone.datetime(current_date.year, current_date.month, 1)
     )
 
     total_amount = Operations_account_transaction_record.objects.filter(
         time__range=(beginning_of_month, current_date)
-    ).aggregate(Sum('amount'))
+    ).aggregate(Sum('amount'))['amount__sum']
 
-    print(total_amount)
+    # Create a dictionary with the result data
+    data = {
+        "cash_amount": cash_amount_left,
+        "total_amount": total_amount or 0
+    }
+
+    return data
