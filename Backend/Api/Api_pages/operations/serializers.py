@@ -50,6 +50,12 @@ class CashTransactionDetailsSerializer (serializers.Serializer):
     total_amount = serializers.IntegerField()
 
 
+
+class ParticularSerializer (serializers.ModelField):
+    class Meta:
+        model = Particulars
+        fields = ('id', 'name')
+
 # class TransactionSummarySerializer(serializers.Serializer):
 #     total_amount = serializers.IntegerField()
 #     percentage = serializers.FloatField()

@@ -248,3 +248,10 @@ def get_cash_left_and_month_summary(school_id):
     }
 
     return data
+
+
+
+def get_all_school_header (school_id):
+    particulars = Particulars.objects.filter(school=school_id)
+
+    return particulars
