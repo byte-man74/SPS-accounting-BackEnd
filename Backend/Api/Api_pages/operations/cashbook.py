@@ -212,3 +212,4 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
 #         summary = get_transaction_summary_by_header(operations_account_tansaction_list)
 #         serializer = PercentageSummarySerializer(summary, many=True)
 #         return Response(serializer.data, status=HTTP_200_OK)
+
