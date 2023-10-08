@@ -120,7 +120,7 @@ class GetAllCashTransactions (APIView):
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
             operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
-                school=user_school, transaction_type="CASH")
+                school=user_school, transaction_type="CASH").order_by('-time')
             print(operations_account_cash_transaction)
             serializer = OperationsAccountCashTransactionRecordSerializer(
                 operations_account_cash_transaction, many=True)
@@ -182,8 +182,8 @@ class CreateCashTransaction (APIView):
                 serializer.save(status="PENDING", school=get_user_school(
                     request.user), transaction_type="CASH", transaction_category="DEBIT")
                 # initiate a notification here later to the head teacher
-                return Response(status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "Transaction created successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Your form information is in-correct"}, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
@@ -192,7 +192,7 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        try: 
+        try:
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
             data = get_cash_left_and_month_summary(user_school)
