@@ -154,7 +154,7 @@ class ViewAndModifyCashTransaction(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
     # tested✅😊
-    def put(self, request, id, format=None):
+    def patch(self, request, id, format=None):
         try:
             transaction_record = self.get_object(id)
             serializer = CashTransactionWriteSerializer(
@@ -212,4 +212,3 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
 #         summary = get_transaction_summary_by_header(operations_account_tansaction_list)
 #         serializer = PercentageSummarySerializer(summary, many=True)
 #         return Response(serializer.data, status=HTTP_200_OK)
-
