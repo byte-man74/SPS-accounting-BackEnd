@@ -164,7 +164,7 @@ class ViewAndModifyCashTransaction(APIView):
                 serializer.save(status="PENDING")
                 # initiate a notification here later to head teacher
                 #! reduce amount from operations account
-                return Response(serializer.data)
+                return Response({"message": "Successfully modified"}, status=HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
