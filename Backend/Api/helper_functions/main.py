@@ -253,5 +253,6 @@ def get_cash_left_and_month_summary(school_id):
 
 def get_all_school_header (school_id):
     particulars = Particulars.objects.filter(school=school_id)
+    print(particulars)
 
     return particulars

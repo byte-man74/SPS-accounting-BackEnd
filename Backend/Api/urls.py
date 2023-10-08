@@ -1,6 +1,7 @@
 from django.urls import path
 from Api.Api_pages.Authentication import *
 from Api.Api_pages.operations.cashbook import *
+from Api.Api_pages.main.general import *
 from rest_framework_simplejwt.views import TokenRefreshView
 from Backend.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
 from django.conf.urls.static import static 
@@ -13,6 +14,8 @@ urlpatterns = [
     path ('get_user_details', GetUserDetails.as_view(), name='get_user_details'),###✅ 
 
 
+    #genral
+    path ('fetch_header', FetchHeader.as_view(), name='fetch_header'),###
 
     #Operation
     path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations

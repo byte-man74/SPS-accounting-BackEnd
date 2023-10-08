@@ -21,6 +21,8 @@ class FetchHeader(APIView):
             serializer = ParticularSerializer(
                 school_header, many=True)
             
+            return Response (serializer.data)
+            
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 

@@ -51,7 +51,7 @@ class CashTransactionDetailsSerializer (serializers.Serializer):
 
 
 
-class ParticularSerializer (serializers.ModelField):
+class ParticularSerializer (serializers.ModelSerializer):
     class Meta:
         model = Particulars
         fields = ('id', 'name')
