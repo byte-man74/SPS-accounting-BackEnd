@@ -37,12 +37,12 @@ class CashTransactionReadSerializer (serializers.ModelSerializer):
     particulars = serializers.CharField(source='particulars.name', read_only=True)
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('id' , 'time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'status' )
+        fields = ( 'time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'status' )
 
 class CashTransactionWriteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('id' , 'time', 'amount', 'reason', 'particulars', 'name_of_reciever', 'status' )
+        fields = ('time', 'amount', 'reason', 'particulars', 'name_of_reciever', 'status' )
 
 
 class CashTransactionDetailsSerializer (serializers.Serializer):
