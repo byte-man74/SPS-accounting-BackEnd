@@ -112,15 +112,25 @@ class GetTransactionSevenDaysAgo (APIView):
 #  API to get all approved cash transactions in the operations acount
 # API to get all pending cash transactions
 # tested✅😊
-class GetAllCashTransactions (APIView):
+class GetAllCashTransactions(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request, pending):
         try:
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
-            operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
-                school=user_school, transaction_type="CASH").order_by('-time').filter(status="SUCCESS")
+
+            # Check if the 'pending' argument is in the request's query parameters
+            if pending == "pending":
+                # Modify the query for pending transactions
+                operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
+                    school=user_school, transaction_type="CASH"
+                ).order_by('-time').filter(status__in=["PENDING", "CANCELLED"])
+
+            else:
+                operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
+                    school=user_school, transaction_type="CASH").order_by('-time').filter(status="SUCCESS")
+
             print(operations_account_cash_transaction)
             serializer = OperationsAccountCashTransactionRecordSerializer(
                 operations_account_cash_transaction, many=True)
@@ -128,6 +138,7 @@ class GetAllCashTransactions (APIView):
             return Response(serializer.data, status=HTTP_200_OK)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
 
 # API to edit a particular cash transaction
 # API to create a cash transaction
