@@ -120,7 +120,7 @@ class GetAllCashTransactions (APIView):
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
             operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
-                school=user_school, transaction_type="CASH").order_by('-time')
+                school=user_school, transaction_type="CASH").order_by('-time').filter(status="SUCCESSFUL")
             print(operations_account_cash_transaction)
             serializer = OperationsAccountCashTransactionRecordSerializer(
                 operations_account_cash_transaction, many=True)
