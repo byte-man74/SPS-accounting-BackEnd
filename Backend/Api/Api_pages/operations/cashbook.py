@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.status import *
 from Api.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.views import APIView
 # from Background_Tasks.tasks import
 from django.core.cache import cache
@@ -134,40 +134,48 @@ class GetAllCashTransactions (APIView):
 # tested✅😊
 
 
-class ViewAndModifyCashTransaction(APIView):
+class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
+    queryset = Operations_account_transaction_record.objects.all()
+    serializer_class = CashTransactionWriteSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_object(self, id):
-        try:
-            return Operations_account_transaction_record.objects.get(id=id)
-        except Operations_account_transaction_record.DoesNotExist:
-            raise Http404
+    def get_serializer_class(self):
+        if self.action == 'partial_update':
+            return CashTransactionWriteSerializer
+        return super().get_serializer_class()  # Default behavior
 
-    # tested✅😊
-    def get(self, request, id, format=None):
+    def partial_update(self, request, *args, **kwargs):
         try:
-            check_account_type(request.user, account_type)
-            transaction_record = self.get_object(id)
-            serializer = CashTransactionReadSerializer(transaction_record)
-            return Response(serializer.data, status=HTTP_200_OK)
-        except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+            print(request.data)
+            instance = self.get_object()
 
-    # tested✅😊
-    def patch(self, request, id, format=None):
-        try:
-            transaction_record = self.get_object(id)
-            serializer = CashTransactionWriteSerializer(
-                transaction_record, data=request.data, partial=True)
+            # Merge current instance data with incoming data
+            merged_data = {**self.get_serializer(instance).data, **request.data}
+
+            # Now validate this merged data with your serializer
+            serializer = self.get_serializer(instance, data=merged_data)
 
             if serializer.is_valid():
+                print(serializer.validated_data)
                 serializer.save(status="PENDING")
                 # initiate a notification here later to head teacher
                 #! reduce amount from operations account
-                return Response({"message": "Successfully modified"}, status=HTTP_200_OK)
+                return Response({"message": "Successfully modified"}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def list(self, request, *args, **kwargs):
+        return Response({"message": "This method is not supported"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def create(self, request, *args, **kwargs):
+        return Response({"message": "This method is not supported"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response({"message": "This method is not supported"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def update(self, request, *args, **kwargs):
+        return Response({"message": "This method is not supported"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     # tested✅😊
 
 
