@@ -238,7 +238,8 @@ def get_cash_left_and_month_summary(school_id):
     )
 
     total_amount = Operations_account_transaction_record.objects.filter(
-        status="SUCCESS",
+        transaction_category="DEBIT",
+        status = "SUCCESS",
         time__range=(beginning_of_month, current_date)
     ).aggregate(Sum('amount'))['amount__sum']
 

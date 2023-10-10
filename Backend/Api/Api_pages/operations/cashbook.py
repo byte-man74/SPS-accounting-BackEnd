@@ -210,6 +210,16 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
+
+
+
+
+
+
+
+
+
+
 #  API to get the summary of amount spent in the operatins account for a particular
 # class GetPercentageSummary (APIView):
 
