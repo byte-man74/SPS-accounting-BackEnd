@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Main.models import Operations_account, Operations_account_transaction_record
+from Main.models import  Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.Api_pages.head_teacher.serializers import *
 from django.http import Http404
@@ -33,7 +33,7 @@ class GetAllPendingTransaction(APIView):
                 return Response(status=HTTP_404_NOT_FOUND, data={"message": "No pending transaction."})
 
             else:
-
+                # an issue is here too
                 processed_data = process_and_sort_transactions_by_months(
                 pending_transaction_list)
                 transaction_serializer = MonthlyTransactionSerializer(
@@ -69,6 +69,7 @@ class BulkModifyTransaction (APIView):
 
             transaction_instance = get_transaction(id)
             if transaction_instance is None:
+                #there is an issue here
                 return Response(status=HTTP_404_NOT_FOUND, data={"message": "No transaction available."})
 
             else:
