@@ -31,7 +31,7 @@ urlpatterns = [
     path('get_all_cash_transactions/<str:pending>/', GetAllCashTransactions.as_view(), name='all_cash_transactions_with_status'),
     path ('create_cash_transaction', CreateCashTransaction.as_view(), name='create_cash_transaction'), ###✅
     path ('view_cash_transction_summary', GetCashLeftInSafeAndCurrentMonthCashSummary.as_view(), name="View cash transaction summary"),
-    # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
+    #  path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
 
     #Head Teacher 
     path ('get_all_pending_transactions', GetAllPendingTransaction.as_view(), name='get_pending_transaction'), 
