@@ -19,7 +19,7 @@ urlpatterns = [
     path('refresh_token', TokenRefreshView.as_view(), name='refresh'),  #✅? API responsible for the refresh functionality
     path ('get_account_type', GetUserType.as_view(), name='get_account_type'), ###✅
     path ('get_user_details', GetUserDetails.as_view(), name='get_user_details'),###✅
-    path('', include(router.urls)),
+    
 
     #genral
     path ('fetch_header', FetchHeader.as_view(), name='fetch_header'),###
@@ -31,15 +31,12 @@ urlpatterns = [
     path('get_all_cash_transactions/<str:pending>/', GetAllCashTransactions.as_view(), name='all_cash_transactions_with_status'),
     path ('create_cash_transaction', CreateCashTransaction.as_view(), name='create_cash_transaction'), ###✅
     path ('view_cash_transction_summary', GetCashLeftInSafeAndCurrentMonthCashSummary.as_view(), name="View cash transaction summary"),
-    #  path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
-
-    #Head Teacher 
-    path ('get_all_pending_transactions', GetAllPendingTransaction.as_view(), name='get_pending_transaction'), 
-    path ('modify_transaction', ModifyTransaction.as_view(), name="modify_transaction"), 
-    path ('bulk_modify_transaction', BulkModifyTransaction.as_view(), name="bulk_modify_transaction"), 
-    
+    path('', include(router.urls)),
+    # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
 
 
+
+    #head teacher
 ]
 
 if DEBUG:
