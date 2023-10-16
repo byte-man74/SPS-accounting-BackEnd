@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from Main.models import Operations_account_transaction_record
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
-from Api.Api_pages.head_teacher.main import *
+from Api.helper_functions.main import *
 account_type = "PRINCIPAL"
 
 
