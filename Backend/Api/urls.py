@@ -34,9 +34,9 @@ urlpatterns = [
     path('', include(router.urls)),
     # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
 
-
-
     #head teacher
+    path('head_teacher/get_pending_transaction', HeadTeacherGetAllPendingTransaction.as_view(), name='head_teacher_get_all_transactions'),
+    path('head_teacher/modify_transaction/<str:id>', HeadTeacherModifyTransaction.as_view(), name='head_teacher_modify_transaction'),
 ]
 
 if DEBUG:

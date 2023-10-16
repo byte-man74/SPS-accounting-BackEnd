@@ -64,7 +64,9 @@ def get_school_from_user(user_id):
 
 
 def get_transaction(id):
-    transaction = Operations_account_transaction_record.get_transaction()
+    transaction = Operations_account_transaction_record.objects.get(id=id)
+
+    return transaction
     
 
 def get_all_pending_transaction(school_id):
