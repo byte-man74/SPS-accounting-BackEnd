@@ -247,7 +247,7 @@ class Payroll(models.Model):
     def get_all_failed_staff_payment(self):
         failed_staffs = []
         for staff in self.staffs:
-            if staff.get("status") == "Failed":
+            if staff.get("status") == "FAILED":
                 failed_staffs.append(staff)
 
         return failed_staffs
