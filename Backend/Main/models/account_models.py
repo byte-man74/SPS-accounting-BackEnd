@@ -1,9 +1,5 @@
-import uuid
-from django.db import models
-import json
-from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
-from datetime import datetime
 
+from django.db import models
 
 
 
