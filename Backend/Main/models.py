@@ -339,4 +339,4 @@ class Taxroll(models.Model):
             return ("ERROR_404")
         except Exception as e:
             print(f"Error generating Taxroll: {str(e)}")
-            return ("ERROR_502")  # Error occurred during generation
+            return ("ERROR_502")  # Error occurred during generation3
