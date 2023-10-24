@@ -5,7 +5,7 @@ from Main.model_function.helper import generate_taxroll_staff_table_out_of_payro
 from datetime import datetime
 
 
-class Operations_account_transaction_record (models.Model):
+class Operations_account_transaction_record(models.Model):
 
     Transaction_type = (
         ("TRANSFER", "TRANSFER"),
