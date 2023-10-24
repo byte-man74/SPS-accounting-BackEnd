@@ -29,3 +29,5 @@ class Capital_Account (models.Model):
 
     def __str__(self):
         return f'{self.school.name} Capital account'
+
+

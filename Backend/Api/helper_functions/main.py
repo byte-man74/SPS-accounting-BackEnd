@@ -10,7 +10,7 @@ from rest_framework.exceptions import PermissionDenied
 from dateutil.relativedelta import relativedelta
 from collections import defaultdict
 from django.db.models import Sum
-
+from enum import Enum
 
 def check_account_type(user, account_type):
     def get_user_type(user, account_type):
@@ -255,6 +255,31 @@ def get_cash_left_and_month_summary(school_id):
 
 def get_all_school_header (school_id):
     particulars = Particulars.objects.filter(school=school_id)
-    print(particulars)
-
     return particulars
+
+
+
+class OperationType(Enum):
+    ADD = "ADD"
+    SUBTRACT = "SUBTRACT"
+    SAFE = "SAFE"
+
+def update_operations_account(amount, school_id, operation_type):
+    operation_account = get_object_or_404(Operations_account, school=school_id)
+    cash_amount_left = operation_account.amount_available_cash
+
+
+    if operation_type == OperationType.SUBTRACT.value:
+        cash_amount_left -= amount
+    elif operation_type == OperationType.ADD.value:
+        cash_amount_left += amount
+    elif operation_type == OperationType.SAFE.value:
+        cash_amount_left = cash_amount_left
+    else:
+        raise ValueError(f"Unsupported operation type: {operation_type}")
+
+    # Update the database record
+    operation_account.amount_available_cash = cash_amount_left
+    operation_account.save()
+
+    return cash_amount_left
