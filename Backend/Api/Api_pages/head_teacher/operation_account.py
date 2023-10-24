@@ -40,7 +40,7 @@ class HeadTeacherGetAllPendingTransaction(APIView):
 
 class TransactionStatus(models.TextChoices):
     SUCCESS = 'SUCCESS', 'Success'
-    FAILED = 'FAILED', 'Failed'
+    FAILED = 'CANCELLED', 'Cancelled'
     # Add other statuses if needed
 
 class HeadTeacherModifyTransaction(APIView):
@@ -64,7 +64,7 @@ class HeadTeacherModifyTransaction(APIView):
 
             transaction_instance.status = status
 
-            operation_type = "SUBTRACT" if status == TransactionStatus.SUCCESS else "ADD"
+            operation_type = "SUBTRACT" if status == TransactionStatus.SUCCESS else "SAFE"
             update_operations_account(transaction_instance.amount, user_school.id, operation_type)
 
             transaction_instance.save()

@@ -149,8 +149,9 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         try:
-            print(request.data)
             instance = self.get_object()
+            user_school = get_user_school(request.user)
+
 
             # Merge current instance data with incoming data
             merged_data = {**self.get_serializer(instance).data, **request.data}
@@ -160,13 +161,22 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
 
             if serializer.is_valid():
                 print(serializer.validated_data)
+
+                operation_type = "ADD"
+                instance = self.get_object()
+
+                update_operations_account(instance.amount, user_school.id, operation_type)
                 serializer.save(status="PENDING")
+
+
                 # initiate a notification here later to head teacher
                 #! reduce amount from operations account
                 return Response({"message": "Successfully modified"}, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 
     def list(self, request, *args, **kwargs):
         return Response({"message": "This method is not supported"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)

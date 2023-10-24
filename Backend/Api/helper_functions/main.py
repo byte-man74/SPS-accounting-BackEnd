@@ -262,6 +262,7 @@ def get_all_school_header (school_id):
 class OperationType(Enum):
     ADD = "ADD"
     SUBTRACT = "SUBTRACT"
+    SAFE = "SAFE"
 
 def update_operations_account(amount, school_id, operation_type):
     operation_account = get_object_or_404(Operations_account, school=school_id)
@@ -272,6 +273,8 @@ def update_operations_account(amount, school_id, operation_type):
         cash_amount_left -= amount
     elif operation_type == OperationType.ADD.value:
         cash_amount_left += amount
+    elif operation_type == OperationType.SAFE.value:
+        cash_amount_left = cash_amount_left
     else:
         raise ValueError(f"Unsupported operation type: {operation_type}")
 
