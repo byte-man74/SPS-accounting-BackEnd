@@ -97,6 +97,7 @@ class GetTransactionSevenDaysAgo (APIView):
             }
 
             return Response(data, status=HTTP_200_OK)
+        
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
@@ -149,6 +150,7 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         try:
+            check_account_type(request.user, account_type)
             instance = self.get_object()
             user_school = get_user_school(request.user)
 
@@ -159,16 +161,16 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
             # Now validate this merged data with your serializer
             serializer = self.get_serializer(instance, data=merged_data)
 
+            #refactor this
             if serializer.is_valid():
-                print(serializer.validated_data)
+                if serializer.validated_data == "CANCELLED":
+                    serializer.save()
+                else:
+                    operation_type = "ADD"
+                    instance = self.get_object()
 
-                operation_type = "ADD"
-                instance = self.get_object()
-
-                update_operations_account(instance.amount, user_school.id, operation_type)
-                serializer.save(status="PENDING")
-
-
+                    update_operations_account(instance.amount, user_school.id, operation_type)
+                    serializer.save(status="PENDING")
                 # initiate a notification here later to head teacher
                 #! reduce amount from operations account
                 return Response({"message": "Successfully modified"}, status=status.HTTP_200_OK)
@@ -198,7 +200,6 @@ class CreateCashTransaction (APIView):
     def post(self, request, format=None):
         try:
             serializer = CashTransactionWriteSerializer(data=request.data)
-
             if serializer.is_valid():
                 serializer.save(status="PENDING", school=get_user_school(
                     request.user), transaction_type="CASH", transaction_category="DEBIT")
@@ -222,6 +223,15 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
 
 
 
+class GetIncomeGraph (APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get (self, request):
+        try:
+            check_account_type(request.user, account_type)
+            
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
 
