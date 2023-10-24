@@ -12,6 +12,7 @@ from Main.models import Operations_account_transaction_record
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from Api.helper_functions.main import *
+from django.db import models
 account_type = "PRINCIPAL"
 
 
@@ -36,26 +37,43 @@ class HeadTeacherGetAllPendingTransaction(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
-class HeadTeacherModifyTransaction (APIView):
+
+class TransactionStatus(models.TextChoices):
+    SUCCESS = 'SUCCESS', 'Success'
+    FAILED = 'FAILED', 'Failed'
+    # Add other statuses if needed
+
+class HeadTeacherModifyTransaction(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, id):
+        user_school = get_user_school(request.user)
         data = request.data
-        if not data:
+
+        if not data or 'status' not in data:
             return Response({"message": "Status must be set"}, status=HTTP_400_BAD_REQUEST)
 
-        try:
-            check_account_type(request.user, account_type)
-            transaction_instance = get_object_or_404(
-                Operations_account_transaction_record, id=id)
+        status = data['status'].upper()
 
-            transaction_instance.status = str(data['status'].upper())
+        if status not in TransactionStatus.values:
+            return Response({"message": "Invalid status provided"}, status=HTTP_400_BAD_REQUEST)
+
+        try:
+            check_account_type(request.user, account_type)  # account_type is not defined in the provided snippet.
+            transaction_instance = get_object_or_404(Operations_account_transaction_record, id=id)
+
+            transaction_instance.status = status
+
+            operation_type = "SUBTRACT" if status == TransactionStatus.SUCCESS else "ADD"
+            update_operations_account(transaction_instance.amount, user_school.id, operation_type)
 
             transaction_instance.save()
+
             return Response(status=HTTP_200_OK)
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
 
 
 class BulkModifyTransaction (APIView):
