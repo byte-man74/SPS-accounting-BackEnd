@@ -12,7 +12,7 @@ notification_choice = (
 
 reciever_group = (
     ('OPERATIONS', 'OPERATIONS'),
-    ('PRINCIPAL', 'PRINCIPAL'),
+    ('PRINCIPAL', 'PRINCIPAL'),4
     ('DIRECTORS', 'DIRECTORS'),
     ('ACCOUNTANT', 'ACCOUNTANT'),
 )
