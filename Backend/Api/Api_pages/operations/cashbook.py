@@ -100,6 +100,8 @@ class GetTransactionSevenDaysAgo (APIView):
         
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        
+
 
 
 #  API to get all approved cash transactions in the operations acount
@@ -134,10 +136,7 @@ class GetAllCashTransactions(APIView):
 
 
 # API to edit a particular cash transaction
-# API to create a cash transaction
 # tested✅😊
-
-
 class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
     queryset = Operations_account_transaction_record.objects.all()
     serializer_class = CashTransactionWriteSerializer
@@ -194,11 +193,13 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
     # tested✅😊
 
 
+# APi to to add or creat cash transaction instance
 class CreateCashTransaction (APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         try:
+            check_account_type(request.user, account_type)
             serializer = CashTransactionWriteSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(status="PENDING", school=get_user_school(

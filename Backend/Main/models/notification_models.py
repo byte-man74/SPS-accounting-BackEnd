@@ -1,38 +1,40 @@
 from django.db import models
-from Main.models.payment_models import *
-from Main.models.transaction_records_models import *
-from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_save
-# from django.dispatch import Signal
+import json
 
-# transaction_status = [('pending', 'Pending'), 
-#                       ('approved', 'Approved'), 
-#                       ('declined', 'Declined')]
-
-# class Transaction_status(models.Model):
-#     message = models.CharField(max_length=250, choices=transaction_status)
-
-#     def __str__(self):
-#         return str(self.message)
-
-Transaction = Operations_account_transaction_record.objects.all()
-
-@receiver(pre_save, sender=Transaction)
-def transaction_pending_handler(sender, instance, **kwargs):
-    if instance.status == "PENDING":
-        message = "Transaction Pending"
-        print(f'{message}')
+notification_choice = (
+    ('APPROVED', 'APPROVED'),
+    ('DELETED', 'DELETED'),
+    ('DECLINED', 'DECLINED'),
+    ('CREATED', 'CREATED'),
+    ('EDITED', 'EDITED'),
+)
 
 
-@receiver(pre_save, sender=Transaction)
-def transaction_approved_handler(sender, instance, **kwargs):
-    if instance.status == "SUCCESS":
-        message = "Transaction Approved"
-        print(f'{message}')
+reciever_group = (
+    ('OPERATIONS', 'OPERATIONS'),
+    ('PRINCIPAL', 'PRINCIPAL'),
+    ('DIRECTORS', 'DIRECTORS'),
+    ('ACCOUNTANT', 'ACCOUNTANT'),
+)
+
+class Notification (models.Model):
+    sender = models.ForeignKey("Authentication.CustomUser", on_delete=models.CASCADE)
+    notification_reciever_group = models.CharField(max_length=50, choices=reciever_group)
+
+    notification_message = models.TextField()
+    date_time = models.DateTimeField(auto_now=True)
+    users_have_seen_notification = models.JSONField()
+    notification_type = models.CharField(max_length=50, choices=notification_choice)
 
 
-@receiver(pre_save, sender=Transaction)
-def transaction_declined_handler(sender, instance, **kwargs):
-    if instance.status == "CANCELLED":
-        message = "Transaction Declined"
-        print(f'{message}')
+
+    def delete_notification (self):
+        pass 
+        
+# signals invoke when invoked
+
+
+
+
+def create_notification( *args, **kwargs):
+    pass
