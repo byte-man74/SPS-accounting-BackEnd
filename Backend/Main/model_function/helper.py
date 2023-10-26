@@ -56,3 +56,10 @@ def generate_staffroll(school_name):
             pass
     
     return staff_payroll
+
+
+def get_short_reason (text):
+    full_text = text[0:5]
+    return full_text
+
+
