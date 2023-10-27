@@ -1,7 +1,6 @@
-import uuid
+
 from django.db import models
-import json
-from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
+
 from datetime import datetime
 
 
@@ -29,7 +28,8 @@ class Operations_account_transaction_record(models.Model):
 
     transaction_type = models.CharField(
         max_length=100, choices=Transaction_type)
-    status = models.CharField(choices=Status_choice, max_length=50, default="PENDING")
+    status = models.CharField(choices=Status_choice,
+                              max_length=50, default="PENDING")
     transaction_category = models.CharField(
         max_length=50, choices=Transaction_category)
     particulars = models.ForeignKey(
@@ -43,7 +43,6 @@ class Operations_account_transaction_record(models.Model):
     account_number_of_reciever = models.CharField(
         max_length=20, null=False, blank=True)
     reciever_bank = models.CharField(max_length=50, null=True, blank=True)
-
 
     # ? Methods
 
@@ -86,7 +85,6 @@ class Operations_account_transaction_record(models.Model):
         return f'{self.transaction_type} transaction {self.school.name}'
 
 
-
 class Capital_account_transaction_record (models.Model):
     Transaction_category = (
         ("CREDIT", "CREDIT"),
@@ -103,5 +101,3 @@ class Particulars (models.Model):
 
     def __str__(self):
         return self.name
-
-

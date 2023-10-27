@@ -3,7 +3,6 @@ from Main.models.payment_models import *
 from Main.models.transaction_records_models import *
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, post_save
-
 # from django.dispatch import Signal
 
 # transaction_status = [('pending', 'Pending'), 
