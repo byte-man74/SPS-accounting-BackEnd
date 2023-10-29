@@ -15,6 +15,7 @@ from django.db.models.signals import pre_save, post_save
 #     def __str__(self):
 #         return str(self.message)
 
+
 Transaction = Operations_account_transaction_record.objects.all()
 
 @receiver(pre_save, sender=Transaction)
