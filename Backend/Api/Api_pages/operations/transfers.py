@@ -46,3 +46,5 @@ class InititeTransferTransaction (APIView):
 class EditTransferTransaction(APIView):
     # this API is responsible for editing the transfer transaction
     pass
+
+
