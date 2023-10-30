@@ -238,9 +238,6 @@ class GetIncomeGraph (APIView):
 
 
 
-
-
-
 #  API to get the summary of amount spent in the operatins account for a particular
 # class GetPercentageSummary (APIView):
 
