@@ -31,7 +31,6 @@ class GetAllStaffs(APIView):
     def get(self, request, *args, **kwargs):
         try:
             # Check if the authenticated user has the required account type.
-            # Ensure the account_type is either defined or fetched from somewhere.
             check_account_type(request.user, account_type)
             
             # Fetch the school associated with the requesting user.
@@ -67,7 +66,6 @@ class AddStaff (APIView):
     def post (self, request):
         try:
             # Check if the authenticated user has the required account type.
-            # Ensure the account_type is either defined or fetched from somewhere.
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
 
@@ -99,7 +97,6 @@ class AddStaff (APIView):
     def patch (self, request):
         try:
             # Check if the authenticated user has the required account type.
-            # Ensure the account_type is either defined or fetched from somewhere.
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
 
@@ -159,6 +156,7 @@ def ShowStaffType (request):
             # For all other exceptions, return a generic error message. 
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
     
+
 
 
 class InitiatePayroll (APIView):
