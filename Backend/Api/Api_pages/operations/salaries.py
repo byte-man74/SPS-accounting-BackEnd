@@ -18,6 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 from rest_framework.decorators import api_view
+from Main.model_function.helper import generate_staffroll
 
 account_type = "OPERATIONS"
 
@@ -161,7 +162,16 @@ class InitiatePayroll (APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            payroll_name = Payroll.generate_payroll_name
+            payroll_name = Payroll.generate_payroll_name()
+            user_school = get_user_school(request.user)
+            staff_list = generate_staffroll(user_school)
+
+            # create an async task here 
+            payroll = Payroll.objects.create(name=payroll_name)
+            payroll.add_staff(staff_list)
+            payroll.save()
+
+            return Response({"message": "Payroll initiated successfully"}, status=status.HTTP_201_CREATED)
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.

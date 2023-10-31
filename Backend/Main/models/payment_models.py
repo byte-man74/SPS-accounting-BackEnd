@@ -25,8 +25,8 @@ class Payroll(models.Model):
     staffs = models.JSONField()
 
     # financials
-    total_amount_for_tax = models.BigIntegerField()
-    total_amount_for_salary = models.BigIntegerField()
+    total_amount_for_tax = models.BigIntegerField(default=0)
+    total_amount_for_salary = models.BigIntegerField(default=0)
 
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
@@ -78,6 +78,8 @@ class Payroll(models.Model):
             "successful_staffs": successful_staffs,
             "failed_staffs": failed_staffs,
         }
+
+
 
 
     @staticmethod
