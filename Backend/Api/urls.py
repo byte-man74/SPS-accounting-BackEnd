@@ -2,6 +2,7 @@ from django.urls import path, include
 from Api.Api_pages.Authentication import *
 from Api.Api_pages.operations.cashbook import *
 from Api.Api_pages.head_teacher.operation_account import *
+from Api.Api_pages.operations.salaries import *
 from Api.Api_pages.main.general import *
 from rest_framework_simplejwt.views import TokenRefreshView
 from Backend.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
@@ -33,6 +34,16 @@ urlpatterns = [
     path ('view_cash_transction_summary', GetCashLeftInSafeAndCurrentMonthCashSummary.as_view(), name="View cash transaction summary"),
     path('', include(router.urls)),
     # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
+
+
+
+    #salaries and staffs
+    path('get_all_staffs', GetAllStaffs.as_view(), name='get_all_staffs'),
+    path('add_and_edit_staff', AddAndEditStaff.as_view(), name='add_and_edit_staff'),
+    path('show_staff_type', ShowStaffType, name='show_staff_type'),
+    path('initiate_payroll', InitiatePayroll.as_view(), name='initiate_payroll'),
+
+
 
     #head teacher
     path('head_teacher/get_pending_transaction', HeadTeacherGetAllPendingTransaction.as_view(), name='head_teacher_get_all_transactions'),
