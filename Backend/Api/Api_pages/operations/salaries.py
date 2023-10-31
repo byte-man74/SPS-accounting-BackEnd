@@ -154,8 +154,26 @@ def ShowStaffType(request):
 
 
 class InitiatePayroll (APIView):
-    # this api is responsible for creating a payroll instance
-    pass
+    '''
+        -The Api is responsible for initiating payroll instance
+        -Also the would be a patch request to modify the staffs too
+    '''
+
+    def post(self, request, *args, **kwargs):
+        try:
+            pass 
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
 class InitiateTaxroll (APIView):
