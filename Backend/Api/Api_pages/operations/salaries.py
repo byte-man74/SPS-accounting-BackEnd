@@ -60,7 +60,7 @@ class GetAllStaffs(APIView):
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
-class AddStaff (APIView):
+class AddAndEditStaff (APIView):
     """
         this api is responsible for adding a new staff 
         this api is responsible for editing the details of the staff
@@ -137,7 +137,7 @@ def ShowStaffType(request):
 
         staff_type = Staff_type.objects.filter(school=user_school)
 
-        serialized_data = StaffTypeSerializer(staff_type).data
+        serialized_data = StaffTypeSerializer(staff_type, many=True).data
 
         return Response(serialized_data, status=HTTP_200_OK)
 
