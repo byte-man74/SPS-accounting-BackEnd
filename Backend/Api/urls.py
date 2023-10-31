@@ -38,9 +38,9 @@ urlpatterns = [
 
 
     #salaries and staffs
-    path('get_all_staffs', GetAllStaffs.as_view(), name='get_all_staffs'),
+    path('get_all_staffs', GetAllStaffs.as_view(), name='get_all_staffs'),  ###✅
     path('add_and_edit_staff', AddAndEditStaff.as_view(), name='add_and_edit_staff'),
-    path('show_staff_type', ShowStaffType, name='show_staff_type'),
+    path('show_staff_type', ShowStaffType, name='show_staff_type'), ###✅
     path('initiate_payroll', InitiatePayroll.as_view(), name='initiate_payroll'),
 
 

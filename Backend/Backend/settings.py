@@ -68,12 +68,24 @@ WSGI_APPLICATION = 'Backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'phqueyhm',  # This is the default database name from your image.
+        'USER': 'phqueyhm',
+        'PASSWORD': 'XP69t1p2o3fT_8O1HSWpmNVDT8aEnaxU',  # Make sure this is kept secret!
+        'HOST': 'cornelius.db.elephantsql.com',
+        'PORT': '5432',  # default PostgreSQL port
     }
 }
+
 #caches
 CACHES = {
     "default": {

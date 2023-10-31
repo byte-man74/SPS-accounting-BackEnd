@@ -4,7 +4,8 @@ import json
 from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
 from datetime import datetime
 
-
+def get_default_staffs():
+    return [{}]
 
 class Payroll(models.Model):
     Status = (
@@ -22,7 +23,7 @@ class Payroll(models.Model):
     
 
     # Change staffs field to a JSONField
-    staffs = models.JSONField()
+    staffs = models.JSONField(default=get_default_staffs)
 
     # financials
     total_amount_for_tax = models.BigIntegerField(default=0)
@@ -41,10 +42,11 @@ class Payroll(models.Model):
 
     #! method to calculate the total amount paid for tax
     def get_total_tax_paid(self):
-        return sum(staff.get("tax", 0) for staff in self.staffs)
+        print(self.staffs)
+        return sum(staff.get("tax_payable", 0) for staff in self.staffs)
 
     def get_total_salary_paid(self):
-        return sum(staff.get("salary_to_be_paid", 0) for staff in self.staffs)
+        return sum(staff.get("basic_salary", 0) for staff in self.staffs)
 
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
@@ -127,7 +129,7 @@ class Taxroll(models.Model):
     amount_paid_for_tax = models.BigIntegerField()
     date_initiated = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=100, choices=Status)
-    staffs = models.JSONField()
+    staffs = models.JSONField(default=get_default_staffs)
 
     # Create a one-to-one relationship with the Payroll model
     payroll = models.OneToOneField("Main.Payroll", on_delete=models.CASCADE)
