@@ -17,7 +17,7 @@ from django.db.models.signals import pre_save, post_save
 
 
 Transaction = Operations_account_transaction_record.objects.all()
-Payroll = Payroll.objects.all()
+#Payroll = Payroll.objects.all()
 
 @receiver(pre_save, sender=Transaction)
 def transaction_pending_handler(sender, instance, **kwargs):

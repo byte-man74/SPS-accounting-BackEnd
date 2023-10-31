@@ -41,15 +41,10 @@ class Payroll(models.Model):
 
     #! method to calculate the total amount paid for tax
     def get_total_tax_paid(self):
-        total_tax = [
-            total_tax + staff.Staff.get_staff_total_payment.tax for staff in self.staffs]
-        return total_tax
+        return sum(staff.get("tax", 0) for staff in self.staffs)
 
-    #! method to calculate the total amount paid for salary
     def get_total_salary_paid(self):
-        total_salary = [
-            total_salary + staff.Staff.get_staff_total_payment.salary_to_be_paid for staff in self.staffs]
-        return total_salary
+        return sum(staff.get("salary_to_be_paid", 0) for staff in self.staffs)
 
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
@@ -100,9 +95,9 @@ class Payroll(models.Model):
 
     def save(self, *args, **kwargs):
 
-        # Save the salary and tax total payment
-        self.total_amount_for_tax = self.get_total_tax_paid
-        self.total_amount_for_salary = self.get_total_salary_paid
+        self.total_amount_for_tax = self.get_total_tax_paid()
+        self.total_amount_for_salary = self.get_total_salary_paid()
+
 
         # Convert staffs list to JSON before saving
         if isinstance(self.staffs, list):
