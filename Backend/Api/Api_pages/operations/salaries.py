@@ -24,35 +24,39 @@ account_type = "OPERATIONS"
 
 
 
-class GetAllStaffs (APIView):
+class GetAllStaffs(APIView):
     """
     API endpoint to get all the active staff.
     """
-    permission_classes = [HasRequiredAccountType, IsAuthenticated]
-
     def get(self, request, *args, **kwargs):
         try:
+            # Check if the authenticated user has the required account type.
+            # Ensure the account_type is either defined or fetched from somewhere.
+            check_account_type(request.user, account_type)
+            
             # Fetch the school associated with the requesting user.
             user_school = get_user_school(request.user)
 
             # Filter out the active staff members associated with the user's school.
             staffs_active_in_school = Staff.objects.filter(school=user_school, is_active=True)
 
-            # Use pagination for the results.
-            page = self.pagination_class().paginate_queryset(staffs_active_in_school, request)
-            serialized_data = StaffSerializer(page, many=True).data
+            # Serialize the staff data for the response.
+            serialized_data = StaffSerializer(staffs_active_in_school, many=True).data
 
-            return self.pagination_class().get_paginated_response(serialized_data)
+            # Return the serialized staff data with a 200 OK status.
+            return Response(serialized_data, status=HTTP_200_OK)
 
-        except APIException as e:
-            # If there's an API-related error, return its detail.
-            return Response({"message": str(e.detail)}, status=e.status_code)
-        except Exception as e:
-            # General exception handling, consider logging the error for debugging.
-            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
         
-
-
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+        
+        except Exception as e:
+            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
 class AddStaff (APIView):
