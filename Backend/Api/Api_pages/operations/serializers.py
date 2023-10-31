@@ -64,3 +64,26 @@ class ParticularSerializer (serializers.ModelSerializer):
 #     particulars = serializers.DictField(
 #         child=TransactionSummarySerializer(many=True)
 #     )
+
+
+
+class StaffTypeSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Staff_type  
+        fields = ('id', 'basic_salary', 'tax', 'name')
+
+class StaffReadSerializer (serializers.ModelSerializer):
+    staff_type = StaffTypeSerializer()
+
+    class Meta:
+        model = Staff
+        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
+class StaffWriteSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Staff
+        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
