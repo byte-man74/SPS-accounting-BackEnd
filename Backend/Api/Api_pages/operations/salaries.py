@@ -41,7 +41,7 @@ class GetAllStaffs(APIView):
             staffs_active_in_school = Staff.objects.filter(school=user_school, is_active=True)
 
             # Serialize the staff data for the response.
-            serialized_data = StaffSerializer(staffs_active_in_school, many=True).data
+            serialized_data = StaffReadSerializer(staffs_active_in_school, many=True).data
 
             # Return the serialized staff data with a 200 OK status.
             return Response(serialized_data, status=HTTP_200_OK)
@@ -60,8 +60,43 @@ class GetAllStaffs(APIView):
 
 
 class AddStaff (APIView):
-    # this api is responsible for adding a new staff
-    pass 
+    """
+        this api is responsible for adding a new staff 
+    """
+    def post (self, request):
+        try:
+            # Check if the authenticated user has the required account type.
+            # Ensure the account_type is either defined or fetched from somewhere.
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            data = request.data 
+            serialized_data = StaffWriteSerializer(data)
+
+            if serialized_data.is_valid():
+                serialized_data.save(school=user_school)
+
+                return Response({"message": "Staff created successfully"}, status=HTTP_201_CREATED)
+            return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
+
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+        
+        except Exception as e:
+            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+        
+
+
+def ShowStaffType (request):
+    pass
+
 
 class EditStaff (APIView):
     # this api is responsible for editing a staff (active)

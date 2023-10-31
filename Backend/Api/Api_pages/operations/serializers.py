@@ -72,8 +72,15 @@ class StaffTypeSerializer (serializers.ModelSerializer):
         model = Staff_type  
         fields = ('basic_salary', 'tax', 'name')
 
-class StaffSerializer (serializers.ModelSerializer):
+class StaffReadSerializer (serializers.ModelSerializer):
     staff_type = StaffTypeSerializer()
+
+    class Meta:
+        model = Staff
+        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
+class StaffWriteSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Staff
