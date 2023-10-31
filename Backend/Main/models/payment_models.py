@@ -19,6 +19,8 @@ class Payroll(models.Model):
     date_initiated = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=100, choices=Status, default="PENDING")
+    
+
     # Change staffs field to a JSONField
     staffs = models.JSONField()
 
@@ -38,7 +40,6 @@ class Payroll(models.Model):
         self.staffs.extend(staff_data_list)
 
     #! method to calculate the total amount paid for tax
-
     def get_total_tax_paid(self):
         total_tax = [
             total_tax + staff.Staff.get_staff_total_payment.tax for staff in self.staffs]
@@ -82,6 +83,20 @@ class Payroll(models.Model):
             "successful_staffs": successful_staffs,
             "failed_staffs": failed_staffs,
         }
+
+
+    @staticmethod
+    def generate_payroll_name():
+        pre_text = 'Salary Payment for'
+        # get the current year and month
+        current_year = datetime.now().year
+        current_month_name = datetime.now().strftime('%B')
+
+        # save it as Salary payment for 2021, March Ending quarter
+        payroll_name = f"{pre_text} {current_year}, {current_month_name} Ending quarter"
+        return payroll_name
+    
+
 
     def save(self, *args, **kwargs):
 
