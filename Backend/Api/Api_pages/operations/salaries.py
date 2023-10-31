@@ -130,8 +130,6 @@ class AddStaff (APIView):
         
 
 
-
-
 @api_view(['GET'])
 def ShowStaffType (request):
     '''
@@ -161,12 +159,6 @@ def ShowStaffType (request):
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
     
 
-
-
-
-class EditStaff (APIView):
-    # this api is responsible for editing a staff (active)
-    pass 
 
 
 def ModifyStaffSalaryRelief(): 
