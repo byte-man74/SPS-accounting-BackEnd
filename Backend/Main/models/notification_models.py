@@ -40,6 +40,13 @@ def transaction_declined_handler(sender, instance, **kwargs):
         print(f'{message}')
 
 
+@receiver(pre_save, sender=Transaction)
+def transaction_initiated_handler(sender, instance, **kwargs):
+    if instance.status == "INITIALIZED" and instance.transaction_type="CASH":
+        message = "Cash Transaction has been initiated"
+        print(f'{message}')
+
+
 @receiver(pre_save, sender=Payroll)
 def salary_pending_handler(sender, instance, **kwargs):
     if instance.status == "PENDING":
@@ -47,7 +54,7 @@ def salary_pending_handler(sender, instance, **kwargs):
         print(f'{message}')
 
 @receiver(pre_save, sender=Payroll)
-def salary_initialize_handler(sender, instance, **kwargs):
+def salary_initiated_handler(sender, instance, **kwargs):
     if instance.status == "INITIALIZED":
         message = "Salary Payment was Initiated"
         print(f'{message}')
@@ -59,14 +66,9 @@ def salary_success_handler(sender, instance, **kwargs):
         print(f'{message}')
 
 @receiver(pre_save, sender=Payroll)
-def salary_pending_handler(sender, instance, **kwargs):
+def salary_failed_handler(sender, instance, **kwargs):
     if instance.status == "FAILED":
         message = "Salary Payment Failed"
         print(f'{message}')
 
 
-@receiver(pre_save, sender=Transaction)
-def transaction_declined_handler(sender, instance, **kwargs):
-    if instance.status == "INITIALIZED" and instance.transaction_type="CASH":
-        message = "Cash Transaction has been initiated"
-        print(f'{message}')
