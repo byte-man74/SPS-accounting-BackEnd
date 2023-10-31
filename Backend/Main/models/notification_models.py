@@ -47,13 +47,13 @@ def salary_pending_handler(sender, instance, **kwargs):
         print(f'{message}')
 
 @receiver(pre_save, sender=Payroll)
-def salary_pending_handler(sender, instance, **kwargs):
+def salary_initialize_handler(sender, instance, **kwargs):
     if instance.status == "INITIALIZED":
         message = "Salary Payment was Initiated"
         print(f'{message}')
 
 @receiver(pre_save, sender=Payroll)
-def salary_pending_handler(sender, instance, **kwargs):
+def salary_success_handler(sender, instance, **kwargs):
     if instance.status == "SUCCESS":
         message = "Salary Payment was successful"
         print(f'{message}')
