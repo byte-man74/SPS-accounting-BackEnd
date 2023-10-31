@@ -42,7 +42,7 @@ def transaction_declined_handler(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Transaction)
 def transaction_initiated_handler(sender, instance, **kwargs):
-    if instance.status == "INITIALIZED" and instance.transaction_type="CASH":
+    if instance.status == "INITIALIZED" and instance.transaction_type=="CASH":
         message = "Cash Transaction has been initiated"
         print(f'{message}')
 
