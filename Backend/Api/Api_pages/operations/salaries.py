@@ -17,7 +17,7 @@ from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
-
+from rest_framework.decorators import api_view
 
 
 account_type = "OPERATIONS"
@@ -62,6 +62,7 @@ class GetAllStaffs(APIView):
 class AddStaff (APIView):
     """
         this api is responsible for adding a new staff 
+        this api is responsible for editing the details of the staff
     """
     def post (self, request):
         try:
@@ -76,9 +77,44 @@ class AddStaff (APIView):
             if serialized_data.is_valid():
                 serialized_data.save(school=user_school)
 
-                return Response({"message": "Staff created successfully"}, status=HTTP_201_CREATED)
-            return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
+                #todo: add notification
 
+                return Response({"message": "Staff edited successfully"}, status=HTTP_201_CREATED)
+            return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
+            
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+        
+        except Exception as e:
+            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+        
+
+    def patch (self, request):
+        try:
+            # Check if the authenticated user has the required account type.
+            # Ensure the account_type is either defined or fetched from somewhere.
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            data = request.data 
+            serialized_data = StaffWriteSerializer(data)
+
+
+            if serialized_data.is_valid():
+                serialized_data.save(school=user_school)
+
+                #todo: add notification
+
+                return Response({"message": "Staff edited successfully"}, status=HTTP_200_OK)
+            return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
+            
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
@@ -94,8 +130,38 @@ class AddStaff (APIView):
         
 
 
+
+
+@api_view(['GET'])
 def ShowStaffType (request):
-    pass
+    '''
+        this API is responsible for getting the staff type
+    '''
+    try:
+        check_account_type(request.user, account_type)
+        user_school = get_user_school(request.user)
+
+        staff_type = Staff_type.objects.filter(school=user_school)
+
+        serialized_data = StaffTypeSerializer(staff_type).data 
+
+        return Response (serialized_data, status=HTTP_200_OK)
+
+
+    except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        
+    except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+        
+    except Exception as e:
+            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+    
+
+
 
 
 class EditStaff (APIView):

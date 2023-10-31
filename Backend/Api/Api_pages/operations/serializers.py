@@ -70,7 +70,7 @@ class ParticularSerializer (serializers.ModelSerializer):
 class StaffTypeSerializer (serializers.ModelSerializer):
     class Meta:
         model = Staff_type  
-        fields = ('basic_salary', 'tax', 'name')
+        fields = ('id', 'basic_salary', 'tax', 'name')
 
 class StaffReadSerializer (serializers.ModelSerializer):
     staff_type = StaffTypeSerializer()
