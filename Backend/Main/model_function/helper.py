@@ -46,7 +46,7 @@ def generate_staffroll(school_name):
                 "tax_payable": staff.staff_type.tax,
                 "basic_salary": staff.staff_type.basic_salary,
                 "Annual_Income": staff.staff_type.basic_salary * 12,  
-                "school": staff.school,
+                "school": staff.school.name,
                 "TIN": staff.tin_number,
                 "account_number": staff.account_number,
                 "bank": staff.bank_name,

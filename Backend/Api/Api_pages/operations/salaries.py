@@ -181,9 +181,9 @@ class InitiatePayroll (APIView):
             # Handle specific API-related errors and return their details.
             return Response({"message": str(e.detail)}, status=e.status_code)
 
-        # except Exception as e:
-        #     # For all other exceptions, return a generic error message.
-        #     return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
 class InitiateTaxroll (APIView):
