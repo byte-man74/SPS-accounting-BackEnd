@@ -55,7 +55,7 @@ class GetAllStaffs(APIView):
             return Response({"message": str(e.detail)}, status=e.status_code)
         
         except Exception as e:
-            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            # For all other exceptions, return a generic error message.
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
@@ -92,7 +92,7 @@ class AddStaff (APIView):
             return Response({"message": str(e.detail)}, status=e.status_code)
         
         except Exception as e:
-            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            # For all other exceptions, return a generic error message.
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
         
 
@@ -111,6 +111,7 @@ class AddStaff (APIView):
                 serialized_data.save(school=user_school)
 
                 #todo: add notification
+                #todo: process a notification if salary deduction 
 
                 return Response({"message": "Staff edited successfully"}, status=HTTP_200_OK)
             return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
@@ -125,7 +126,7 @@ class AddStaff (APIView):
             return Response({"message": str(e.detail)}, status=e.status_code)
         
         except Exception as e:
-            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            # For all other exceptions, return a generic error message.
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
         
 
@@ -155,16 +156,9 @@ def ShowStaffType (request):
             return Response({"message": str(e.detail)}, status=e.status_code)
         
     except Exception as e:
-            # For all other exceptions, return a generic error message. Consider logging the error for debugging.
+            # For all other exceptions, return a generic error message. 
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
     
-
-
-
-def ModifyStaffSalaryRelief(): 
-   # this api is responsible for altering the staff deduction of salary
-   pass  
-
 
 
 class InitiatePayroll (APIView):

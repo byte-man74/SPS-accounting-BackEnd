@@ -85,3 +85,5 @@ class StaffWriteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
