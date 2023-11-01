@@ -5,7 +5,7 @@ from Main.model_function.helper import *
 message_reason = (
     ('CASH_REQUEST', 'CASH_REQUEST',)
 )
-6 
+
 class Message (models.Model):
 
     reason = models.CharField(max_length=40, choices=message_reason)
