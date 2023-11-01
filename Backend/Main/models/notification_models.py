@@ -16,6 +16,7 @@ from django.db.models.signals import pre_save, post_save
 #         return str(self.message)
 
 
+
 Transaction_list = Operations_account_transaction_record.objects.all()
 #Payroll_list = Payroll.objects.all()
 
@@ -47,28 +48,30 @@ def transaction_initiated_handler(sender, instance, **kwargs):
         print(f'{message}')
 
 
-@receiver(pre_save, sender=Payroll_list)
+@receiver(pre_save, sender=Payroll)
 def salary_pending_handler(sender, instance, **kwargs):
     if instance.status == "PENDING":
         message = "Salary Payment is Pending"
         print(f'{message}')
 
-@receiver(pre_save, sender=Payroll_list)
+@receiver(pre_save, sender=Payroll)
 def salary_initiated_handler(sender, instance, **kwargs):
     if instance.status == "INITIALIZED":
         message = "Salary Payment was Initiated"
         print(f'{message}')
 
-@receiver(pre_save, sender=Payroll_list)
+@receiver(pre_save, sender=Payroll)
 def salary_success_handler(sender, instance, **kwargs):
     if instance.status == "SUCCESS":
         message = "Salary Payment was successful"
         print(f'{message}')
 
-@receiver(pre_save, sender=Payroll_list)
+@receiver(pre_save, sender=Payroll)
 def salary_failed_handler(sender, instance, **kwargs):
     if instance.status == "FAILED":
         message = "Salary Payment Failed"
         print(f'{message}')
 
 
+"""sheryf.534@gmail.com
+1234"""

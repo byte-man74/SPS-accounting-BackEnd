@@ -28,6 +28,8 @@ class GetAllStaffs(APIView):
     API endpoint to get all the active staff.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         try:
             # Check if the authenticated user has the required account type.
@@ -162,6 +164,7 @@ class InitiatePayroll (APIView):
 
     def post(self, request, *args, **kwargs):
         try:
+            check_account_type(request.user, account_type)
             payroll_name = Payroll.generate_payroll_name()
             user_school = get_user_school(request.user)
             staff_list = generate_staffroll(user_school)

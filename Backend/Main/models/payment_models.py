@@ -14,6 +14,8 @@ class Payroll(models.Model):
         ("SUCCESS", "SUCCESS"),
         ("FAILED", "FAILED"),
         ("RECONCILIATION", "RECONCILIATION"),
+        ("CANCELLED", "CANCELLED"),
+        ("PARTIAL_SUCCESS", "PARTIAL_SUCCESS"),
     )
 
     name = models.CharField(max_length=100)
@@ -42,7 +44,6 @@ class Payroll(models.Model):
 
     #! method to calculate the total amount paid for tax
     def get_total_tax_paid(self):
-        print(self.staffs)
         return sum(staff.get("tax_payable", 0) for staff in self.staffs)
 
     def get_total_salary_paid(self):
@@ -177,3 +178,5 @@ class Taxroll(models.Model):
         except Exception as e:
             print(f"Error generating Taxroll: {str(e)}")
             return ("ERROR_502")  # Error occurred during generation3
+
+#gnerate paystacl id for each staffs
