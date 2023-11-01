@@ -44,7 +44,7 @@ def transaction_pending_handler(sender, instance, **kwargs):
             message = message,
             )
         notification_instance.save()
-            return ("SUCCESS")  # Successful generation
+            return ("SUCCESS")  
         print(f'{message}')
 
 
