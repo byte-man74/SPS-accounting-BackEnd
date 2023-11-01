@@ -35,67 +35,52 @@ class Notification(models.Model):
 @receiver(pre_save, sender=transaction_list)
 def transaction_handler(sender, instance, pk, **kwargs):
     notification = Notification.objects.get(pk=pk)
-    
+
     if instance.status == "PENDING":
-        sender= notification.sender
-        message = notification.message
-        recipient = notification.recipient
         notification_instance = Notification.objects.create(
-            sender=sender,
-            recipient = recipient,
-            message = message,
+            sender=notification.sender,
+            recipient = notification.recipient,
+            message = notification.message,
             )
         notification_instance.save()
             return ("SUCCESS")  
         print(f'{message}')
 
     if instance.status == "SUCCESS":
-        sender= notification.sender
-        message = notification.message
-        recipient = notification.recipient
         notification_instance = Notification.objects.create(
-            sender=sender,
-            recipient = recipient,
-            message = message,
+            sender= notification.sender,
+            recipient = notification.recipient,
+            message = notification.message,
             )
         notification_instance.save()
             return ("SUCCESS") 
         print(f'{message}')
 
     if instance.status == "SUCCESS":
-        sender= notification.sender
-        message = notification.message
-        recipient = notification.recipient
         notification_instance = Notification.objects.create(
-            sender=sender,
-            recipient = recipient,
-            message = message,
+            sender= notification.sender,
+            recipient = notification.recipient,
+            message = notification.message,
             )
         notification_instance.save()
             return ("SUCCESS") 
         print(f'{message}')
 
     if instance.status == "CANCELLED":
-        sender= notification.sender
-        message = notification.message
-        recipient = notification.recipient
         notification_instance = Notification.objects.create(
-            sender=sender,
-            recipient = recipient,
-            message = message,
+            sender= notification.sender,
+            recipient = notification.recipient,
+            message = notification.message,
             )
         notification_instance.save()
             return ("SUCCESS") 
         print(f'{message}')
 
     if instance.status == "INITIALIZED" and instance.transaction_type=="CASH":
-        sender= notification.sender
-        message = notification.message
-        recipient = notification.recipient
         notification_instance = Notification.objects.create(
-            sender=sender,
-            recipient = recipient,
-            message = message,
+            sender= notification.sender,
+            recipient = notification.recipient,
+            message = notification.message,
             )
         notification_instance.save()
             return ("SUCCESS") 
