@@ -18,6 +18,8 @@ from django.db.models.signals import pre_save, post_save
 
 
 staff = Staff_type.objects.all()
+transaction_list = Operations_account_transaction_record.objects.all()
+payroll_list = Payroll.objects.all()
 
 class Notification(models.Model):
     sender = models.CharField(max_length=100)
@@ -29,10 +31,6 @@ class Notification(models.Model):
         return f'Sender: {self.sender}, Recipient {self.recipient}'
 
 
-
-
-transaction_list = Operations_account_transaction_record.objects.all()
-payroll_list = Payroll.objects.all()
 
 @receiver(pre_save, sender=transaction_list)
 def transaction_pending_handler(sender, instance, **kwargs):
