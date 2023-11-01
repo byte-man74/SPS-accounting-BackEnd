@@ -33,10 +33,13 @@ class Notification(models.Model):
 
 
 @receiver(pre_save, sender=transaction_list)
-def transaction_pending_handler(sender, instance, **kwargs):
+def transaction_handler(sender, instance, pk, **kwargs):
+    notification = Notification.objects.get(pk=pk)
+    
     if instance.status == "PENDING":
-        message = "Transaction Pending"
-        recipient = Notification.objects.get(recipient=recipient)
+        sender= notification.sender
+        message = notification.message
+        recipient = notification.recipient
         notification_instance = Notification.objects.create(
             sender=sender,
             recipient = recipient,
@@ -46,31 +49,59 @@ def transaction_pending_handler(sender, instance, **kwargs):
             return ("SUCCESS")  
         print(f'{message}')
 
-
-
-
-
-
-
-@receiver(pre_save, sender=transaction_list)
-def transaction_approved_handler(sender, instance, **kwargs):
     if instance.status == "SUCCESS":
-        message = "Transaction Approved"
+        sender= notification.sender
+        message = notification.message
+        recipient = notification.recipient
+        notification_instance = Notification.objects.create(
+            sender=sender,
+            recipient = recipient,
+            message = message,
+            )
+        notification_instance.save()
+            return ("SUCCESS") 
         print(f'{message}')
 
+    if instance.status == "SUCCESS":
+        sender= notification.sender
+        message = notification.message
+        recipient = notification.recipient
+        notification_instance = Notification.objects.create(
+            sender=sender,
+            recipient = recipient,
+            message = message,
+            )
+        notification_instance.save()
+            return ("SUCCESS") 
+        print(f'{message}')
 
-@receiver(pre_save, sender=transaction_list)
-def transaction_declined_handler(sender, instance, **kwargs):
     if instance.status == "CANCELLED":
-        message = "Transaction Declined"
+        sender= notification.sender
+        message = notification.message
+        recipient = notification.recipient
+        notification_instance = Notification.objects.create(
+            sender=sender,
+            recipient = recipient,
+            message = message,
+            )
+        notification_instance.save()
+            return ("SUCCESS") 
         print(f'{message}')
 
-
-@receiver(pre_save, sender=transaction_list)
-def transaction_initiated_handler(sender, instance, **kwargs):
     if instance.status == "INITIALIZED" and instance.transaction_type=="CASH":
-        message = "Cash Transaction has been initiated"
+        sender= notification.sender
+        message = notification.message
+        recipient = notification.recipient
+        notification_instance = Notification.objects.create(
+            sender=sender,
+            recipient = recipient,
+            message = message,
+            )
+        notification_instance.save()
+            return ("SUCCESS") 
         print(f'{message}')
+
+    
 
 
 @receiver(pre_save, sender=payroll_list)
