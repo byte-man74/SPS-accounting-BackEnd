@@ -56,16 +56,6 @@ def transaction_handler(sender, instance, pk, **kwargs):
             return ("SUCCESS") 
         print(f'{message}')
 
-    if instance.status == "SUCCESS":
-        notification_instance = Notification.objects.create(
-            sender= notification.sender,
-            recipient = notification.recipient,
-            message = notification.message,
-            )
-        notification_instance.save()
-            return ("SUCCESS") 
-        print(f'{message}')
-
     if instance.status == "CANCELLED":
         notification_instance = Notification.objects.create(
             sender= notification.sender,
