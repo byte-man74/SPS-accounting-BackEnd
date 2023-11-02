@@ -56,7 +56,7 @@ def generate_staffroll(school_name):
                 "salary_recieved": (staff.staff_type.basic_salary - staff.staff_type.tax - staff.salary_deduction),
                 "TIN": staff.tin_number,
                 "account_number": staff.account_number,
-                "bank": staff.bank_name,
+                "bank": staff.bank.name,
             })
         except ObjectDoesNotExist:
             # Handle the case where the staff with the specified staff_id does not exist
