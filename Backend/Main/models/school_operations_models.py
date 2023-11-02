@@ -4,6 +4,7 @@ import json
 from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
 from datetime import datetime
 from Main.model_function.helper import *
+from Paystack.service import *
 
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -66,9 +67,14 @@ class Staff (models.Model):
 
 
     def save(self, *args, **kwargs):
-        #perform operations
-        paystack_id = generate_paystack_id_for_staff(instance=self)
-
-        super().save(*args, **kwargs)
-
+        # If paystack_id is not already assigned, generate it.
+        if not self.paystack_id:
+            paystack_id_generated = generate_paystack_id_for_staff(instance=self)
+            
+            # Check if the generated paystack_id is 400 (or any other condition you want).
+            if paystack_id_generated == 400:
+                raise ValueError("Error generating Paystack ID. Account number error")
+            
+            self.paystack_id = paystack_id_generated
         
+        super().save(*args, **kwargs)
