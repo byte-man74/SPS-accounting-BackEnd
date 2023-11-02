@@ -228,3 +228,7 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(hour=5, minute=0),
     # },
 }
+
+
+PAYSTACK_SECRET_KEY = "sk_test_bfc102895076cd29d09ac8d6f4043f1c8e73481b"
+PAYSTACK_PUBLIC_KEY = "pk_test_b50c758a1c445e60e9782ecd6040dab28e142bb8"
