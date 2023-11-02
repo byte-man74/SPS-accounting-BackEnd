@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'Authentication',
     'Main',
     'Api',
+    'Paystack'
 ]
 
 MIDDLEWARE = [
