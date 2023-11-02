@@ -72,9 +72,9 @@ class Staff (models.Model):
             paystack_id_generated = generate_paystack_id_for_staff(instance=self)
             
             # Check if the generated paystack_id is 400 (or any other condition you want).
-            if paystack_id_generated == 400:
-                raise ValueError("Error generating Paystack ID. Account number error")
+            if paystack_id_generated['status'] == 400:
+                raise ValueError(paystack_id_generated['data'])
             
-            self.paystack_id = paystack_id_generated
+            self.paystack_id = paystack_id_generated['data']
         
         super().save(*args, **kwargs)

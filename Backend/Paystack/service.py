@@ -43,12 +43,20 @@ def generate_paystack_id_for_staff(instance):
 
     try:
         response = requests.post(url, json=data, headers=headers)
+        print(response.json())
 
         if response.json()["status"]:
-            return response.json()["recipient_code"]
-
+            payload = {
+                'status': 200,
+                'data': response.json()['data']["recipient_code"]
+            }
         else:
-            return 400
+            payload = {
+                'status': 200,
+                'data': response.json()["messages"]
+            }
+
+        return payload
 
     except requests.exceptions.HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
