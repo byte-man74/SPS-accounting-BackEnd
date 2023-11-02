@@ -39,6 +39,8 @@ def generate_staffroll(school_name):
     staffs = Staff.objects.select_related("staff_type").filter(school=school_name, is_active=True)
     
     for staff in staffs:
+
+        # GENERATE refrence number here 
         try:
             staff_payroll.append({
                 "staff_firstname": staff.first_name,
@@ -46,10 +48,12 @@ def generate_staffroll(school_name):
                 "staff_phonenumber": staff.phone_number,
                 "staff_id": staff.id,  
                 "rank": staff.staff_type.name, 
+                "recipient_code": staff.paystack_id,
                 "tax_payable": staff.staff_type.tax,
                 "basic_salary": staff.staff_type.basic_salary,
                 "Annual_Income": staff.staff_type.basic_salary * 12,  
                 "school": staff.school.name,
+                "salary_recieved": (staff.staff_type.basic_salary - staff.staff_type.tax - staff.salary_deduction),
                 "TIN": staff.tin_number,
                 "account_number": staff.account_number,
                 "bank": staff.bank_name,
