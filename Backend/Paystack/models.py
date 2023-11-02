@@ -20,13 +20,13 @@ class Bank (models.Model):
 
         for bank in returned_banks:
             bank_instance = Bank.objects.create (
-                name=bank.name,
-                bank_code=bank.code,
-                slug=bank.slug,
-                bank_type=bank.type,
-                currency= bank.currency
+                name=bank['name'],
+                bank_code=bank['code'],
+                slug=bank['slug'],
+                bank_type=bank['type'],
+                currency= bank['currency']
             )
             bank_instance.save()
-            print(f"Added bank {bank.name}")
+            print(f"Added bank {bank['name']}")
             time.sleep(0.05)
 

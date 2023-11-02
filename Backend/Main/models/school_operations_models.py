@@ -35,7 +35,7 @@ class Staff (models.Model):
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20)
     account_number = models.CharField(max_length=50)
-    bank_name = models.CharField(max_length=40)
+    bank = models.ForeignKey("Paystack.Bank", on_delete=models.CASCADE)
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     staff_type = models.ForeignKey(
         Staff_type, on_delete=models.SET_NULL, null=True)
