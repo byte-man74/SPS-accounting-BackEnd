@@ -17,5 +17,4 @@ def get_banks_from_paystack ():
 
 
     response = requests.get(url, headers=headers)
-
-    print(response)
+    return response.json().data
