@@ -82,7 +82,7 @@ class AddAndEditStaff (APIView):
 
                 # todo: add notification
 
-                return Response({"message": "Staff edited successfully"}, status=HTTP_201_CREATED)
+                return Response({"message": "Staff created successfully"}, status=HTTP_201_CREATED)
             return Response(serialized_data.errors, status=HTTP_400_BAD_REQUEST)
 
         except PermissionDenied:

@@ -3,7 +3,7 @@ from django.db import models
 import json
 from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
 from datetime import datetime
-
+from Main.model_function.helper import *
 
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -42,6 +42,7 @@ class Staff (models.Model):
     salary_deduction = models.BigIntegerField()
     is_active = models.BooleanField(default=True)
     tin_number = models.CharField(max_length=50)
+    paystack_id = models.CharField(max_length=50, blank=True)
 
     @staticmethod
     def reset_salary_deduction_for_staffs_in_a_school(school_id):
@@ -61,3 +62,13 @@ class Staff (models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+
+
+    def save(self, *args, **kwargs):
+        #perform operations
+        paystack_id = generate_paystack_id_for_staff(instance=self)
+
+        super().save(*args, **kwargs)
+
+        

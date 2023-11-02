@@ -31,6 +31,9 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
 
 
 def generate_staffroll(school_name):
+    '''
+        Function to generate a list of staffs to be paid
+    '''
     staff_payroll = []
     Staff = apps.get_model('Main', 'Staff')
     staffs = Staff.objects.select_related("staff_type").filter(school=school_name, is_active=True)
@@ -56,10 +59,5 @@ def generate_staffroll(school_name):
             pass
     
     return staff_payroll
-
-
-def get_short_reason (text):
-    full_text = text[0:5]
-    return full_text
 
 
