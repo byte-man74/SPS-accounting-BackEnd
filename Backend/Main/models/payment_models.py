@@ -4,8 +4,10 @@ import json
 from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
 from datetime import datetime
 
+
 def get_default_staffs():
     return [{}]
+
 
 class Payroll(models.Model):
     Status = (
@@ -22,7 +24,6 @@ class Payroll(models.Model):
     date_initiated = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
         max_length=100, choices=Status, default="PENDING")
-    
 
     # Change staffs field to a JSONField
     staffs = models.JSONField(default=get_default_staffs)
@@ -44,14 +45,14 @@ class Payroll(models.Model):
 
     #! method to calculate the total amount paid for tax
     def get_total_tax_paid(self):
-        staffs_data = json.loads(self.staffs) if self.staffs else []
-        return sum(staff.get("tax_payable", 0) for staff in staffs_data)
+        staffs_data = self.staffs if self.staffs else []
+        return sum(staff.get("tax_payable", 0) for staff in staffs_data if isinstance(staff, dict) and "tax_payable" in staff)
 
     def get_total_salary_paid(self):
-        staffs_data = json.loads(self.staffs) if self.staffs else []
-        return sum(staff.get("basic_salary", 0) for staff in staffs_data)
-    
-    
+        staffs_data = self.staffs if self.staffs else []
+        return sum(staff.get("basic_salary", 0) for staff in staffs_data if isinstance(staff, dict) and "basic_salary" in staff)
+
+
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
             return  # If staffs is not a list, nothing to remove
@@ -85,9 +86,6 @@ class Payroll(models.Model):
             "failed_staffs": failed_staffs,
         }
 
-
-
-
     @staticmethod
     def generate_payroll_name():
         pre_text = 'Salary Payment for'
@@ -98,23 +96,17 @@ class Payroll(models.Model):
         # save it as Salary payment for 2021, March Ending quarter
         payroll_name = f"{pre_text} {current_year}, {current_month_name} Ending quarter"
         return payroll_name
-    
-
 
     def save(self, *args, **kwargs):
 
         self.total_amount_for_tax = self.get_total_tax_paid()
         self.total_amount_for_salary = self.get_total_salary_paid()
 
-
         # Convert staffs list to JSON before saving
         if isinstance(self.staffs, list):
             self.staffs = json.dumps(self.staffs)
 
-
         super().save(*args, **kwargs)
-
-        
 
     def __str__(self):
         return self.name
@@ -182,4 +174,4 @@ class Taxroll(models.Model):
             print(f"Error generating Taxroll: {str(e)}")
             return ("ERROR_502")  # Error occurred during generation3
 
-#gnerate paystacl id for each staffs
+# gnerate paystacl id for each staffs

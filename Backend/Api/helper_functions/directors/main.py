@@ -1,4 +1,5 @@
 from Main.models import Payroll
+from Paystack.transfers import process_bulk_transaction
 import json
 import time
 
@@ -21,10 +22,7 @@ def process_salary_payment(payroll_id):
 
     # Create and return batches
     batches = [payroll_staffs[i * BATCH_SIZE:(i + 1) * BATCH_SIZE] for i in range(num_batches)]
-
     process_salary_by_batch(batches)
-    batches_str = convert_to_double_quoted_string(batches)
-    print(batches_str)
 
 
 def process_salary_by_batch(batch_list):
@@ -37,6 +35,7 @@ def process_salary_by_batch(batch_list):
     for batch in batch_list:
         batch_object = create_paystack_structure(batch)
         #send the batch_object to paystack processor
+        process_bulk_transaction(batch_object)
         time.sleep(0.5)
 
 
@@ -54,13 +53,12 @@ def create_paystack_structure(batch):
     data = []
     for single_batch_instance in batch:
         paystack_transfer_object = {
-            "amount": single_batch_instance['salary_received'],
-            "reference": single_batch_instance['transaction_reference'],
+            "amount": single_batch_instance['salary_recieved'],
+            "reference": single_batch_instance['transaction_refrence'],
             "reason": "Salary Payment",
             "recipient": single_batch_instance['recipient_code']
         }
         data.append(paystack_transfer_object)
-        print(data)
 
     return data
 
