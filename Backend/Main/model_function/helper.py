@@ -1,5 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.apps import apps
+import random
+import string
 
 def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     taxroll_staffs = []
@@ -30,6 +32,13 @@ def generate_taxroll_staff_table_out_of_payroll(staffs_on_payroll):
     return taxroll_staffs
 
 
+
+def generate_transaction_reference(length=10):
+    """Generate a random transaction reference with the specified length."""
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
+
 def generate_staffroll(school_name):
     '''
         Function to generate a list of staffs to be paid
@@ -37,7 +46,9 @@ def generate_staffroll(school_name):
     staff_payroll = []
     Staff = apps.get_model('Main', 'Staff')
     staffs = Staff.objects.select_related("staff_type").filter(school=school_name, is_active=True)
-    
+    transaction_reference = generate_transaction_reference()
+
+
     for staff in staffs:
 
         # GENERATE refrence number here 
@@ -47,7 +58,7 @@ def generate_staffroll(school_name):
                 "staff_lastname": staff.last_name,
                 "staff_phonenumber": staff.phone_number,
                 "staff_id": staff.id,  
-                "transaction_refrence": "",
+                "transaction_refrence": transaction_reference,
                 "rank": staff.staff_type.name, 
                 "recipient_code": staff.paystack_id,
                 "tax_payable": staff.staff_type.tax,
