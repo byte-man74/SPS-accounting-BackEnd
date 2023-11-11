@@ -1,8 +1,5 @@
 import uuid
 from django.db import models
-import json
-from Main.model_function.helper import generate_taxroll_staff_table_out_of_payroll
-from datetime import datetime
 from Main.model_function.helper import *
 from Paystack.service import *
 from django.core.exceptions import ValidationError
