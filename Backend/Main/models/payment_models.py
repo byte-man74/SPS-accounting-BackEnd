@@ -44,11 +44,14 @@ class Payroll(models.Model):
 
     #! method to calculate the total amount paid for tax
     def get_total_tax_paid(self):
-        return sum(staff.get("tax_payable", 0) for staff in self.staffs)
+        staffs_data = json.loads(self.staffs) if self.staffs else []
+        return sum(staff.get("tax_payable", 0) for staff in staffs_data)
 
     def get_total_salary_paid(self):
-        return sum(staff.get("basic_salary", 0) for staff in self.staffs)
-
+        staffs_data = json.loads(self.staffs) if self.staffs else []
+        return sum(staff.get("basic_salary", 0) for staff in staffs_data)
+    
+    
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
             return  # If staffs is not a list, nothing to remove
