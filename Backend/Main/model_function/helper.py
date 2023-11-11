@@ -47,6 +47,7 @@ def generate_staffroll(school_name):
                 "staff_lastname": staff.last_name,
                 "staff_phonenumber": staff.phone_number,
                 "staff_id": staff.id,  
+                "transaction_refrence": "",
                 "rank": staff.staff_type.name, 
                 "recipient_code": staff.paystack_id,
                 "tax_payable": staff.staff_type.tax,
