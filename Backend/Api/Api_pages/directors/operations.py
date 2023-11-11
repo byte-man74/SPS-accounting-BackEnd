@@ -44,15 +44,17 @@ class ApprovePayroll (APIView):
         has processed it
     '''
     def post (self, request, payroll_id, *args, **kwargs):
-        approval_data = request.data['STATUS']
+        approval_data = request.data['status']
         payroll_instance = Payroll.objects.get(id=payroll_id)
         payroll_instance.status = (approval_data)
         payroll_instance.save()
   
-        if approval_data == "SUCCESS":
+        if approval_data == "INITIALIZED":
             #send a notification to the operations
             process_salary_payment(payroll_id)
 
         elif approval_data == "CANCELLED":
             #send a notification to the operations accountant 
             pass 
+
+        return Response({"message": "An error occurred"}, status=HTTP_200_OK)
