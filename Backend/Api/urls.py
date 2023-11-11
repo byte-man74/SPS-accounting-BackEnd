@@ -3,6 +3,7 @@ from Api.Api_pages.Authentication import *
 from Api.Api_pages.operations.cashbook import *
 from Api.Api_pages.head_teacher.operation_account import *
 from Api.Api_pages.operations.salaries import *
+from Api.Api_pages.directors.operations import *
 from Api.Api_pages.main.general import *
 from rest_framework_simplejwt.views import TokenRefreshView
 from Backend.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
@@ -43,6 +44,9 @@ urlpatterns = [
     path('show_staff_type', ShowStaffType, name='show_staff_type'), ###✅
     path('initiate_payroll', InitiatePayroll.as_view(), name='initiate_payroll'),
 
+
+    #director salary and staffs
+    path('approve_payroll/<str:payroll_id>', ApprovePayroll.as_view(), name='approve_payroll'),
 
 
     #head teacher
