@@ -51,9 +51,10 @@ def generate_paystack_id_for_staff(instance):
                 'data': response.json()['data']["recipient_code"]
             }
         else:
+            print(response.json())
             payload = {
                 'status': 200,
-                'data': response.json()["messages"]
+                'data': response.json()["message"]
             }
 
         return payload

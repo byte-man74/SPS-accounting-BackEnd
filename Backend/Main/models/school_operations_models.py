@@ -5,6 +5,8 @@ from Main.model_function.helper import generate_taxroll_staff_table_out_of_payro
 from datetime import datetime
 from Main.model_function.helper import *
 from Paystack.service import *
+from django.core.exceptions import ValidationError
+
 
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -73,7 +75,8 @@ class Staff (models.Model):
             
             # Check if the generated paystack_id is 400 (or any other condition you want).
             if paystack_id_generated['status'] == 400:
-                raise ValueError(paystack_id_generated['data'])
+                raise ValidationError(paystack_id_generated['data'])  # Use ValidationError instead of ValueError
+            
             
             self.paystack_id = paystack_id_generated['data']
         
