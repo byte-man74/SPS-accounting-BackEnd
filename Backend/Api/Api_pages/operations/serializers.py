@@ -97,3 +97,10 @@ class PayrollReadSerializer (serializers.ModelSerializer):
     class Meta:
         model = Payroll
         fields = ('status', 'name', 'date_initialized', 'total_amount_salary', 'total_amount_tax')
+
+
+class TransferTransactionWriteSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Operations_account_transaction_record
+        fields = ('amount', 'particulars', 'reason', 'name_of_reciever', 'account_number_of_reciever', 'reciever_bank')
