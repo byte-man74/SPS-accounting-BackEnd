@@ -85,8 +85,6 @@ class Operations_account_transaction_record(models.Model):
 
         super().save(*args, **kwargs)
 
-
-
     def __str__(self):
         return f'{self.transaction_type} transaction {self.school.name}'
 
