@@ -39,8 +39,26 @@ class GetAllTransferTransaction (APIView):
 
 
 class InititeTransferTransaction (APIView):
-    # this API is responsible for initializing the transfer transaction
-    pass
+    '''
+        This API is responsible for creating a transfer transaction and sending a notification
+        to the directors
+    '''
+    permission_classes = [IsAuthenticated]
+
+    def post (self, request, *args, **kwargs):
+        try: 
+            pass
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 class EditTransferTransaction(APIView):
