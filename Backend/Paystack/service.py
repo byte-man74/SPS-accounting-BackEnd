@@ -24,7 +24,7 @@ def get_banks_from_paystack():
 
 def generate_paystack_id(instance):
     '''
-        this function generates paystack_id_for_staff after verifying the account name and bank
+    Generate paystack_id_for_staff after verifying the account name and bank.
     '''
 
     url = "https://api.paystack.co/transferrecipient"
@@ -43,30 +43,18 @@ def generate_paystack_id(instance):
 
     try:
         response = requests.post(url, json=data, headers=headers)
-        print(response.json())
+        response_json = response.json()
 
-        if response.json()["status"]:
-            payload = {
-                'status': 200,
-                'data': response.json()['data']["recipient_code"]
-            }
+        if response_json["status"]:
+            payload = {'status': 200, 'data': response_json['data']["recipient_code"]}
         else:
-            print(response.json())
-            payload = {
-                'status': 200,
-                'data': response.json()["message"]
-            }
+            print(response_json)
+            payload = {'status': 200, 'data': response_json["message"]}
 
         return payload
 
-    except requests.exceptions.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-    except requests.exceptions.ConnectionError as conn_err:
-        print(f"Connection error occurred: {conn_err}")
-    except requests.exceptions.Timeout as timeout_err:
-        print(f"Timeout error occurred: {timeout_err}")
     except requests.exceptions.RequestException as req_err:
-        print(f"General error occurred: {req_err}")
+        print(f"Error occurred: {req_err}")
 
     # Return None or an appropriate message if an exception occurs
     return None
