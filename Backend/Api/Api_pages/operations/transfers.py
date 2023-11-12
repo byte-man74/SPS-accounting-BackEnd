@@ -15,6 +15,7 @@ from Api.Api_pages.operations.serializers import *
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import APIException
 account_type = "OPERATIONS"
 
 
@@ -47,7 +48,22 @@ class InititeTransferTransaction (APIView):
 
     def post (self, request, *args, **kwargs):
         try: 
-            pass
+            check_account_type(request.user, account_type)
+            serializer = TransferTransactionWriteSerializer(data=request.data)
+
+            if serializer.is_valid():
+                # Modify the instance before saving
+                transfer_instance = serializer.save(commit=False)
+
+                # Modify the attributes of the instance
+                transfer_instance.transaction_category = "DEBIT"
+                transfer_instance.school = get_user_school(request.user).id
+                transfer_instance.transaction_type = "TRANSFER"
+
+
+                # Save the modified instance to the database
+                transfer_instance.save()
+
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
