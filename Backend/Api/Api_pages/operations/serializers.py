@@ -87,3 +87,13 @@ class StaffWriteSerializer (serializers.ModelSerializer):
         fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
 
 
+class PayrollSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Payroll
+        fields = ('status', 'name', 'date_initialized', 'total_amount_salary')
+
+class PayrollReadSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Payroll
+        fields = ('status', 'name', 'date_initialized', 'total_amount_salary', 'total_amount_tax')

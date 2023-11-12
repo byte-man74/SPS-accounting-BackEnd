@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Main.models import Operations_account, Operations_account_transaction_record, Staff, Payroll
+from Main.models import Payroll
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
 from Api.helper_functions.directors.main import *
@@ -25,18 +25,55 @@ account_type = "DIRECTOR"
 
 
 
-class GetAllPayroll (APIView):
+class GetAllPayroll(APIView):
     permission_classes = [IsAuthenticated]
-    '''
-        this would get the list of all the payroll created
-    '''
-    pass
+
+    def get(self, request):
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            payroll_list = Payroll.objects.filter(school=user_school.id)
+            serialized_data = PayrollSerializer(payroll_list, many=True)
+
+            return Response(serialized_data.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
 
 class ViewPayrollDetails (APIView):
     '''
         This would get the details of a particular payroll instance
     '''
-    pass 
+    def get(self, request, payroll_id):
+        try:
+            check_account_type(request.user, account_type)    
+            payroll_object = Payroll.objects.get(id=payroll_id)
+            serialized_data = PayrollReadSerializer(data=payroll_object)
+
+
+            return Response(serialized_data.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class ApprovePayroll (APIView):
@@ -73,6 +110,8 @@ class ApprovePayroll (APIView):
             # Handle specific API-related errors and return their details.
             return Response({"message": str(e.detail)}, status=e.status_code)
 
-        # except Exception as e:
-        #     # For all other exceptions, return a generic error message.
-        #     return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+

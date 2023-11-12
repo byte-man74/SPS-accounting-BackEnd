@@ -47,6 +47,8 @@ urlpatterns = [
 
     #director salary and staffs
     path('approve_payroll/<str:payroll_id>', ApprovePayroll.as_view(), name='approve_payroll'),
+    path('get_all_payroll', GetAllPayroll.as_view(), name='get_all_payroll'),
+    path('get_payroll_details/<str:payroll_id>', ViewPayrollDetails.as_view(), name='get_payroll_details'),
 
 
     #head teacher
