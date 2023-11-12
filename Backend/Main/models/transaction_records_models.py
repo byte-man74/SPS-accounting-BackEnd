@@ -2,7 +2,7 @@
 from django.db import models
 
 from datetime import datetime
-
+from Paystack.service import *
 
 class Operations_account_transaction_record(models.Model):
 
@@ -43,6 +43,7 @@ class Operations_account_transaction_record(models.Model):
     account_number_of_reciever = models.CharField(
         max_length=20, null=False, blank=True)
     reciever_bank = models.ForeignKey("Paystack.Bank",  on_delete=models.CASCADE)
+    transaction_id = models.CharField(max_length=50)
 
     # ? Methods
 
@@ -72,14 +73,19 @@ class Operations_account_transaction_record(models.Model):
 
     def save(self, *args, **kwargs):
         # Check if it's a "Transfer" transaction type
-        if self.transaction_type == "Transfer":
+        if self.transaction_type == "TRANSFER":
 
             # Check if account number and receiver name are provided
             if not self.account_number_of_reciever and not self.name_of_reciever:
                 raise ValueError(
                     "Both account number and receiver name must be provided for a Transfer transaction.")
+            
+            transction_id = generate_paystack_id(self, full_name_present=True)
+            self.transaction_id  = transction_id
 
         super().save(*args, **kwargs)
+
+
 
     def __str__(self):
         return f'{self.transaction_type} transaction {self.school.name}'
