@@ -22,7 +22,7 @@ def get_banks_from_paystack():
     return response.json()["data"]
 
 
-def generate_paystack_id(instance):
+def generate_paystack_id(instance, full_name_present=None):
     '''
     Generate paystack_id_for_staff after verifying the account name and bank.
     '''
@@ -35,8 +35,8 @@ def generate_paystack_id(instance):
 
     data = {
         "type": instance.bank.bank_type,
-        "name": f"{instance.first_name} {instance.last_name}",
-        "account_number": instance.account_number,
+        "name": f"{instance.name_of_reciever}" if full_name_present else f"{instance.first_name} {instance.last_name}",
+        "account_number": instance.reciever_account_number if full_name_present else instance.account_number,
         "bank_code": instance.bank.bank_code,
         "currency": instance.bank.currency
     }
