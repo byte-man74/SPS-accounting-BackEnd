@@ -36,7 +36,7 @@ def generate_paystack_id(instance, full_name_present=None):
     data = {
         "type": instance.bank.bank_type,
         "name": f"{instance.name_of_reciever}" if full_name_present else f"{instance.first_name} {instance.last_name}",
-        "account_number": instance.reciever_account_number if full_name_present else instance.account_number,
+        "account_number": instance.account_number_of_reciever if full_name_present else instance.account_number,
         "bank_code": instance.bank.bank_code,
         "currency": instance.bank.currency
     }

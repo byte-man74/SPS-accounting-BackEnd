@@ -42,8 +42,8 @@ class Operations_account_transaction_record(models.Model):
         max_length=100, blank=False, null=False)
     account_number_of_reciever = models.CharField(
         max_length=20, null=False, blank=True)
-    reciever_bank = models.ForeignKey("Paystack.Bank",  on_delete=models.CASCADE)
-    transaction_id = models.CharField(max_length=50)
+    bank = models.ForeignKey("Paystack.Bank",  on_delete=models.CASCADE)
+    customer_transaction_id = models.CharField(max_length=50, null=True, blank=True)
 
     # ? Methods
 
@@ -81,7 +81,7 @@ class Operations_account_transaction_record(models.Model):
                     "Both account number and receiver name must be provided for a Transfer transaction.")
             
             transction_id = generate_paystack_id(self, full_name_present=True)
-            self.transaction_id  = transction_id
+            self.customer_transaction_id  = transction_id['data']
 
         super().save(*args, **kwargs)
 
