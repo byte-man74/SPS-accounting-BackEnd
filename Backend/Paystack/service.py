@@ -22,7 +22,7 @@ def get_banks_from_paystack():
     return response.json()["data"]
 
 
-def generate_paystack_id_for_staff(instance):
+def generate_paystack_id(instance):
     '''
         this function generates paystack_id_for_staff after verifying the account name and bank
     '''

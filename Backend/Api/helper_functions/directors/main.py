@@ -6,6 +6,10 @@ import time
 BATCH_SIZE = 100
 
 
+'''
+SALARY PAYMENT
+'''
+
 def process_salary_payment(payroll_id):
     """
     Process salary payment for a given payroll.
@@ -74,3 +78,14 @@ def convert_to_double_quoted_string(data):
     Double-quoted JSON-formatted string.
     """
     return json.dumps(data)
+
+
+
+
+'''
+TRANSFERS
+'''
+
+def process_transaction(transaction_data):
+    #generate the transaction id   
+    pass

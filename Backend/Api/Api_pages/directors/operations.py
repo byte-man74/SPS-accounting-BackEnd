@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Main.models import Payroll
+from Main.models import Payroll, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
 from Api.helper_functions.directors.main import *
@@ -23,7 +23,9 @@ from Main.model_function.helper import generate_staffroll
 
 account_type = "DIRECTOR"
 
-
+'''
+    SALARY AND PAYROLL
+'''
 
 class GetAllPayroll(APIView):
     permission_classes = [IsAuthenticated]
@@ -46,10 +48,6 @@ class GetAllPayroll(APIView):
 
         except Exception as e:
             return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
 
 
 class ViewPayrollDetails (APIView):
@@ -114,4 +112,45 @@ class ApprovePayroll (APIView):
         except Exception as e:
             return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
+class VerifyPayroll (APIView):
+    '''
+        This would get all the staff instances and find the list of staff that hasn't been paid
+    '''
+
+
+
+'''
+    TRANSFERS
+'''
+class ApproveTransaction (APIView):
+    '''
+        This would get the transaction from the operations account and there would be a desicion of
+        either approval or rejection of the transaction
+    '''
+    def post (self, request, transaction_id):
+        try:
+            check_account_type(request.user, account_type)
+
+            transaction_record = Operations_account_transaction_record.objects.get(id=transaction_id)
+
+            transaction_data = {
+                "amount" : transaction_record.amount,
+                "name" : transaction_record.name_of_reciever,
+                "reason": transaction_record.reason,
+                "account_number": transaction_record.account_number,
+                "bank_account": transaction_record.reciever_bank_account
+            }
+
+            payment_feedback = process_transaction(transaction_data)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 

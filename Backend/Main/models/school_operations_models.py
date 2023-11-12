@@ -68,7 +68,7 @@ class Staff (models.Model):
     def save(self, *args, **kwargs):
         # If paystack_id is not already assigned, generate it.
         if not self.paystack_id:
-            paystack_id_generated = generate_paystack_id_for_staff(instance=self)
+            paystack_id_generated = generate_paystack_id(instance=self)
             
             # Check if the generated paystack_id is 400 (or any other condition you want).
             if paystack_id_generated['status'] == 400:
