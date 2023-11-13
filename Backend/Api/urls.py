@@ -50,6 +50,9 @@ urlpatterns = [
     path('get_all_payroll', GetAllPayroll.as_view(), name='get_all_payroll'),
     path('get_payroll_details/<str:payroll_id>', ViewPayrollDetails.as_view(), name='get_payroll_details'),
 
+    #directors transfers
+    path('approve_transfer/<str:transaction_id>', ApproveTransfer.as_view(), name='approve_transfer'),
+
 
     #head teacher
     path('head_teacher/get_pending_transaction', HeadTeacherGetAllPendingTransaction.as_view(), name='head_teacher_get_all_transactions'),

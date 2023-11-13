@@ -13,6 +13,10 @@ from django.db.models import Sum
 from enum import Enum
 
 def check_account_type(user, account_type):
+    '''
+        This api is used to check if the correct user role is accessing the API. if its not the user
+        then it should raise a PermissionDenied exception
+    '''
     def get_user_type(user, account_type):
         user_model = get_user_model()
         user = user_model.objects.get(id=user.id)

@@ -35,7 +35,9 @@ class CurrentMonthTransferBudgetSummary(APIView):
 
 
 class GetAllTransferTransaction (APIView):
-    # this API is responsible for getting all the transfer transactions that has been made
+    '''
+        This API is responsible for getting all the transfer transactions that have been made
+    '''
     pass
 
 
@@ -63,7 +65,7 @@ class InititeTransferTransaction (APIView):
 
                 # Save the modified instance to the database
                 transfer_instance.save()
-
+                #todo [Fire a notification]
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)

@@ -14,19 +14,18 @@ from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
 from Api.helper_functions.directors.main import *
 from Api.Api_pages.operations.serializers import *
-from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
-from rest_framework.decorators import api_view
-from Main.model_function.helper import generate_staffroll
+from Paystack.transfers import *
+
+
 
 account_type = "DIRECTOR"
 
 '''
     SALARY AND PAYROLL
 '''
-
 class GetAllPayroll(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -97,7 +96,7 @@ class ApprovePayroll (APIView):
                 #send a notification to the operations accountant 
                 pass 
 
-            return Response({"message": "An error occurred"}, status=HTTP_200_OK)
+            return Response({"message": "cool"}, status=HTTP_200_OK)
 
 
         except PermissionDenied:
@@ -124,26 +123,31 @@ class VerifyPayroll (APIView):
 '''
     TRANSFERS
 '''
-class ApproveTransaction (APIView):
+class ApproveTransfer (APIView):
     '''
         This would get the transaction from the operations account and there would be a desicion of
         either approval or rejection of the transaction
     '''
     def post (self, request, transaction_id):
+
+        data = request.data
         try:
             check_account_type(request.user, account_type)
-
             transaction_record = Operations_account_transaction_record.objects.get(id=transaction_id)
 
-            transaction_data = {
-                "amount" : transaction_record.amount,
-                "name" : transaction_record.name_of_reciever,
-                "reason": transaction_record.reason,
-                "account_number": transaction_record.account_number,
-                "bank_account": transaction_record.reciever_bank_account
-            }
+            if data['status'] == "APPROVED":
+                transaction_data = {
+                    "amount" : transaction_record.amount,
+                    "reason": transaction_record.reason,
+                    "reference": transaction_record.reference,
+                    "reciepient": transaction_record.customer_transaction_id
+                }
+                process_transaction(transaction_data)
+                #todo [update the DB]
+            else:
+                '''update the db for canceled transactions'''
 
-            payment_feedback = process_transaction(transaction_data)
+            return Response({"message": "cool"}, status=HTTP_200_OK)
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
@@ -151,6 +155,6 @@ class ApproveTransaction (APIView):
         except APIException as e:
             return Response({"message": str(e.detail)}, status=e.status_code)
 
-        except Exception as e:
-            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+        # except Exception as e:
+        #     return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 

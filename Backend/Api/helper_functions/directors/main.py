@@ -82,10 +82,3 @@ def convert_to_double_quoted_string(data):
 
 
 
-'''
-TRANSFERS
-'''
-
-def process_transaction(transaction_data):
-    #generate the transaction id   
-    pass
