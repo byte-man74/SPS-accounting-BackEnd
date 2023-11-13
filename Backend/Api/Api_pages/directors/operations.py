@@ -91,6 +91,8 @@ class ApprovePayroll (APIView):
             if approval_data == "INITIALIZED":
                 #send a notification to the operations
                 process_salary_payment(payroll_id)
+                #todo [update payroll staff status]
+             
 
             elif approval_data == "CANCELLED":
                 #send a notification to the operations accountant 
@@ -112,6 +114,12 @@ class ApprovePayroll (APIView):
             return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
+class UpdateStaffPayroll(APIView):
+    '''
+        This is just supposed to be a webhook that updates the staff salary payment status from
+        paystack verify payment webhook.
+    '''
 
 class VerifyPayroll (APIView):
     '''
