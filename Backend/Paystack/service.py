@@ -58,3 +58,20 @@ def generate_paystack_id(instance, full_name_present=None):
 
     # Return None or an appropriate message if an exception occurs
     return None
+
+
+def verify_payment (transaction_refrence, customer_id):
+    url = f"https://api.paystack.co/transfer/verify/{transaction_refrence}"  # Replace with your actual reference
+
+
+    headers = {
+        "Authorization": f"Bearer {SECRET_KEY}"
+    }
+    try:
+        response = requests.get(url, headers=headers)
+        response_json = response.json()
+
+        print(response_json)
+
+    except requests.exceptions.RequestException as req_err:
+        print(f"Error occurred: {req_err}")

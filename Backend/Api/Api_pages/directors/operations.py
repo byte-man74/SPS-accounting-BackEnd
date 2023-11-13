@@ -115,8 +115,30 @@ class ApprovePayroll (APIView):
 
 class VerifyPayroll (APIView):
     '''
-        This would get all the staff instances and find the list of staff that hasn't been paid
+        This would get all the staff instances in a payroll  and find the list of staff that hasn't been paid
     '''
+    def post (self, request, payroll_id, *args, **kwargs):
+        try:
+            payroll_instance = get_object_or_404(Payroll, id=payroll_id)
+            staffs = payroll_instance.staffs
+
+            
+
+            # return the summary (summary of all the staffs that have been paid)
+            # return the total number of staffs that haven't been paid
+            # 
+
+            pass
+
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
