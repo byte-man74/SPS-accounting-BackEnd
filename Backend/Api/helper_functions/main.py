@@ -346,23 +346,41 @@ def get_transaction_summary_by_header(transactions):
     return transaction_summary
 
 
-def get_cash_left_and_month_summary(school_id):
+def get_cash_left_and_month_summary(school_id, transaction_type=None):
     """
     Retrieves the remaining cash amount and total debit transactions for a given school
     within the current month.
 
+    If `transaction_type` is specified:
+    - If set to 'CASH', it returns only debit transactions for cash.
+    - If set to 'TRANSFER', it returns only debit transactions for transfers.
+    - If not specified or set to None, it returns all debit transactions.
+
     Parameters:
         - school_id (int): The identifier of the school for which the information is retrieved.
+        - transaction_type (str, optional): The type of transaction.
 
     Returns:
         dict: A dictionary containing the following information:
             - 'cash_amount': The remaining amount of cash in the school's operations account.
             - 'total_amount': The total amount of debit transactions within the current month.
-                            If no transactions are found, it defaults to 0.
+                              If no transactions are found, it defaults to 0.
     """
 
+
     operation_account = get_object_or_404(Operations_account, school=school_id)
-    cash_amount_left = operation_account.amount_available_cash
+    cash_amount_left = (
+        operation_account.amount_available_transfer
+        if transaction_type == "TRANSFER"
+        else operation_account.amount_available_cash
+    )
+
+    if transaction_type is not None and transaction_type == "CASH":
+        transaction_type = "CASH"
+    
+    if transaction_type is not None and transaction_type == "TRANSFER":
+        transaction_type = "TRANSFER"
+
 
     # Get the current date and time in the appropriate time zone
     current_date = timezone.now()
@@ -374,6 +392,7 @@ def get_cash_left_and_month_summary(school_id):
 
     total_amount = Operations_account_transaction_record.objects.filter(
         transaction_category="DEBIT",
+        transaction_type=transaction_type,
         status="SUCCESS",
         time__range=(beginning_of_month, current_date)
     ).aggregate(Sum('amount'))['amount__sum']
