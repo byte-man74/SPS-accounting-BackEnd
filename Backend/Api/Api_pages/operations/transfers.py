@@ -19,18 +19,27 @@ from rest_framework.exceptions import APIException
 account_type = "OPERATIONS"
 
 
-
-class OperationsAccountIncomeLastSevenMonths(APIView):
-    # this API is responsible for getting and calculating all the income coming in the operations account through transfers
-    # return the income for the past seven months 
-    pass
-
-
-
 class CurrentMonthTransferBudgetSummary(APIView):
-    # this API is responsible for getting and calculating all the transfer amount spent in the current month
-    # this api is also responsible for getting the total amount available to transfer
-    pass
+    '''
+        this API is responsible for getting and calculating all the transfer amount spent in the current month
+        this api is also responsible for getting the total amount available to transfer
+    '''
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            check_account_type(request.user, account_type)
+
+
+            
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -48,8 +57,8 @@ class InititeTransferTransaction (APIView):
     '''
     permission_classes = [IsAuthenticated]
 
-    def post (self, request, *args, **kwargs):
-        try: 
+    def post(self, request, *args, **kwargs):
+        try:
             check_account_type(request.user, account_type)
             serializer = TransferTransactionWriteSerializer(data=request.data)
 
@@ -62,10 +71,9 @@ class InititeTransferTransaction (APIView):
                 transfer_instance.school = get_user_school(request.user).id
                 transfer_instance.transaction_type = "TRANSFER"
 
-
                 # Save the modified instance to the database
                 transfer_instance.save()
-                #todo [Fire a notification]
+                # todo [Fire a notification]
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
@@ -77,10 +85,6 @@ class InititeTransferTransaction (APIView):
             return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
-
 class EditTransferTransaction(APIView):
     # this API is responsible for editing the transfer transaction
     pass
-
-

@@ -12,6 +12,7 @@ from collections import defaultdict
 from django.db.models import Sum
 from enum import Enum
 
+
 def check_account_type(user, account_type):
     '''
         This api is used to check if the correct user role is accessing the API. if its not the user
@@ -28,6 +29,16 @@ def check_account_type(user, account_type):
 
 
 def get_school_from_user(user_id):
+    """
+    Retrieves the school ID associated with a user.
+
+    Parameters:
+        user_id (int): The identifier of the user.
+
+    Returns:
+        int or None: The school ID associated with the user. If the user is not found or
+                     does not have an associated school, returns None.
+    """
     try:
         custom_user = get_object_or_404(CustomUser, id=user_id)
         user_school = custom_user.school
@@ -38,6 +49,22 @@ def get_school_from_user(user_id):
 
 
 def get_unarranged_transaction_six_months_ago(school_id):
+    """
+    Retrieves a list of successful debit transactions that occurred within the last
+    six months for a specified school. The records are unarranged and include details such
+    as transaction time, amount, and transaction type.
+
+    Parameters:
+        school_id (int): The identifier of the school for which transaction records are retrieved.
+
+    Returns:
+        list or None: A list of dictionaries representing unarranged debit transaction records
+                      within the last six months. Each dictionary contains details such as:
+                      - 'time': The timestamp of the transaction.
+                      - 'amount': The amount involved in the transaction.
+                      - 'transaction_type': The type of the transaction.
+                  If no records are found, returns None.
+    """
     try:
         current_date = datetime.now()
         print(current_date)
@@ -68,6 +95,26 @@ def get_unarranged_transaction_six_months_ago(school_id):
 
 
 def get_unarranged_transaction_seven_days_ago(school_id):
+    """
+    Retrieves a list of successful transaction records that occurred within the last
+    seven days for a specified school. The records are unarranged and include details such
+    as transaction time, amount, transaction type, status, reason, name of the receiver, and particulars.
+
+    Parameters:
+        school_id (int): The identifier of the school for which transaction records are retrieved.
+
+    Returns:
+        list or None: A list of dictionaries representing unarranged transaction records within
+                      the last seven days. Each dictionary contains details such as:
+                      - 'time': The timestamp of the transaction.
+                      - 'amount': The amount involved in the transaction.
+                      - 'transaction_type': The type of the transaction.
+                      - 'status': The status of the transaction (e.g., 'SUCCESS').
+                      - 'reason': The reason or description of the transaction.
+                      - 'name_of_receiver': The name of the receiver, if applicable.
+                      - 'particulars': The particulars associated with the transaction.
+                  If no records are found, returns None.
+    """
     try:
         current_date = datetime.now()
         seven_days_ago = current_date - timedelta(days=7)
@@ -129,6 +176,22 @@ def format_date(date):
 
 
 def process_and_sort_transactions_by_months(transactions):
+    """
+    Processes a list of transactions, grouping them by the month in which they occurred
+    and sorting the data by month name.
+
+    Parameters:
+        transactions (iterable): A collection of transactions, where each transaction is
+                                expected to be a dictionary with 'time' and 'amount' fields.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary represents a month's total
+              transaction amount. Each dictionary has the following structure:
+              {
+                'month': str,        # The name of the month.
+                'total_amount': float # The total amount of transactions for the month.
+              }
+    """
     import calendar
 
     monthly_totals = {}
@@ -157,6 +220,30 @@ def process_and_sort_transactions_by_months(transactions):
 
 
 def process_and_sort_transactions_by_days(transactions):
+    """
+    Processes a list of transactions, grouping them by their transaction date and
+    organizing the data for each day.
+
+    Parameters:
+        transactions (iterable): A collection of transactions, where each transaction is
+                                expected to be a dictionary with 'time', 'particulars',
+                                'amount', and 'reason' fields.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary represents a day's transactions.
+              Each dictionary has the following structure:
+              {
+                "date": str,  # The formatted date of the transactions for the day.
+                "transaction_data": [
+                    {
+                        "particulars": str,  # The name of the particulars for the transaction.
+                        "amount": float,     # The amount of the transaction.
+                        "reason": str        # The reason or description of the transaction.
+                    },
+                    # ... additional transaction data for the day ...
+                ]
+              }
+    """
     daily_totals = defaultdict(lambda: {"date": None, "transaction_data": []})
 
     for transaction in transactions:
@@ -174,6 +261,19 @@ def process_and_sort_transactions_by_days(transactions):
 
 
 def calculate_cash_and_transfer_transaction_total(transactions):
+    """
+    Calculates the total amount of 'CASH' and 'TRANSFER' transactions from a given list.
+
+    Parameters:
+        transactions (iterable): A collection of transactions, where each transaction is
+                                expected to be a dictionary with a 'transaction_type' and
+                                'amount' field.
+
+    Returns:
+        tuple: A tuple containing two values:
+            - The total amount of transactions with 'transaction_type' as 'CASH'.
+            - The total amount of transactions with 'transaction_type' as 'TRANSFER'.
+    """
     cash_total = 0
     transfer_total = 0
 
@@ -189,10 +289,27 @@ def calculate_cash_and_transfer_transaction_total(transactions):
 
 
 def get_user_school(user):
+    '''
+        Get the user's school
+    '''
     return get_object_or_404(School, id=get_school_from_user(user.id))
 
 
 def get_transaction_summary_by_header(transactions):
+    """
+    Generates a summary of transactions based on their particulars (eg: Transportation, feeding), including total
+    amounts and percentages for each particular type.
+
+    Parameters:
+        transactions (iterable): A collection of transactions to be summarized.
+
+    Returns:
+        dict: A dictionary containing transaction summaries based on particulars. Each
+              entry in the dictionary includes the following information:
+              - 'total_amount': The total amount of transactions for the specific particulars.
+              - 'percentage': The percentage of the total transaction amount represented by
+                               transactions of this particulars type.
+    """
     transaction_summary = {}
 
     for transaction in transactions:
@@ -230,6 +347,20 @@ def get_transaction_summary_by_header(transactions):
 
 
 def get_cash_left_and_month_summary(school_id):
+    """
+    Retrieves the remaining cash amount and total debit transactions for a given school
+    within the current month.
+
+    Parameters:
+        - school_id (int): The identifier of the school for which the information is retrieved.
+
+    Returns:
+        dict: A dictionary containing the following information:
+            - 'cash_amount': The remaining amount of cash in the school's operations account.
+            - 'total_amount': The total amount of debit transactions within the current month.
+                            If no transactions are found, it defaults to 0.
+    """
+
     operation_account = get_object_or_404(Operations_account, school=school_id)
     cash_amount_left = operation_account.amount_available_cash
 
@@ -243,7 +374,7 @@ def get_cash_left_and_month_summary(school_id):
 
     total_amount = Operations_account_transaction_record.objects.filter(
         transaction_category="DEBIT",
-        status = "SUCCESS",
+        status="SUCCESS",
         time__range=(beginning_of_month, current_date)
     ).aggregate(Sum('amount'))['amount__sum']
 
@@ -256,11 +387,12 @@ def get_cash_left_and_month_summary(school_id):
     return data
 
 
-
-def get_all_school_header (school_id):
+def get_all_school_header(school_id):
+    '''
+        Get all the school transactionsheader available
+    '''
     particulars = Particulars.objects.filter(school=school_id)
     return particulars
-
 
 
 class OperationType(Enum):
@@ -268,10 +400,27 @@ class OperationType(Enum):
     SUBTRACT = "SUBTRACT"
     SAFE = "SAFE"
 
+
 def update_operations_account(amount, school_id, operation_type):
+    """
+    Updates the amount of available cash in the operations account for a specific school
+    based on the specified operation type.
+
+    Parameters:
+        amount (float): The amount to be added or subtracted from the available cash.
+        school_id (int): The identifier of the school's operations account to be updated.
+        operation_type (str): The type of operation to be performed. Supported values are
+                              'SUBTRACT', 'ADD', or 'SAFE' to deduct, add, or keep the
+                              current cash amount respectively.
+
+    Returns:
+        float: The updated amount of available cash after the specified operation.
+    Raises:
+        ValueError: If the provided operation_type is not one of the supported values.
+    """
+
     operation_account = get_object_or_404(Operations_account, school=school_id)
     cash_amount_left = operation_account.amount_available_cash
-
 
     if operation_type == OperationType.SUBTRACT.value:
         cash_amount_left -= amount

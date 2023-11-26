@@ -21,6 +21,10 @@ account_type = "OPERATIONS"
 # tested✅😊
 # todo: later also pass expense data to
 class GetMonthlyTransaction(APIView):
+    '''
+        Returns all the transactions that has happened for the last seven months. it sorts the transaction
+        by month
+    '''
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -41,11 +45,8 @@ class GetMonthlyTransaction(APIView):
 
 
 
-# Api to get amount available in cash in the operations account
-# API to get amount available to transfer in the operations account
-# API to get the tootal amount available in the operations account
-# tested✅😊
 class GetAmountAvailableOperationsAccount(APIView):
+    '''Get all the amount available in the operations account'''
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -59,11 +60,11 @@ class GetAmountAvailableOperationsAccount(APIView):
 
 
 
-# API to get the total transcations that has happened in the past the past 7 days both transfer abd cash transactions in the operations account
-# get the transaction list and filter it by active
-# functionality to get the sum of money spent in the past 7 days both in cash and transfer
-# tested✅😊
+
 class GetTransactionSevenDaysAgo (APIView):
+    '''
+        Returns the total amount of money spent in the past 7 days and the sum of money spent in the past 7 days
+    '''
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -104,8 +105,6 @@ class GetTransactionSevenDaysAgo (APIView):
 
 
 
-#  API to get all approved cash transactions in the operations acount
-# API to get all pending cash transactions
 # tested✅😊
 class GetAllCashTransactions(APIView):
     permission_classes = [IsAuthenticated]
@@ -135,8 +134,7 @@ class GetAllCashTransactions(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
-# API to edit a particular cash transaction
-# tested✅😊
+
 class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
     queryset = Operations_account_transaction_record.objects.all()
     serializer_class = CashTransactionWriteSerializer
