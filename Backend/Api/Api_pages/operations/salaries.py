@@ -195,12 +195,7 @@ class InitiateTaxroll (APIView):
 
 
 class GenerateTransactionSummary (APIView):
-    # this api is responsible for returning a TransactionSummary from an existing payroll transactio
-    pass
-
-
-class InitiateSalaryPayment (APIView):
-    # this api is responsible for initializing a salary payment
+    # this api is responsible for returning a TransactionSummary from an existing payroll transaction
     pass
 
 
