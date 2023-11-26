@@ -35,9 +35,6 @@ class  GetCashLeftInSafeAndCurrentMonthTransferSummary(APIView):
             serializer = CashTransactionDetailsSerializer(data)
             return Response(serializer.data, status=HTTP_200_OK)
 
-
-
-
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
 
@@ -53,7 +50,43 @@ class GetAllTransferTransaction (APIView):
     '''
         This API is responsible for getting all the transfer transactions that have been made
     '''
-    pass
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pending):
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            # Check if the 'pending' argument is in the request's query parameters
+            if pending == "pending":
+                # Modify the query for pending transactions
+                operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
+                    school=user_school, transaction_type="TRANSFER"
+                ).order_by('-time').filter(status="PENDING")
+
+            else:
+                operations_account_cash_transaction = Operations_account_transaction_record.get_transaction(
+                    school=user_school, transaction_type="TRANSFER").order_by('-time').filter(status="SUCCESS")
+
+            print(operations_account_cash_transaction)
+            serializer = OperationsAccountCashTransactionRecordSerializer(
+                operations_account_cash_transaction, many=True)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+        
+
+
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 class InititeTransferTransaction (APIView):
