@@ -19,6 +19,8 @@ from rest_framework.exceptions import APIException
 account_type = "OPERATIONS"
 
 
+
+
 class  GetCashLeftInSafeAndCurrentMonthTransferSummary(APIView):
     '''
         this API is responsible for getting and calculating all the transfer amount spent in the current month
