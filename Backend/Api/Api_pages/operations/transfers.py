@@ -19,7 +19,7 @@ from rest_framework.exceptions import APIException
 account_type = "OPERATIONS"
 
 
-class CurrentMonthTransferBudgetSummary(APIView):
+class  GetCashLeftInSafeAndCurrentMonthTransferSummary(APIView):
     '''
         this API is responsible for getting and calculating all the transfer amount spent in the current month
         this api is also responsible for getting the total amount available to transfer
@@ -29,9 +29,15 @@ class CurrentMonthTransferBudgetSummary(APIView):
     def get(self, request, *args, **kwargs):
         try:
             check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            data = get_cash_left_and_month_summary(user_school, transaction_type="TRANSFER")
+
+            serializer = CashTransactionDetailsSerializer(data)
+            return Response(serializer.data, status=HTTP_200_OK)
 
 
-            
+
+
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
 
