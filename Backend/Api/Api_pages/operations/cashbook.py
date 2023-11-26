@@ -107,6 +107,9 @@ class GetTransactionSevenDaysAgo (APIView):
 
 # tested✅😊
 class GetAllCashTransactions(APIView):
+    """
+    API endpoint to get all approved cash transactions.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pending):
@@ -136,6 +139,21 @@ class GetAllCashTransactions(APIView):
 
 
 class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
+    """
+    API endpoint to view and modify cash transactions.
+
+    Requires authentication.
+
+    Methods:
+        - GET: Retrieves a list of all cash transactions (not supported).
+        - POST: Creates a new cash transaction (not supported).
+        - PUT: Updates a cash transaction (not supported).
+        - PATCH: Partially updates a cash transaction. Supports modifying the status of the
+                 transaction, and may initiate actions such as cancellation or pending approval.
+
+    Permissions:
+        - IsAuthenticated: Only authenticated users can access this endpoint.
+    """
     queryset = Operations_account_transaction_record.objects.all()
     serializer_class = CashTransactionWriteSerializer
     permission_classes = [IsAuthenticated]
@@ -193,9 +211,24 @@ class ViewAndModifyCashTransaction(viewsets.ModelViewSet):
 
 # APi to to add or creat cash transaction instance
 class CreateCashTransaction (APIView):
+    """
+    API endpoint to create a cash transaction.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
+        """
+        Create a cash transaction.
+
+        Parameters:
+            request: The HTTP request object.
+            format: The requested format for the response (default is None).
+
+        Returns:
+            Response: The HTTP response containing a success message if the transaction is created
+                      successfully, or an error message if there are issues with the provided data
+                      or user permissions.
+        """
         try:
             check_account_type(request.user, account_type)
             serializer = CashTransactionWriteSerializer(data=request.data)
@@ -210,6 +243,10 @@ class CreateCashTransaction (APIView):
 
 
 class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
+    """
+    API endpoint to retrieve the remaining cash in the safe and a summary of total amount of
+    cash transactions spent for the current month.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
