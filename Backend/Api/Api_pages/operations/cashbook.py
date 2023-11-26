@@ -251,7 +251,7 @@ class GetCashLeftInSafeAndCurrentMonthCashSummary (APIView):
 
     def get(self, request):
         user_school = get_user_school(request.user)
-        data = get_cash_left_and_month_summary(user_school)
+        data = get_cash_left_and_month_summary(user_school, transaction_type="CASH")
 
         serializer = CashTransactionDetailsSerializer(data)
         return Response(serializer.data, status=HTTP_200_OK)
