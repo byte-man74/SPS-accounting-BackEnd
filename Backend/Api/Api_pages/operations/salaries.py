@@ -256,7 +256,7 @@ class GenerateTransactionSummary (APIView):
 class GetAllPayroll (APIView):
     '''this api is responsible for getting all SalaryPayments'''
 
-    def get(self, request, payroll_id):
+    def get(self, request):
         try:
             check_account_type(self.request.user, account_type)
             user_school = get_user_school(self.request.user)
@@ -282,7 +282,17 @@ class GetAllPayroll (APIView):
 
 
 class RequeryFailedPayrollTransaction (APIView):
-    # this api is responsible for requerying failed payments
+    '''
+        this api is responsible for requerying failed payments
+    '''
+    def post (self, request, payroll_id):
+        payroll = get_object_or_404(Payroll, id=payroll_id)
+        
+        staffs_failed = payroll.get_all_failed_staff_payment()
+        #todo: Initiate bulk transaction and reupdate the staff payment status
+
+
+
     pass
 
 
