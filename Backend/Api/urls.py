@@ -27,7 +27,7 @@ urlpatterns = [
     path ('fetch_header', FetchHeader.as_view(), name='fetch_header'),###
 
     #Operation
-    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations
+    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ 
     path ('get_cash_transaction_six_months_ago', GetMonthlyTransaction.as_view(), name="get_monthly_transaction"), ###✅
     path ('get_cash_and_transfer_record_seven_days_ago', GetTransactionSevenDaysAgo.as_view(), name='get_cash_and transfer_record_seven_days_ago'), ##✅
     path('get_all_cash_transactions/<str:pending>/', GetAllCashTransactions.as_view(), name='all_cash_transactions_with_status'),
@@ -43,7 +43,8 @@ urlpatterns = [
     path('add_and_edit_staff', AddAndEditStaff.as_view(), name='add_and_edit_staff'),  ###✅
     path('show_staff_type', ShowStaffType, name='show_staff_type'), ###✅
     path('initiate_payroll', InitiatePayroll.as_view(), name='initiate_payroll'),  ###✅
-    path('generate_taxroll/<str:payroll_id', InitiateTaxroll.as_view(), name='generate_taxroll'),
+    path('generate_taxroll/<str:payroll_id', InitiateTaxroll.as_view(), name='generate_taxroll'), 
+    path('get_payroll_summary/<str:payroll_id', GenerateTransactionSummary.as_view(), name='get_payroll_summary'),
 
 
     #director salary and staffs
