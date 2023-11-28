@@ -104,3 +104,11 @@ class TransferTransactionWriteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Operations_account_transaction_record
         fields = ('amount', 'particulars', 'reason', 'name_of_reciever', 'account_number_of_reciever', 'reciever_bank')
+
+
+
+class TaxRollReadSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        models = Taxroll
+        fields = "__all__"

@@ -52,7 +52,6 @@ class Payroll(models.Model):
         staffs_data = self.staffs if self.staffs else []
         return sum(staff.get("basic_salary", 0) for staff in staffs_data if isinstance(staff, dict) and "basic_salary" in staff)
 
-
     def remove_staff_by_id(self, staff_id):
         if "staffs" not in self.staffs:
             return  # If staffs is not a list, nothing to remove
@@ -167,7 +166,10 @@ class Taxroll(models.Model):
                 payroll=payroll
             )
             taxroll.save()
-            return ("SUCCESS")  # Successful generation
+            return ({
+                "status": "SUCCESS",
+                "data": taxroll
+            })  # Successful generation
         except Payroll.DoesNotExist:
             return ("ERROR_404")
         except Exception as e:

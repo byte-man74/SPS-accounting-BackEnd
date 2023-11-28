@@ -159,7 +159,7 @@ def ShowStaffType(request):
 class InitiatePayroll (APIView):
     '''
         -The Api is responsible for initiating payroll instance
-        -Also the would be a patch request to modify the staffs too
+        -(TODO) Also the would be a patch request to modify the staffs too
     '''
 
     def post(self, request, *args, **kwargs):
@@ -190,8 +190,30 @@ class InitiatePayroll (APIView):
 
 
 class InitiateTaxroll (APIView):
-    # this api is responsible for creating a Taxroll instance from an existing payroll
-    pass
+    '''
+        -The Api is responsible for initiating payroll instance
+    '''
+    def post(self, request, payroll_id, *args, **kwargs):
+        try:
+            check_account_type(request.user, account_type)
+            taxroll_function = Taxroll.generate_taxroll_out_of_payroll(payroll_id)
+            taxroll_instance = taxroll_function['data']
+
+            serialized_data = TaxRollReadSerializer(data=taxroll_instance)
+            return Response(serialized_data.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+
 
 
 class GenerateTransactionSummary (APIView):
