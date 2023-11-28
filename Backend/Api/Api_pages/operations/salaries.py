@@ -67,6 +67,7 @@ class AddAndEditStaff (APIView):
         this api is responsible for adding a new staff 
         this api is responsible for editing the details of the staff
     """
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
@@ -161,6 +162,7 @@ class InitiatePayroll (APIView):
         -The Api is responsible for initiating payroll instance
         -(TODO) Also the would be a patch request to modify the staffs too
     '''
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         try:
@@ -169,8 +171,9 @@ class InitiatePayroll (APIView):
             user_school = get_user_school(request.user)
             staff_list = generate_staffroll(user_school)
 
-            # create an async task here 
-            payroll = Payroll.objects.create(name=payroll_name, school=user_school)
+            # create an async task here
+            payroll = Payroll.objects.create(
+                name=payroll_name, school=user_school)
             payroll.add_staff(staff_list)
             payroll.save()
 
@@ -193,10 +196,12 @@ class InitiateTaxroll (APIView):
     '''
         -The Api is responsible for initiating payroll instance
     '''
+
     def post(self, request, payroll_id, *args, **kwargs):
         try:
             check_account_type(request.user, account_type)
-            taxroll_function = Taxroll.generate_taxroll_out_of_payroll(payroll_id)
+            taxroll_function = Taxroll.generate_taxroll_out_of_payroll(
+                payroll_id)
             taxroll_instance = taxroll_function['data']
 
             serialized_data = TaxRollReadSerializer(data=taxroll_instance)
@@ -215,10 +220,37 @@ class InitiateTaxroll (APIView):
             return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
-
 class GenerateTransactionSummary (APIView):
-    # this api is responsible for returning a TransactionSummary from an existing payroll transaction
-    pass
+    '''this api is responsible for returning a TransactionSummary from an existing payroll transaction'''
+
+    def get(self, request, payroll_id, *args, **kwargs):
+        try:
+            check_account_type(request.user, account_type)
+            payroll_instance = get_object_or_404(Payroll, id=payroll_id)
+            total_amount_paid = payroll_instance.get_total_salary_paid()
+            total_tax_paid = payroll_instance.get_total_tax_paid()
+            # todo: Add the total transfer list for all the staffs paid (total amount)
+
+            # Create an instance of the serializer with the response data
+            serializer = TransactionSummarySerializer({
+                "amount_paid": total_amount_paid,
+                "total_tax_paid": total_tax_paid
+            })
+
+            # Return the serialized data in the response
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
 
 
 class GetAllPayroll (APIView):

@@ -112,3 +112,15 @@ class TaxRollReadSerializer (serializers.ModelSerializer):
     class Meta:
         models = Taxroll
         fields = "__all__"
+
+
+
+class TransactionSummarySerializer(serializers.Serializer):
+    amount_paid = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_tax_paid = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    # You can add more fields as needed based on your data model
+
+    class Meta:
+        # Additional options for the serializer (if needed)
+        fields = ('amount_paid', 'total_tax_paid')
