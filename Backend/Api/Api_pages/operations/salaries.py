@@ -254,8 +254,31 @@ class GenerateTransactionSummary (APIView):
 
 
 class GetAllPayroll (APIView):
-    # this api is responsible for getting all SalaryPayments
-    pass
+    '''this api is responsible for getting all SalaryPayments'''
+
+    def get(self, request, payroll_id):
+        try:
+            check_account_type(self.request.user, account_type)
+            user_school = get_user_school(self.request.user)
+            payroll_list = Payroll.objects.filter (school=user_school.id)
+
+            serializer = PayrollSerializer(data=payroll_list, many=True)
+
+            # Return the serialized data in the response
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+
 
 
 class RequeryFailedPayrollTransaction (APIView):

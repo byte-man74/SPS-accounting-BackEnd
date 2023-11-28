@@ -124,3 +124,10 @@ class TransactionSummarySerializer(serializers.Serializer):
     class Meta:
         # Additional options for the serializer (if needed)
         fields = ('amount_paid', 'total_tax_paid')
+
+
+class PayrollSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Payroll
+        fields = ("name", "date_initiated")
