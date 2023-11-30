@@ -289,7 +289,7 @@ class RequeryFailedPayrollTransaction (APIView):
         payroll = get_object_or_404(Payroll, id=payroll_id)
         
         staffs_failed = payroll.get_all_failed_staff_payment()
-        #todo: Initiate bulk transaction and reupdate the staff payment status
+        #todo:u Initiate bulk transaction and reupdate the staff payment status
 
 
 
