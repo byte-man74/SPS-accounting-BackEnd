@@ -32,3 +32,11 @@ class PaymentHistory (models.Model):
 
     def __str__(self):
         return f'{self.student} payment reciept'
+    
+
+
+'''
+- the breakdown structure
+- add the grade section model method 
+- test the models in admin
+'''
