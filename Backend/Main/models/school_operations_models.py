@@ -19,6 +19,14 @@ class School(models.Model):
 '''Staff section'''
 
 
+class Class(models.Model):
+    name = models.CharField(max_length=50)
+    school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 
 class Staff_type (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
