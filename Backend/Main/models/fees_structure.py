@@ -14,7 +14,7 @@ class PaymentStatus (models.Model):
 
 
 class PaymentHistory (models.Model):
-    student = models.ForeignKey("Main.Student", verbose_name=_(""), on_delete=models.CASCADE)
+    student = models.ForeignKey("Main.Student",  on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     date_time_initiated = models.DateTimeField()
     is_active = models.BooleanField(default=True)
@@ -28,7 +28,7 @@ class PaymentHistory (models.Model):
     paystack_reference = models.CharField(max_length=50)
 
 
-    breakdowns = models.TextField()
+    breakdowns = models.JSONField()
 
     def __str__(self):
         return f'{self.student} payment reciept'

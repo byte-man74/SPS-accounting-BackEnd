@@ -17,3 +17,4 @@ fee_status = (
     ("IN DEBT", "IN DEBT"),
     ("OUTSTANDING", "OUTSTANDING"),
 )
+
