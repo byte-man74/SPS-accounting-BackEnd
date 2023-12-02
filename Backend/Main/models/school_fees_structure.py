@@ -119,7 +119,7 @@ class OtherFeeCategory (models.Model):
     category = models.ForeignKey("Main.FeesCategory", on_delete=models.CASCADE) 
     grades = models.ManyToManyField("Main.Class")
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
-    is_recommended = models.BooleanField(default=False)
+    is_compoulslry = models.BooleanField(default=False)
 
     '''financials'''
     amount = models.BigIntegerField(default=0)
