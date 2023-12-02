@@ -5,6 +5,35 @@ from Paystack.service import *
 from django.core.exceptions import ValidationError
 
 
+
+"""
+This module defines Django models for managing a school system, including schools, classes, staff types, and staff members.
+
+1. School Model (`School`):
+   - Represents a school with attributes like `id`, `name`, `address`, `email_address`, and `logo`.
+   - Uses a UUID field as the primary key.
+   - Custom `__str__` method returns the school's name.
+
+2. Class Model (`Class`):
+   - Represents a class within a school with attributes like `name` and a foreign key to the `School` model.
+   - Custom `__str__` method returns the class name.
+
+3. Staff Type Model (`Staff_type`):
+   - Represents types of staff roles within a school with attributes like `school`, `basic_salary`, `tax`, and `name`.
+   - Custom `__str__` method returns the staff type's name.
+
+4. Staff Model (`Staff`):
+   - Represents individual staff members with attributes like `first_name`, `last_name`, `phone_number`, etc.
+   - Includes relationships with other models (e.g., `School`, `Class`, `Staff_type`, `Paystack.Bank`).
+   - Defines methods like `reset_salary_deduction_for_staffs_in_a_school` and `get_staff_total_payment`.
+   - Overrides `save` to generate a unique `paystack_id` using `generate_paystack_id` before saving.
+
+5. Custom Functions:
+   - `reset_salary_deduction_for_staffs_in_a_school`: Resets salary deductions for all staff in a given school.
+   - `get_staff_total_payment`: Calculates total payment for a staff member based on salary components.
+
+"""
+
 class School(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
@@ -16,8 +45,21 @@ class School(models.Model):
     def __str__(self):
         return self.name
 
-'''Staff section'''
 
+class SchoolConfig (models.Model):
+
+    school_terms = (
+        ('FIRST_TERM', 'FIRST_TERM'),
+        ('SECOND_TERM', 'SECOND_TERM'),
+        ('THIRD_TERM', 'THIRD_TERM')
+
+    )
+
+    school = models.OneToOneField("Main.School", on_delete=models.CASCADE)
+    term = models.CharField(default="FIRST TERM", choices=school_terms, max_length=50)
+
+    def __str__(self):
+        return f'{self.school} config'
 
 class Class(models.Model):
     name = models.CharField(max_length=50)
