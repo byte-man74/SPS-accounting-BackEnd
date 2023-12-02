@@ -11,3 +11,9 @@ category_types = (
     ("UNIFORM, WEARS AND BOOKS", "UNIFORM WEARS AND BOOKS"),
     ("OTHER", "OTHER")
 )
+
+fee_status = (
+    ("COMPLETED", "COMPLETED"),
+    ("IN DEBT", "IN DEBT"),
+    ("OUTSTANDING", "OUTSTANDING"),
+)
