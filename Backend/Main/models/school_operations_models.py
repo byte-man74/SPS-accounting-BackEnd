@@ -3,7 +3,7 @@ from django.db import models
 from Main.model_function.helper import *
 from Paystack.service import *
 from django.core.exceptions import ValidationError
-
+from Main.configuration import *
 
 
 """
@@ -47,13 +47,6 @@ class School(models.Model):
 
 
 class SchoolConfig (models.Model):
-
-    school_terms = (
-        ('FIRST_TERM', 'FIRST_TERM'),
-        ('SECOND_TERM', 'SECOND_TERM'),
-        ('THIRD_TERM', 'THIRD_TERM')
-
-    )
 
     school = models.OneToOneField("Main.School", on_delete=models.CASCADE)
     term = models.CharField(default="FIRST TERM", choices=school_terms, max_length=50)
