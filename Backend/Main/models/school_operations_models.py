@@ -121,3 +121,18 @@ class Staff (models.Model):
             self.paystack_id = paystack_id_generated['data']
         
         super().save(*args, **kwargs)
+
+
+class Student (models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    other_names = models.CharField( max_length=50)
+    registration_number = models.CharField(max_length=60)
+    school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
+    grade = models.ForeignKey("Main.Class", on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return self.first_name + " " + self.last_name
+    
+
