@@ -36,7 +36,8 @@ class PaymentHistory (models.Model):
 
 
 '''
-- the breakdown structure
+- the breakdown structure (JSON)
 - add the grade section model method 
-- test the models in admin
+- test the models in admin agressive testing
+- 
 '''
