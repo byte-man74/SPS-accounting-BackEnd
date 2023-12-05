@@ -64,3 +64,70 @@ class ParticularSerializer (serializers.ModelSerializer):
 #     particulars = serializers.DictField(
 #         child=TransactionSummarySerializer(many=True)
 #     )
+
+
+
+class StaffTypeSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Staff_type  
+        fields = ('id', 'basic_salary', 'tax', 'name')
+
+class StaffReadSerializer (serializers.ModelSerializer):
+    staff_type = StaffTypeSerializer()
+
+    class Meta:
+        model = Staff
+        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
+class StaffWriteSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Staff
+        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+
+
+class PayrollSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Payroll
+        fields = ('status', 'name', 'date_initialized', 'total_amount_salary')
+
+class PayrollReadSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Payroll
+        fields = ('status', 'name', 'date_initialized', 'total_amount_salary', 'total_amount_tax')
+
+
+class TransferTransactionWriteSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Operations_account_transaction_record
+        fields = ('amount', 'particulars', 'reason', 'name_of_reciever', 'account_number_of_reciever', 'reciever_bank')
+
+
+
+class TaxRollReadSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        models = Taxroll
+        fields = "__all__"
+
+
+
+class TransactionSummarySerializer(serializers.Serializer):
+    amount_paid = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_tax_paid = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    # You can add more fields as needed based on your data model
+
+    class Meta:
+        # Additional options for the serializer (if needed)
+        fields = ('amount_paid', 'total_tax_paid')
+
+
+class PayrollSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Payroll
+        fields = ("name", "date_initiated")

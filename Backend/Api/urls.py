@@ -2,6 +2,8 @@ from django.urls import path, include
 from Api.Api_pages.Authentication import *
 from Api.Api_pages.operations.cashbook import *
 from Api.Api_pages.head_teacher.operation_account import *
+from Api.Api_pages.operations.salaries import *
+from Api.Api_pages.directors.operations import *
 from Api.Api_pages.main.general import *
 from rest_framework_simplejwt.views import TokenRefreshView
 from Backend.settings import DEBUG, STATIC_URL, STATIC_ROOT, MEDIA_URL, MEDIA_ROOT
@@ -25,7 +27,7 @@ urlpatterns = [
     path ('fetch_header', FetchHeader.as_view(), name='fetch_header'),###
 
     #Operation
-    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ API responsible for gettting amount available operations
+    path ('get_amount_available_operations_account', GetAmountAvailableOperationsAccount.as_view(), name='get_amount available'), #✅ 
     path ('get_cash_transaction_six_months_ago', GetMonthlyTransaction.as_view(), name="get_monthly_transaction"), ###✅
     path ('get_cash_and_transfer_record_seven_days_ago', GetTransactionSevenDaysAgo.as_view(), name='get_cash_and transfer_record_seven_days_ago'), ##✅
     path('get_all_cash_transactions/<str:pending>/', GetAllCashTransactions.as_view(), name='all_cash_transactions_with_status'),
@@ -33,6 +35,27 @@ urlpatterns = [
     path ('view_cash_transction_summary', GetCashLeftInSafeAndCurrentMonthCashSummary.as_view(), name="View cash transaction summary"),
     path('', include(router.urls)),
     # path ('get_header_summary', GetPercentageSummary.as_view(), name='get_header_summary'),
+
+
+
+    #salaries and staffs
+    path('get_all_staffs', GetAllStaffs.as_view(), name='get_all_staffs'),  ###✅
+    path('add_and_edit_staff', AddAndEditStaff.as_view(), name='add_and_edit_staff'),  ###✅
+    path('show_staff_type', ShowStaffType, name='show_staff_type'), ###✅
+    path('initiate_payroll', InitiatePayroll.as_view(), name='initiate_payroll'),  ###✅
+    path('generate_taxroll/<str:payroll_id', InitiateTaxroll.as_view(), name='generate_taxroll'), 
+    path('get_payroll_summary/<str:payroll_id', GenerateTransactionSummary.as_view(), name='get_payroll_summary'),
+    path('get_all_payroll', GetAllPayroll.as_view(), name='get_all_payroll'), 
+
+
+    #director salary and staffs
+    path('approve_payroll/<str:payroll_id>', ApprovePayroll.as_view(), name='approve_payroll'),
+    path('get_all_payroll', GetAllPayroll.as_view(), name='get_all_payroll'),
+    path('get_payroll_details/<str:payroll_id>', ViewPayrollDetails.as_view(), name='get_payroll_details'),
+
+    #directors transfers
+    path('approve_transfer/<str:transaction_id>', ApproveTransfer.as_view(), name='approve_transfer'),
+
 
     #head teacher
     path('head_teacher/get_pending_transaction', HeadTeacherGetAllPendingTransaction.as_view(), name='head_teacher_get_all_transactions'),

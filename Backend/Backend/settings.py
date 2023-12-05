@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'Authentication',
     'Main',
     'Api',
+    'Paystack'
 ]
 
 MIDDLEWARE = [
@@ -68,12 +69,24 @@ WSGI_APPLICATION = 'Backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'phqueyhm',  # This is the default database name from your image.
+        'USER': 'phqueyhm',
+        'PASSWORD': 'XP69t1p2o3fT_8O1HSWpmNVDT8aEnaxU',  # Make sure this is kept secret!
+        'HOST': 'cornelius.db.elephantsql.com',
+        'PORT': '5432',  # default PostgreSQL port
     }
 }
+
 #caches
 CACHES = {
     "default": {
@@ -215,3 +228,7 @@ CELERY_BEAT_SCHEDULE = {
     #     'schedule': crontab(hour=5, minute=0),
     # },
 }
+
+
+PAYSTACK_SECRET_KEY = "sk_test_bfc102895076cd29d09ac8d6f4043f1c8e73481b"
+PAYSTACK_PUBLIC_KEY = "pk_test_b50c758a1c445e60e9782ecd6040dab28e142bb8"
