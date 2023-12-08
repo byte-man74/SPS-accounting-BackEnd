@@ -18,16 +18,23 @@ from rest_framework.exceptions import APIException
 from Paystack.transfers import *
 
 
-class LoginPaymentPortal (APIView):
-    '''This api is responsible for collecting the user information and log them in if their credentials are correct.'''
-    def post (self, request):
-        registration_number = request.GET.get('registration_number')
-        email_address = request.GET.get('email_address')
+class LoginPaymentPortal(APIView):
+    '''
+    This API is responsible for collecting user information and logging them in if their credentials are correct.
+    '''
 
-        student_instance = Student.objects.get(registration_number=registration_number)
-        if student_instance is None:
-            return Response( {"message": "A student with that registration number does not exist!"}, status=HTTP_404_NOT_FOUND)    
-        return Response ({"token": student_instance.id}, status=HTTP_200_OK)
+    def post(self, request):
+        try:
+            registration_number = request.data.get('registration_number')
+            student_instance = get_object_or_404(Student, registration_number=registration_number)
+            return Response({"token": student_instance.id}, status=status.HTTP_200_OK)
+
+        except ObjectDoesNotExist:
+            return Response({"message": "A student with that registration number does not exist!"}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
 
 
 class GetUserPaymentStatus (APIView):
