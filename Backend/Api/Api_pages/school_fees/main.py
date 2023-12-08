@@ -37,6 +37,22 @@ class LoginPaymentPortal(APIView):
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
+class GetStudentInfo (APIView):
+    '''This API gets information about the student... first name, last name etc'''
+
+    def get(self, request):
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Assuming you have a utility function to retrieve a student by ID
+            student = get_student_id_from_request(student_id)
+
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetUserPaymentStatus(APIView):
     '''This API is responsible for getting the student's payment status'''
@@ -60,6 +76,8 @@ class GetUserPaymentStatus(APIView):
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''
