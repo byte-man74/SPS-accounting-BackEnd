@@ -27,7 +27,8 @@ class LoginPaymentPortal(APIView):
     def post(self, request):
         try:
             registration_number = request.data.get('registration_number')
-            student_instance = get_object_or_404(Student, registration_number=registration_number)
+            student_instance = get_object_or_404(
+                Student, registration_number=registration_number)
             return Response({"token": student_instance.id}, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
@@ -35,7 +36,7 @@ class LoginPaymentPortal(APIView):
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+
 
 class GetStudentInfo (APIView):
     '''This API gets information about the student... first name, last name etc'''
@@ -45,14 +46,17 @@ class GetStudentInfo (APIView):
 
         if not student_id:
             return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         try:
             # Assuming you have a utility function to retrieve a student by ID
             student = get_student_id_from_request(student_id)
+            serializer = StudentSerializer(student)
 
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class GetUserPaymentStatus(APIView):
     '''This API is responsible for getting the student's payment status'''
@@ -76,7 +80,6 @@ class GetUserPaymentStatus(APIView):
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 class GetSchoolFeesBreakDownCharges (APIView):

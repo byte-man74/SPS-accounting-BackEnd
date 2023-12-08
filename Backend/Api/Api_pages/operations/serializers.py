@@ -149,7 +149,7 @@ class PayrollSerializer (serializers.ModelSerializer):
 class StudentSerializer (serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ("first_name", "last_name")
+        fields = ("first_name", "last_name", "other_names")
 
 class PaymentStatusSerializer (serializers.ModelSerializer):
     class Meta:
