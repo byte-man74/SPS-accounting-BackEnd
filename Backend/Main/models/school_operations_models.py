@@ -4,7 +4,7 @@ from Main.model_function.helper import *
 from Paystack.service import *
 from django.core.exceptions import ValidationError
 from Main.configuration import *
-
+import hashlib
 
 """
 This module defines Django models for managing a school system, including schools, classes, staff types, and staff members.
@@ -130,7 +130,18 @@ class Student (models.Model):
     registration_number = models.CharField(max_length=60)
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     grade = models.ForeignKey("Main.Class", on_delete=models.CASCADE)
+    student_id = models.CharField(max_length=128, unique=True, blank=True, null=True, editable=False)
 
+    def save(self, *args, **kwargs):
+        # Define a pattern to link the student's name, school, and registration_number
+        pattern = f"{self.first_name}{self.last_name}{self.school.name}{self.registration_number}"
+
+        # Generate a hash of the pattern using SHA-256
+        hashed_pattern = hashlib.sha256(pattern.encode()).hexdigest()
+
+        # Set the student_id field with the hashed pattern
+        self.student_id = hashed_pattern
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.first_name + " " + self.last_name
