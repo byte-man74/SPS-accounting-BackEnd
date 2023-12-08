@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
+from Api.helper_functions.payment_section.main import get_student_id_from_request
 from Main.models import Payroll, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
@@ -37,9 +38,28 @@ class LoginPaymentPortal(APIView):
         
 
 
-class GetUserPaymentStatus (APIView):
-    '''This api is responsible for getting the student's payment status'''
+class GetUserPaymentStatus(APIView):
+    '''This API is responsible for getting the student's payment status'''
 
+    def get(self, request):
+        # Extract student ID from request headers
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Assuming you have a utility function to retrieve a student by ID
+            student = get_student_id_from_request(student_id)
+
+            # Assuming PaymentStatus is related to Student and has a foreign key to Student
+            payment_status = get_object_or_404(PaymentStatus, student=student)
+            serializer = PaymentStatusSerializer(payment_status)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''

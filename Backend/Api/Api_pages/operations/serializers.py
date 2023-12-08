@@ -1,12 +1,14 @@
 from rest_framework import serializers
 from Main.models import *
 
+
 class OperationsAccountSerializer(serializers.ModelSerializer):
     total_amount_available = serializers.SerializerMethodField()
 
     class Meta:
         model = Operations_account
-        fields = ('total_amount_available', 'amount_available_cash', 'amount_available_transfer')
+        fields = ('total_amount_available', 'amount_available_cash',
+                  'amount_available_transfer')
 
     def get_total_amount_available(self, obj):
         return obj.get_total_amount_available()
@@ -21,34 +23,42 @@ class MonthlyTransactionSerializer(serializers.Serializer):
     month = serializers.CharField()
     total_amount = serializers.DecimalField(max_digits=10, decimal_places=2)
 
+
 class CashandTransactionTotalSerializer (serializers.Serializer):
-    cash_total =  serializers.IntegerField()
+    cash_total = serializers.IntegerField()
     transfer_total = serializers.IntegerField()
 
 
 class OperationsAccountCashTransactionRecordSerializer(serializers.ModelSerializer):
-    particulars = serializers.CharField(source='particulars.name', read_only=True)
+    particulars = serializers.CharField(
+        source='particulars.name', read_only=True)
+
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('id', 'time', 'amount', 'transaction_category', 'particulars', 'reason', 'name_of_reciever', 'status' )
+        fields = ('id', 'time', 'amount', 'transaction_category',
+                  'particulars', 'reason', 'name_of_reciever', 'status')
 
 
 class CashTransactionReadSerializer (serializers.ModelSerializer):
-    particulars = serializers.CharField(source='particulars.name', read_only=True)
+    particulars = serializers.CharField(
+        source='particulars.name', read_only=True)
+
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('id', 'time', 'amount', 'transaction_category', 'particulars', 'name_of_reciever', 'status', 'reason' )
+        fields = ('id', 'time', 'amount', 'transaction_category',
+                  'particulars', 'name_of_reciever', 'status', 'reason')
+
 
 class CashTransactionWriteSerializer (serializers.ModelSerializer):
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('time', 'amount', 'reason', 'particulars', 'name_of_reciever', 'status' )
+        fields = ('time', 'amount', 'reason', 'particulars',
+                  'name_of_reciever', 'status')
 
 
 class CashTransactionDetailsSerializer (serializers.Serializer):
-    cash_amount =  serializers.IntegerField()
+    cash_amount = serializers.IntegerField()
     total_amount = serializers.IntegerField()
-
 
 
 class ParticularSerializer (serializers.ModelSerializer):
@@ -66,25 +76,27 @@ class ParticularSerializer (serializers.ModelSerializer):
 #     )
 
 
-
 class StaffTypeSerializer (serializers.ModelSerializer):
     class Meta:
-        model = Staff_type  
+        model = Staff_type
         fields = ('id', 'basic_salary', 'tax', 'name')
+
 
 class StaffReadSerializer (serializers.ModelSerializer):
     staff_type = StaffTypeSerializer()
 
     class Meta:
         model = Staff
-        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+        fields = ('id', 'first_name', 'last_name',
+                  'staff_type', 'salary_deduction')
 
 
 class StaffWriteSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Staff
-        fields = ('id', 'first_name', 'last_name', 'staff_type', 'salary_deduction')
+        fields = ('id', 'first_name', 'last_name',
+                  'staff_type', 'salary_deduction')
 
 
 class PayrollSerializer (serializers.ModelSerializer):
@@ -92,19 +104,21 @@ class PayrollSerializer (serializers.ModelSerializer):
         model = Payroll
         fields = ('status', 'name', 'date_initialized', 'total_amount_salary')
 
+
 class PayrollReadSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Payroll
-        fields = ('status', 'name', 'date_initialized', 'total_amount_salary', 'total_amount_tax')
+        fields = ('status', 'name', 'date_initialized',
+                  'total_amount_salary', 'total_amount_tax')
 
 
 class TransferTransactionWriteSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Operations_account_transaction_record
-        fields = ('amount', 'particulars', 'reason', 'name_of_reciever', 'account_number_of_reciever', 'reciever_bank')
-
+        fields = ('amount', 'particulars', 'reason', 'name_of_reciever',
+                  'account_number_of_reciever', 'reciever_bank')
 
 
 class TaxRollReadSerializer (serializers.ModelSerializer):
@@ -112,7 +126,6 @@ class TaxRollReadSerializer (serializers.ModelSerializer):
     class Meta:
         models = Taxroll
         fields = "__all__"
-
 
 
 class TransactionSummarySerializer(serializers.Serializer):
@@ -131,3 +144,9 @@ class PayrollSerializer (serializers.ModelSerializer):
     class Meta:
         model = Payroll
         fields = ("name", "date_initiated")
+
+
+class PaymentStatusSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = PaymentStatus
+        fields = ("status", "amount_in_debt", "amount_outstanding ")

@@ -115,7 +115,7 @@ class Staff (models.Model):
             
             # Check if the generated paystack_id is 400 (or any other condition you want).
             if paystack_id_generated['status'] == 400:
-                raise ValidationError(paystack_id_generated['data'])  # Use ValidationError instead of ValueError
+                raise ValidationError(paystack_id_generated['data'])  
             
             
             self.paystack_id = paystack_id_generated['data']
@@ -146,4 +146,3 @@ class Student (models.Model):
     def __str__(self):
         return self.first_name + " " + self.last_name
     
-
