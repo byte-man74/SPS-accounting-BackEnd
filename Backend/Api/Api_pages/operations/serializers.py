@@ -151,7 +151,14 @@ class StudentSerializer (serializers.ModelSerializer):
         model = Student
         fields = ("first_name", "last_name", "other_names")
 
+
 class PaymentStatusSerializer (serializers.ModelSerializer):
     class Meta:
         model = PaymentStatus
         fields = ("status", "amount_in_debt", "amount_outstanding ")
+
+
+class FeeCategorySerializer (serializers.ModelSerializer):
+    class Meta:
+        model = SchoolFeesCategory
+        fields = ("name", "minimum_amount", "is_compoulsry", "amount")

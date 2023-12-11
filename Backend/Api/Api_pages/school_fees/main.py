@@ -74,7 +74,7 @@ class GetUserPaymentStatus(APIView):
 
             # Assuming PaymentStatus is related to Student and has a foreign key to Student
             payment_status = get_object_or_404(PaymentStatus, student=student)
-            serializer = PaymentStatusSerializer(payment_status)
+            serializer = FeeCategorySerializer(payment_status)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -85,9 +85,11 @@ class GetUserPaymentStatus(APIView):
 class PayOutstanding (APIView):
     '''This api is supposed to render if the user wants to pay but has not updated his previous fee'''
 
+
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''
-    def get (self, request):
+
+    def get(self, request):
         student_id = request.META.get('STUDENT_ID')
 
         if not student_id:
@@ -97,14 +99,20 @@ class GetSchoolFeesBreakDownCharges (APIView):
             student = get_student_id_from_request(student_id)
             school = student.school
             current_term = SchoolConfig.objects.get(school=school)
+            grade = student.grade
+
+            fees_category = FeesCategory.objects.get(
+                school=school, category_type=category_types[0], grade=grade)
+
+            school_fees_category = SchoolFeesCategory.objects.filter(
+                term=current_term, category=fees_category)
+            
+
+            serializer = FeesCategorySerializer(school_fees_category)
 
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # get the school current term
-        # get the student academic session  
-        #
 
 
 class GetUniformFeeBreakDownCharges (APIView):
