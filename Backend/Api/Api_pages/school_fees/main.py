@@ -82,8 +82,16 @@ class GetUserPaymentStatus(APIView):
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class PayOutstanding (APIView):
+    '''This api is supposed to render if the user wants to pay but has not updated his previous fee'''
+
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''
+    def get (self, request):
+        
+        # get the school current term
+        # get the student academic session  
+        #
 
 
 class GetUniformFeeBreakDownCharges (APIView):
