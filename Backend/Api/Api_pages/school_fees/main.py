@@ -82,10 +82,6 @@ class GetUserPaymentStatus(APIView):
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class PayOutstanding (APIView):
-    '''This api is supposed to render if the user wants to pay but has not updated his previous fee'''
-
-
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''
 
@@ -200,5 +196,40 @@ class GetOtherPaymentBreakDownCharges (APIView):
 
 
 
-class ProcessFeePayment (APIView):
-    '''This api is responsible for handling a compilation of all the fees for the student and processing the studen's payment status'''
+from django.utils import timezone
+
+class ProcessFeePayment(APIView):
+    '''This API is responsible for handling a compilation of all the fees for the student and processing the student's payment status'''
+
+    def post(self, request):
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            student = get_student_id_from_request(student_id)
+            receipt_name = f'School fees for {student.first_name}'
+            
+            # Check for the existence of 'BREAKDOWN' in request data
+            breakdown = request.data.get('BREAKDOWN')
+            email = request.data.email('EMAIL')
+            if breakdown is None:
+                return Response({"message": "'BREAKDOWN' not provided in request data"}, status=status.HTTP_400_BAD_REQUEST)
+
+            payment_history = PaymentHistory.objects.create(
+                name=receipt_name,
+                student=student,
+                date_time_initiated=timezone.now(),
+                is_active=True,
+                merchant_email=email,  # Provide a default value or set dynamically
+                payment_status="Pending",  # Provide a default value or set dynamically
+                breakdowns=breakdown,
+            )
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class MakePayment (APIView):
+    '''This api is responsible for initiating a transaction to paystack'''

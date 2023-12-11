@@ -21,7 +21,7 @@ class PaymentHistory (models.Model):
     merchant_email = models.EmailField()
 
     amount_debited = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_status = models.CharField(max_length=20)
+    payment_status = models.CharField(max_length=20, )
 
 
     receipt_id = models.CharField(max_length=20)
@@ -33,6 +33,9 @@ class PaymentHistory (models.Model):
     def __str__(self):
         return f'{self.student} payment reciept'
     
+    #function to generate the amount debited from the JSON object
+    #function to generate the name of the payment reciept
+    #function to get the last payment reciept
 
 
 '''

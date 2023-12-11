@@ -150,3 +150,68 @@ Transaction has been processed successfully to
 
 
 message = generate_notification_message()
+
+
+
+
+
+
+
+{
+  "feesCategories": [
+    {
+      "categoryName": "School Fees",
+      "feesItems": [
+        {
+          "itemName": "Tuition Fee",
+          "amountPaid": 2000,
+          "amountToBePaid": 5000
+        },
+        {
+          "itemName": "WAEC Fee",
+          "amountPaid": 2000,
+          "amountToBePaid": 5000
+        }
+      ]
+    },
+    {
+      "categoryName": "Bus Fees",
+      "feesDetails": {
+        "name": "Tudun Wada",
+        "amountPaid": 5000,
+        "amountToBePaid": 7000,
+        "nature": 1
+      }
+    },
+    {
+      "categoryName": "Uniform and Books",
+      "items": [
+        {
+          "itemName": "Lab Coat",
+          "amountPaid": 2000,
+          "quantity": 5
+        },
+        {
+          "itemName": "New Age Textbook",
+          "amountPaid": 2000,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "categoryName": "Others",
+      "items": [
+        {
+          "itemName": "End of Year Party",
+          "amountPaid": 2000,
+          "amountToBePaid": 7000
+        },
+        {
+          "itemName": "Donation",
+          "amountPaid": 2000,
+          "amountToBePaid": 7000
+        }
+      ]
+    }
+  ]
+}
