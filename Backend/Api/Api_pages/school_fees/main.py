@@ -135,6 +135,8 @@ class GetUniformAndBookFeeBreakDownCharges (APIView):
             uniform_fees_category = UniformAndBooksFeeCategory.objects.filter(
                 grades=grade, category=fees_category)
             
+            serializer = UniformAndBookFeeCategorySerializer(uniform_fees_category)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
