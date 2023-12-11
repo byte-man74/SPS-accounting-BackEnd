@@ -222,10 +222,24 @@ class ProcessFeePayment(APIView):
             )
             return Response({"message": "Payment history created successfully"}, status=status.HTTP_200_OK)
         
-        
+
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class MakePayment (APIView):
+class MakePaymentFromHistory (APIView):
     '''This api is responsible for initiating a transaction to paystack'''
+
+    def post (self, request):
+        pass
+
+
+class VerifyAndUpdatePayment(APIView):
+    '''This api is responsible for verifying and updating the payment. It updates the student payment status too on the server'''
+
+    def post (self, request):
+        reference = request.data.get('REFRENCE')
+
+        payment_info = verify_payment(reference)
+
+        #if payment_info.status is successful then update the student payment status

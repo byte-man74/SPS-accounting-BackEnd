@@ -63,7 +63,6 @@ def generate_paystack_id(instance, full_name_present=None):
 def verify_payment (transaction_refrence, customer_id):
     url = f"https://api.paystack.co/transfer/verify/{transaction_refrence}"  # Replace with your actual reference
 
-
     headers = {
         "Authorization": f"Bearer {SECRET_KEY}"
     }
