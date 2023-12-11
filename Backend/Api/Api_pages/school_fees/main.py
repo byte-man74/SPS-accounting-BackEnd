@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.status import *
@@ -102,9 +103,9 @@ class GetSchoolFeesBreakDownCharges (APIView):
 
             school_fees_category = SchoolFeesCategory.objects.filter(
                 term=current_term, category=fees_category)
-            
 
-            serializer = SchoolFeeCategorySerializer(school_fees_category, many=True)
+            serializer = SchoolFeeCategorySerializer(
+                school_fees_category, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
@@ -126,18 +127,16 @@ class GetUniformAndBookFeeBreakDownCharges (APIView):
 
             fees_category = FeesCategory.objects.get(
                 school=school, category_type=category_types[1], grade=grade)
-            
 
             uniform_fees_category = UniformAndBooksFeeCategory.objects.filter(
                 grades=grade, category=fees_category)
-            
-            serializer = UniformAndBookFeeCategorySerializer(uniform_fees_category)
+
+            serializer = UniformAndBookFeeCategorySerializer(
+                uniform_fees_category)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 
 class GetBusFeeBreakDownCharges (APIView):
@@ -155,22 +154,21 @@ class GetBusFeeBreakDownCharges (APIView):
 
             fees_category = FeesCategory.objects.get(
                 school=school, category_type=category_types[2], grade=grade)
-            
+
             bus_fee_category = BusFeeCategory.objects.filter(
                 category=fees_category
             )
-            
+
             serializer = BusFeeCategorySerializer(bus_fee_category)
             return Response(serializer.data, status=status.HTTP_200_OK)
-
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-
 class GetOtherPaymentBreakDownCharges (APIView):
     '''This api is responsible for getting the student's  other payment break down'''
+
     def get(self, request):
         student_id = request.META.get('STUDENT_ID')
 
@@ -183,7 +181,6 @@ class GetOtherPaymentBreakDownCharges (APIView):
 
             fees_category = FeesCategory.objects.get(
                 school=school, category_type=category_types[3], grade=grade)
-            
 
             other_fee_category = OtherFeeCategory.objects.filter(
                 category=fees_category, grades=grade
@@ -194,9 +191,6 @@ class GetOtherPaymentBreakDownCharges (APIView):
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
-from django.utils import timezone
 
 class ProcessFeePayment(APIView):
     '''This API is responsible for handling a compilation of all the fees for the student and processing the student's payment status'''
@@ -210,7 +204,7 @@ class ProcessFeePayment(APIView):
         try:
             student = get_student_id_from_request(student_id)
             receipt_name = f'School fees for {student.first_name}'
-            
+
             # Check for the existence of 'BREAKDOWN' in request data
             breakdown = request.data.get('BREAKDOWN')
             email = request.data.email('EMAIL')
@@ -222,11 +216,13 @@ class ProcessFeePayment(APIView):
                 student=student,
                 date_time_initiated=timezone.now(),
                 is_active=True,
-                merchant_email=email,  # Provide a default value or set dynamically
-                payment_status="Pending",  # Provide a default value or set dynamically
-                breakdowns=breakdown,
+                merchant_email=email,
+                payment_status="PENDING",
+                breakdowns=breakdown
             )
-
+            return Response({"message": "Payment history created successfully"}, status=status.HTTP_200_OK)
+        
+        
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

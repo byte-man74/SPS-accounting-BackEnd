@@ -14,6 +14,15 @@ class PaymentStatus (models.Model):
 
 
 class PaymentHistory (models.Model):
+    Status_choice = (
+        ("PENDING", "PENDING"),
+        ("INITIALIZED", "INITIALIZED"),
+        ("SUCCESS", "SUCCESS"),
+        ("FAILED", "FAILED"),
+        ("CANCELLED", "CANCELLED"),
+        ("RETRYING", "RETRYING"),
+    )
+
     student = models.ForeignKey("Main.Student",  on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     date_time_initiated = models.DateTimeField()
@@ -21,7 +30,7 @@ class PaymentHistory (models.Model):
     merchant_email = models.EmailField()
 
     amount_debited = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_status = models.CharField(max_length=20, )
+    payment_status = models.CharField(max_length=20, choices=Status_choice)
 
 
     receipt_id = models.CharField(max_length=20)
