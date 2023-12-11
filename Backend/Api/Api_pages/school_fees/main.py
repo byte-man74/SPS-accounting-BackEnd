@@ -175,6 +175,29 @@ class GetBusFeeBreakDownCharges (APIView):
 
 class GetOtherPaymentBreakDownCharges (APIView):
     '''This api is responsible for getting the student's  other payment break down'''
+    def get(self, request):
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            student = get_student_id_from_request(student_id)
+            school = student.school
+            grade = student.grade
+
+            fees_category = FeesCategory.objects.get(
+                school=school, category_type=category_types[3], grade=grade)
+            
+
+            other_fee_category = OtherFeeCategory.objects.filter(
+                category=fees_category, grades=grade
+            )
+            serializer = OtherFeeCategorySerializer(other_fee_category)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class ProcessFeePayment (APIView):

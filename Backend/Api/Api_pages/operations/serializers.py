@@ -174,3 +174,9 @@ class BusFeeCategorySerializer (serializers.ModelSerializer):
     class Meta:
         model = BusFeeCategory
         fields = ("name", "morning_bus_fee", "evening_bus_fee")
+
+
+class OtherFeeCategorySerializer (serializers.ModelSerializer):
+    class Meta:
+        model = OtherFeeCategory
+        fields = ("name", "minimum_percentage", "is_compoulsry", "amount", "description")

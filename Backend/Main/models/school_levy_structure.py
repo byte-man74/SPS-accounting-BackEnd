@@ -123,6 +123,7 @@ class OtherFeeCategory (models.Model):
     grades = models.ManyToManyField("Main.Class")
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     is_compoulslry = models.BooleanField(default=False)
+    description = models.TextField(blank=True)
 
     '''financials'''
     amount = models.BigIntegerField(default=0)
