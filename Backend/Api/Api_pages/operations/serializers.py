@@ -158,7 +158,13 @@ class PaymentStatusSerializer (serializers.ModelSerializer):
         fields = ("status", "amount_in_debt", "amount_outstanding ")
 
 
-class FeeCategorySerializer (serializers.ModelSerializer):
+class SchoolFeeCategorySerializer (serializers.ModelSerializer):
     class Meta:
         model = SchoolFeesCategory
-        fields = ("name", "minimum_amount", "is_compoulsry", "amount")
+        fields = ("name", "minimum_percentage", "is_compoulsry", "amount")
+
+
+class UniformAndBookFeeCategorySerializer (serializers.ModelSerializer):
+    class Meta:
+        model = UniformAndBooksFeeCategory
+        fields = ("name", "minimum_percentage", "is_compoulsry", "amount", "description", )

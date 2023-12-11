@@ -104,12 +104,15 @@ class UniformAndBooksFeeCategory (models.Model):
     grades = models.ManyToManyField("Main.Class")
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     is_recommended = models.BooleanField(default=False)
+    description = models.TextField(blank=True)
 
     '''financials'''
+    minimum_percentage = models.BigIntegerField(default=0)
     amount = models.BigIntegerField(default=0)
+    is_compoulslry = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.name} uniform  fee category for {self.school}'
+        return f'{self.name} uniform fee category for {self.school}'
     
 
 
