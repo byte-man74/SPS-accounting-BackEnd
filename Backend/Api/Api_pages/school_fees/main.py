@@ -74,7 +74,7 @@ class GetUserPaymentStatus(APIView):
 
             # Assuming PaymentStatus is related to Student and has a foreign key to Student
             payment_status = get_object_or_404(PaymentStatus, student=student)
-            serializer = FeeCategorySerializer(payment_status)
+            serializer = PaymentStatusSerializer(payment_status)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -108,15 +108,37 @@ class GetSchoolFeesBreakDownCharges (APIView):
                 term=current_term, category=fees_category)
             
 
-            serializer = FeesCategorySerializer(school_fees_category)
-
+            serializer = FeeCategorySerializer(school_fees_category, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class GetUniformFeeBreakDownCharges (APIView):
+class GetUniformAndBookFeeBreakDownCharges (APIView):
     '''This api is responsible for getting the student's uniform fees break down'''
+
+    def get(self, request):
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            student = get_student_id_from_request(student_id)
+            school = student.school
+            current_term = SchoolConfig.objects.get(school=school)
+            grade = student.grade
+
+            fees_category = FeesCategory.objects.get(
+                school=school, category_type=category_types[1], grade=grade)
+            
+            
+            uniform_fees_category = UniformAndBooksFeeCategory.objects.filter(
+                term=current_term, category=fees_category)
+            
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class GetBusFeeBreakDownCharges (APIView):
