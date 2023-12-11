@@ -88,7 +88,20 @@ class PayOutstanding (APIView):
 class GetSchoolFeesBreakDownCharges (APIView):
     '''This api is responsible for getting the student's school fees break down and levy'''
     def get (self, request):
-        
+        student_id = request.META.get('STUDENT_ID')
+
+        if not student_id:
+            return Response({"message": "No student ID provided in headers"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            student = get_student_id_from_request(student_id)
+            school = student.school
+            current_term = SchoolConfig.objects.get(school=school)
+
+
+        except Exception as e:
+            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         # get the school current term
         # get the student academic session  
         #
