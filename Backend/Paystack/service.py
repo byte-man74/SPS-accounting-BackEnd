@@ -56,7 +56,7 @@ def generate_paystack_id(instance, full_name_present=None):
     except requests.exceptions.RequestException as req_err:
         print(f"Error occurred: {req_err}")
 
-    # Return None or an appropriate message if an exception occurs
+    # Return None or an appropriate message if an exception occurst
     return None
 
 
