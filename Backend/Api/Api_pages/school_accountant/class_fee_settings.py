@@ -67,6 +67,7 @@ class GetFinancialInfoForAClass(APIView):
 #create bus category 
 #delete fee category
 class EditSchoolFeesCategory(APIView):
+    '''This section is used to edit school fees category. for example editing the tuiton fee for a grade in a particular term'''
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, category_id):
@@ -100,6 +101,7 @@ class EditSchoolFeesCategory(APIView):
 
 
 class EditBusFeeCategory(APIView):
+    '''This api exist to edit a single instance of a bus fee. for example editing kuje moring bus fee'''
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, category_id): 
@@ -131,6 +133,40 @@ class EditBusFeeCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
+
+
+class EditUniformAndBooksFeeCategory(APIView):
+    '''Edit the price of uniform and books fee category. for exmaple altering the price of labcoat'''
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, category_id):
+        try:
+            # Make sure to replace 'account_type' with the actual account type you are checking
+            check_account_type(request.user, 'account_type')
+            user_school = get_user_school(request.user)
+
+            # Retrieve the UniformAndBooksFeeCategory instance by category_id
+            uniform_and_books_category = UniformAndBooksFeeCategory.objects.get(id=category_id, category__school=user_school)
+
+            # Deserialize the incoming data
+            updated_data = request.data
+
+            # Serialize the current instance data
+            serializer = UniformAndBooksFeeCategorySerializer(instance=uniform_and_books_category, data=updated_data, partial=True)
+
+            if serializer.is_valid():
+                # Update the UniformAndBooksFeeCategory instance with the new data
+                serializer.save()
+                return Response({"message": "Uniform and books fee category updated successfully"}, status=HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except UniformAndBooksFeeCategory.DoesNotExist:
+            return Response({"message": "Uniform and books fee category not found"}, status=HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
 class CreateClass (APIView):
