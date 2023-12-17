@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from django.forms import CharField
 from Main.model_function.helper import *
 from Paystack.service import *
 from django.core.exceptions import ValidationError
@@ -50,6 +51,7 @@ class SchoolConfig (models.Model):
 
     school = models.OneToOneField("Main.School", on_delete=models.CASCADE)
     term = models.CharField(default="FIRST TERM", choices=school_terms, max_length=50)
+    academic_session = models.CharField(default="2020/2021", choices=academic_session_choice, max_length=50)
 
     def __str__(self):
         return f'{self.school} config'

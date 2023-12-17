@@ -24,3 +24,8 @@ class Get_all_reciepts (APIView):
     '''Returns the list of the reciepts for the school. Also make it searchable by reciept ID
     - make the stuff searchable to
     '''
+
+
+class GetLatestReciepts (APIView):
+    '''This api returns the latest reciept processed'''
+

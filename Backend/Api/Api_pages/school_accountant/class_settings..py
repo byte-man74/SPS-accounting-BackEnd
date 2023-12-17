@@ -20,7 +20,9 @@ from rest_framework.exceptions import APIException
 
 
 class GetFinanacialInfoForAClass (APIView):
-    "This function returns information about the payment summary for the given class"
+    '''This function returns information about the payment summary for the given class'''
+    
+
 
 class EditFinancialInformationForAClass (APIView):
     '''This function edits the financial information for the given class'''

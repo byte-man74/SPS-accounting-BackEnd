@@ -19,9 +19,6 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 
 
-class GetLatestReciepts (APIView):
-    '''This api returns the latest reciept processed'''
-
 
 class GetPercentagePaid (APIView):
     '''This api returns the percentage and the total number of students that have paid fees complete''' 

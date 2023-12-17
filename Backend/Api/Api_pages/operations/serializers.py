@@ -221,3 +221,10 @@ class CreateStudentSerializer (serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ("first_name", "last_name", "other_names", "registration_number", "grade", "is_active")
+
+
+class SchoolConfigSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        models = SchoolConfig
+        fields = ("term", "academic_session", "id")
