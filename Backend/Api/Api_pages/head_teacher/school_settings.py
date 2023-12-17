@@ -17,9 +17,11 @@ from Api.Api_pages.operations.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
-
 account_type = "HEAD_TEACHER"
 
+
+
+#! The API is not routed 
 
 class GetSchoolConfig (APIView):
     '''this api gets all theSchoolConfig'''
