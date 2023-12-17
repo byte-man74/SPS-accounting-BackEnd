@@ -197,3 +197,9 @@ class StudentPaymentStatusDetailSerializer (serializers.ModelSerializer):
 
     class Meta:
         fields = ("status", "amount_in_debt", "amount_outstanding")
+
+
+class PaymentHistorySerializer (serializers.ModelSerializer):
+
+    class Meta:
+        fields = ( "name", "amount_debited", "date_time_initiated" )

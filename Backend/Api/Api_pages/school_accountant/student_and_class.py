@@ -65,7 +65,6 @@ class GetStudentDetails (APIView):
         try:
             check_account_type(request.user, account_type)
 
-
             student_details = get_object_or_404(PaymentStatus, student=student_id)
             serializer = StudentPaymentStatusDetailSerializer(student_details)
 
@@ -74,9 +73,28 @@ class GetStudentDetails (APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
-class GetStudentReciept (APIView):
+class GetStudentReciepts (APIView):
     '''This API returns the list of all the student's reciepts'''
 
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, student_id):
+        try:
+            check_account_type(request.user, account_type)
+            
+            reciepts = PaymentHistory.objects.filter(student=student_id, payment_status="SUCCESS").order_by('-date_time_initiated')
+            serializer = PaymentHistorySerializer(reciepts, many=True)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
+
+
+
+class GetFullRecieptInfo (APIView):
+    '''This API retrieves the full student information'''
 
 class CreateStudent (APIView):
     '''This API creates a new student'''
@@ -89,6 +107,3 @@ class EditStudent (APIView):
 class DeleteStudent (APIView):
     '''This API deletes a student record'''
 
-
-class GetFullRecieptInfo (APIView):
-    '''This API retrieves the full student information'''
