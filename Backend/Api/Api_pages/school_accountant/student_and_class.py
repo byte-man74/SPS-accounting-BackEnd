@@ -19,7 +19,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 account_type = "SCHOOL_ACCOUNTANT"
 
-
+#! THIS API HAS NO ROUTING!
 class GetListOfClass (APIView):
     '''This API returns the list of all the classes available in the school'''
     permission_classes = [IsAuthenticated]
