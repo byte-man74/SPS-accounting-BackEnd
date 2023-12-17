@@ -23,7 +23,7 @@ account_type = "HEAD_TEACHER"
 class GetSchoolConfig (APIView):
     '''this api gets all theSchoolConfig'''
 
-    
+
 class ChangeAcademicSession(APIView):
     '''This API changes and modifies the academic session of a school'''
     permission_classes = [IsAuthenticated]
@@ -40,6 +40,8 @@ class ChangeAcademicSession(APIView):
 
             # Update the academic session and save the changes
             school_settings.academic_session = data.get("academic_session")
+            school_settings.term = data.get("term")
+            
             school_settings.save()
 
             return Response({"message": "Successful"}, status=HTTP_201_CREATED)
@@ -52,8 +54,6 @@ class ChangeAcademicSession(APIView):
             # Handle other exceptions and provide details in the response
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
-class ChangeSchoolTerm (APIView):
-    ''' this API changes and modifies the term of a school'''
 
 
 class PromoteStudent (APIView):
