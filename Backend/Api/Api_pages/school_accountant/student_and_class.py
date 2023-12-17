@@ -139,7 +139,7 @@ class CreateStudent(APIView):
 
 
 class EditAndDeleteStudent (APIView):
-    '''This API updates a student's information'''
+    '''This API updates a student's information.... it also deletes'''
     def patch (self, request, student_id):
         try:
             check_account_type(request.user, account_type)
@@ -158,7 +158,4 @@ class EditAndDeleteStudent (APIView):
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
-
-class DeleteStudent (APIView):
-    '''This API deletes a student record'''
 
