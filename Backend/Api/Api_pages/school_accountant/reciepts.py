@@ -17,14 +17,24 @@ from Api.Api_pages.operations.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
-
+account_type = "SCHOOL_ACCOUNTANT"
 
 
 class Get_all_reciepts (APIView):
     '''Returns the list of the reciepts for the school. Also make it searchable by reciept ID
     - make the stuff searchable to
     '''
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request, grade_id, term):
+        try:
+            # Make sure to replace 'account_type' with the actual account type you are checking
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 class GetLatestReciepts (APIView):
     '''This api returns the latest reciept processed'''
