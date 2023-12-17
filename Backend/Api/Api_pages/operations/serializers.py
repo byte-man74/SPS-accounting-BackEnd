@@ -191,3 +191,9 @@ class StudentSerializer (serializers.ModelSerializer):
 
     class Meta:
         fields = ("first_name", "last_name", "other_names", "registration_number", "student_id")
+
+
+class StudentPaymentStatusDetailSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        fields = ("status", "amount_in_debt", "amount_outstanding")

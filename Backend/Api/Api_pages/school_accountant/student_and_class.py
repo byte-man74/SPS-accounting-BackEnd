@@ -57,7 +57,21 @@ class GetAllStudentsByClass (APIView):
 
 
 class GetStudentDetails (APIView):
-    '''This API returns the details of a student based on the ID passed as a parameter'''
+    '''This API returns the details of a student based on the ID passed as a parameter... also return the student financial details'''
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, student_id):
+        try:
+            check_account_type(request.user, account_type)
+
+
+            student_details = get_object_or_404(PaymentStatus, student=student_id)
+            serializer = StudentPaymentStatusDetailSerializer(student_details)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
 class GetStudentReciept (APIView):
