@@ -283,7 +283,7 @@ class EditUniformAndBooksFeeCategory(APIView):
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
-class CreateOtherFeeCategory(APIView):
+class CreateOrDeleteOtherFeeCategory(APIView):
     '''Create a new other fee category'''
     permission_classes = [IsAuthenticated]
 
@@ -310,6 +310,18 @@ class CreateOtherFeeCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
         
+    def delete(self, request, category):
+            try:
+                other_fee_category = OtherFeeCategory.objects.get(id=category)
+                other_fee_category.delete()
+                return Response({"message": "Other fee category deleted successfully"}, status=HTTP_204_NO_CONTENT)
+
+            except OtherFeeCategory.DoesNotExist:
+                return Response({"message": "Other fee category not found"}, status=HTTP_400_BAD_REQUEST)
+            except PermissionDenied:
+                return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+            except Exception as e:
+                return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 class EditOtherFeeCategory(APIView):
     '''This makes editing other fee categories possible'''
@@ -344,15 +356,3 @@ class EditOtherFeeCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, category):
-            try:
-                other_fee_category = OtherFeeCategory.objects.get(id=category)
-                other_fee_category.delete()
-                return Response({"message": "Other fee category deleted successfully"}, status=HTTP_204_NO_CONTENT)
-
-            except OtherFeeCategory.DoesNotExist:
-                return Response({"message": "Other fee category not found"}, status=HTTP_400_BAD_REQUEST)
-            except PermissionDenied:
-                return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
-            except Exception as e:
-                return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)

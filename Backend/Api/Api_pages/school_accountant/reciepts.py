@@ -26,21 +26,26 @@ class Get_all_reciepts (APIView):
     '''
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, grade_id, term):
+    def get(self, request):
         try:
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
-            #?check from cache  
+
+            reciepts = PaymentHistory.objects.filter(school=user_school)
+            PaymentHistorySerializer(reciepts)
+
+            
+
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 class GetLatestReciepts (APIView):
-    '''This api returns the latest reciept processed'''
+    '''This api returns the latest reciept processed the latest 50'''
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, grade_id, term):
+    def get(self, request):
         try:
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)

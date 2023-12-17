@@ -249,3 +249,10 @@ class OtherFeeCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = OtherFeeCategory
         fields = '__all__'
+
+
+    class PaymentHistorySerializer (serializers.ModelSerializer):
+
+        class Meta:
+            model = PaymentHistory
+            fields = '__all__'

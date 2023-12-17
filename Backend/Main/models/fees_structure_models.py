@@ -28,6 +28,7 @@ class PaymentHistory (models.Model):
     date_time_initiated = models.DateTimeField()
     is_active = models.BooleanField(default=True)
     merchant_email = models.EmailField()
+    school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
 
     amount_debited = models.DecimalField(max_digits=10, decimal_places=2)
     payment_status = models.CharField(max_length=20, choices=Status_choice)
