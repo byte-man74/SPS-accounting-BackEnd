@@ -19,26 +19,9 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 
 
-class GetLatestReciepts (APIView):
-    '''This api returns the latest reciept processed'''
 
 
-class GetPercentagePaid (APIView):
-    '''This api returns the percentage and the total number of students that have paid fees complete''' 
 
 
-class GetTotalAmountPaid (APIView):
-    '''This api returns the total amount of money paid'''
-
-
-class TotalAmountInDebt (APIView):
-    '''This api returns the total amount of money estimated to be in debt'''
-
-
-class GetPaymentSmmaryByClass (APIView):
-    '''This api returns the payment summary statistics of students in the specified class'''
-
-
-class GetGraphOfClassPayment (APIView):
-    '''This api returns the payment graph of all the graph and how much is being paid'''
-
+class GetListOfClass (APIView):
+    '''This API returns the list of all the classes available in the school'''
