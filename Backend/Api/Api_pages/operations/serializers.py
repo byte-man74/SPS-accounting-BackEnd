@@ -256,3 +256,14 @@ class OtherFeeCategorySerializer(serializers.ModelSerializer):
         class Meta:
             model = PaymentHistory
             fields = '__all__'
+
+
+class CreateClassSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = ['id', 'name', 'next_class_to_be_promoted_to', 'school']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['next_class_to_be_promoted_to'] = self.to_representation(instance.next_class_to_be_promoted_to)
+        return representation

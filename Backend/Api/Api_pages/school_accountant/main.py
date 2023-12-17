@@ -19,8 +19,29 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 
 
-class CreateClass (APIView):
+class CreateClass(APIView):
     '''This function creates a new class'''
+
+    def post(self, request):
+        try:
+            # Assuming your serializer is named ClassSerializer, replace it with your actual serializer
+            serializer = CreateClassSerializer(data=request.data)
+
+            if serializer.is_valid():
+                # Set the school based on the user making the request
+                user_school = get_user_school(request.user)
+                serializer.validated_data['school'] = user_school
+
+                # Create the new class instance
+                new_class = serializer.save()
+
+                return Response({"message": "Class created successfully", "class_id": new_class.id}, status=HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 
 class EditClass (APIView):
     '''This function edits a class'''
