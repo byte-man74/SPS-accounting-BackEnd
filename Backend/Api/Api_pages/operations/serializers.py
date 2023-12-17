@@ -228,3 +228,24 @@ class SchoolConfigSerializer (serializers.ModelSerializer):
     class Meta:
         models = SchoolConfig
         fields = ("term", "academic_session", "id")
+
+
+class SchoolFeesCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SchoolFeesCategory
+        fields = '__all__'
+
+class BusFeeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusFeeCategory
+        fields = '__all__'
+
+class UniformAndBooksFeeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UniformAndBooksFeeCategory
+        fields = '__all__'
+
+class OtherFeeCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OtherFeeCategory
+        fields = '__all__'
