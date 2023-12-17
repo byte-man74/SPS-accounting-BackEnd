@@ -20,7 +20,7 @@ from rest_framework.exceptions import APIException
 
 
 
-class GetAllReciepts (APIView):
+class Get_all_reciepts (APIView):
     '''Returns the list of the reciepts for the school. Also make it searchable by reciept ID
     - make the stuff searchable to
     '''
