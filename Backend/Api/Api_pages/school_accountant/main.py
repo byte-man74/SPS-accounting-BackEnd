@@ -43,11 +43,33 @@ class CreateClass(APIView):
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
-class EditClass (APIView):
-    '''This function edits a class'''
+class EditClass(APIView):
+    '''This function edits and/or deletes a class'''
+    permission_classes = [IsAuthenticated]
 
-class DeleteClass (APIView):
-    '''This function deletes a class'''
+    def patch(self, request, class_id):
+        try:
+            # Assuming your serializer is named ClassSerializer, replace it with your actual serializer
+            class_instance = Class.objects.get(id=class_id)
+            serializer = CreateClassSerializer(instance=class_instance, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                user_school = get_user_school(request.user)
+                serializer.validated_data['school'] = user_school
+
+                edited_class = serializer.save()
+
+                return Response({"message": "Class edited successfully", "class_id": edited_class.id}, status=HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except Class.DoesNotExist:
+            return Response({"message": "Class not found"}, status=HTTP_404_NOT_FOUND)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 
 
 class GetPercentagePaid (APIView):
