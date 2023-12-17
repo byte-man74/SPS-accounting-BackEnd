@@ -169,6 +169,39 @@ class EditUniformAndBooksFeeCategory(APIView):
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
+
+class EditOtherFeeCategory(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, category_id):
+        try:
+            # Make sure to replace 'account_type' with the actual account type you are checking
+            check_account_type(request.user, 'account_type')
+            user_school = get_user_school(request.user)
+
+            # Retrieve the OtherFeeCategory instance by category_id
+            other_fee_category = OtherFeeCategory.objects.get(id=category_id, category__school=user_school)
+
+            # Deserialize the incoming data
+            updated_data = request.data
+
+            # Serialize the current instance data
+            serializer = OtherFeeCategorySerializer(instance=other_fee_category, data=updated_data, partial=True)
+
+            if serializer.is_valid():
+                # Update the OtherFeeCategory instance with the new data
+                serializer.save()
+                return Response({"message": "Other fee category updated successfully"}, status=HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except OtherFeeCategory.DoesNotExist:
+            return Response({"message": "Other fee category not found"}, status=HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 class CreateClass (APIView):
     '''This function creates a new class'''
 
