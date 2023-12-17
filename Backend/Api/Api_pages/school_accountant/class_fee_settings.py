@@ -61,12 +61,6 @@ class GetFinancialInfoForAClass(APIView):
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
-#create school fees category
-#create other fees category
-#create uniform fee category
-#create bus category 
-#delete fee category
-
 
 class CreateSchoolFeesCategory(APIView):
     '''Create a new school fees category'''
@@ -92,6 +86,20 @@ class CreateSchoolFeesCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, category_id):
+            try:
+                school_fees_category = SchoolFeesCategory.objects.get(id=category_id)
+                school_fees_category.delete()
+                return Response({"message": "School fees category deleted successfully"}, status=HTTP_204_NO_CONTENT)
+
+            except SchoolFeesCategory.DoesNotExist:
+                return Response({"message": "School fees category not found"}, status=HTTP_400_BAD_REQUEST)
+            except PermissionDenied:
+                return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+            except Exception as e:
+                return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 
 class EditSchoolFeesCategory(APIView):
     '''This section is used to edit school fees category. for example editing the tuiton fee for a grade in a particular term'''

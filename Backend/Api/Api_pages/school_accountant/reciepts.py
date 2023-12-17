@@ -28,10 +28,9 @@ class Get_all_reciepts (APIView):
 
     def get(self, request, grade_id, term):
         try:
-            # Make sure to replace 'account_type' with the actual account type you are checking
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
-
+            #?check from cache  
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
@@ -39,3 +38,13 @@ class Get_all_reciepts (APIView):
 class GetLatestReciepts (APIView):
     '''This api returns the latest reciept processed'''
 
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, grade_id, term):
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            #?check from cache  
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
