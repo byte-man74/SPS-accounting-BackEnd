@@ -128,13 +128,36 @@ class CreateStudent(APIView):
                 # Save the serializer and return the data
                 serializer.save()
                 return Response(serializer.data, status=HTTP_200_OK)
+            
+            else:
+                # Raise a serializer error with the validation errors
+                raise ValueError(serializer.errors)
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
-class EditStudent (APIView):
-    '''This API updates a student's information'''
 
+
+class EditAndDeleteStudent (APIView):
+    '''This API updates a student's information'''
+    def patch (self, request, student_id):
+        try:
+            check_account_type(request.user, account_type)
+            data = request.data
+            
+            serializer = CreateStudentSerializer(data=data)
+
+            if serializer.is_valid():
+                # Save the serializer and return the data
+                serializer.save()
+                return Response(serializer.data, status=HTTP_200_OK)       
+            else:
+                # Raise a serializer error with the validation errors
+                raise ValueError(serializer.errors)
+            
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 class DeleteStudent (APIView):
     '''This API deletes a student record'''

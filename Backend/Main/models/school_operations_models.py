@@ -131,6 +131,7 @@ class Student (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     grade = models.ForeignKey("Main.Class", on_delete=models.CASCADE)
     student_id = models.CharField(max_length=128, unique=True, blank=True, null=True, editable=False)
+    is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         # Define a pattern to link the student's name, school, and registration_number
