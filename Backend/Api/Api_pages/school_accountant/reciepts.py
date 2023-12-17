@@ -32,10 +32,9 @@ class Get_all_reciepts (APIView):
             user_school = get_user_school(request.user)
 
             reciepts = PaymentHistory.objects.filter(school=user_school)
-            PaymentHistorySerializer(reciepts)
+            serializer = PaymentHistorySerializer(reciepts)
 
-            
-
+            return Response(serializer.data, status=HTTP_200_OK)
 
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
