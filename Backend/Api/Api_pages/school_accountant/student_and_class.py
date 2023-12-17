@@ -17,14 +17,43 @@ from Api.Api_pages.operations.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
+account_type = "SCHOOL_ACCOUNTANT"
 
 
 class GetListOfClass (APIView):
     '''This API returns the list of all the classes available in the school'''
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            grade = Class.objects.filter(school=user_school)
+            serializer = GradeSerializer(grade, many=True)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
 class GetAllStudentsByClass (APIView):
     '''This API returns all the students depending on the class arguments passed'''
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, grade_id):
+
+        try:
+            check_account_type(request.user, account_type)
+            grade = get_object_or_404(Class, id=grade_id)
+
+            students = Student.objects.filter(grade=grade.id, is_active=True)
+            serializer = StudentSerializer(students, many=True)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
 class GetStudentDetails (APIView):

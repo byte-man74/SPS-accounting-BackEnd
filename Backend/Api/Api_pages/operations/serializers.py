@@ -180,3 +180,14 @@ class OtherFeeCategorySerializer (serializers.ModelSerializer):
     class Meta:
         model = OtherFeeCategory
         fields = ("name", "minimum_percentage", "is_compoulsry", "amount", "description")
+
+
+class GradeSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        fields = ("name")
+
+class StudentSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        fields = ("first_name", "last_name", "other_names", "registration_number", "student_id")
