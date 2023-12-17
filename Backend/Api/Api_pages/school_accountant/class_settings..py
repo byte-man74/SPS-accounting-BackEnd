@@ -38,7 +38,7 @@ class GetFinancialInfoForAClass(APIView):
             school_fees_category = SchoolFeesCategory.objects.filter(term=term, category=fees_category)
 
             # Retrieve financial information related to bus fees
-            bus_fee_category = BusFeeCategory.objects.filter(category=fees_category).first()
+            bus_fee_category = BusFeeCategory.objects.filter(category=fees_category)
 
             # Retrieve financial information related to uniform and books fees
             uniform_and_books = UniformAndBooksFeeCategory.objects.filter(grades=grade_id, school=user_school)
@@ -49,7 +49,7 @@ class GetFinancialInfoForAClass(APIView):
             # Serialize the data for the API response
             serialized_data = {
                 "school_fees": SchoolFeesCategorySerializer(school_fees_category, many=True).data,
-                "bus_fee": BusFeeCategorySerializer(bus_fee_category).data if bus_fee_category else None,
+                "bus_fee": BusFeeCategorySerializer(bus_fee_category, many=True).data,
                 "uniform_and_books": UniformAndBooksFeeCategorySerializer(uniform_and_books, many=True).data,
                 "other_fees": OtherFeeCategorySerializer(other_fees, many=True).data,
             }
@@ -61,7 +61,11 @@ class GetFinancialInfoForAClass(APIView):
         except PermissionDenied:
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
-
+#create school fees category
+#create other fees category
+#create uniform fee category
+#create bus category 
+#delete fee category
 class EditSchoolFeesCategory(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -94,10 +98,9 @@ class EditSchoolFeesCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        
 
-class EditFinancialInformationForAClass (APIView):
-    '''This function edits the financial information for the given class'''
-
+class Edit
 
 class CreateClass (APIView):
     '''This function creates a new class'''
