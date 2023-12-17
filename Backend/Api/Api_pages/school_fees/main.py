@@ -18,7 +18,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 from Paystack.transfers import *
-
+#! i haven't configured this file with the URL.py
 
 class LoginPaymentPortal(APIView):
     '''
@@ -240,6 +240,6 @@ class VerifyAndUpdatePayment(APIView):
     def post (self, request):
         reference = request.data.get('REFRENCE')
 
-        payment_info = verify_payment(reference)
+        # payment_info = verify_payment(reference)
 
         #if payment_info.status is successful then update the student payment status
