@@ -66,7 +66,7 @@ class FeesCategory (models.Model):
         return self.name
     
 #todo: function to manually create all these stuffs as class is being created
-
+#todo: automatically create tuition fee 
 
 class SchoolFeesCategory (models.Model):
     name = models.CharField(max_length=50)
