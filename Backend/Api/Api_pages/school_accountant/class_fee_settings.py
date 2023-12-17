@@ -71,16 +71,17 @@ class GetFinancialInfoForAClass(APIView):
 class CreateSchoolFeesCategory(APIView):
     '''Create a new school fees category'''
     permission_classes = [IsAuthenticated]
-    def post(self, request):
+    def post(self, request, category):
         try:
             # Make sure to replace 'account_type' with the actual account type you are checking
-            check_account_type(request.user, 'account_type')
+            check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
 
             # Deserialize the incoming data
             serializer = SchoolFeesCategorySerializer(data=request.data)
 
             if serializer.is_valid():
+                serializer.validated_data['category'] = category
                 serializer.save()
 
                 return Response({"message": "School fees category created successfully"}, status=HTTP_201_CREATED)
@@ -124,6 +125,33 @@ class EditSchoolFeesCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
+class CreateBusFeeCategory(APIView):
+    '''This is going to create bus fee category'''
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, category):
+        try:
+            # Make sure to replace 'account_type' with the actual account type you are checking
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            # Deserialize the incoming data
+            serializer = BusFeeCategorySerializer(data=request.data)
+
+            if serializer.is_valid():
+                # Set the school and save the new BusFeeCategory instance
+                serializer.validated_data['category'] = category
+                serializer.save()
+
+                return Response({"message": "Bus fee category created successfully"}, status=HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 
 class EditBusFeeCategory(APIView):
     '''This api exist to edit a single instance of a bus fee. for example editing kuje moring bus fee'''
@@ -158,7 +186,6 @@ class EditBusFeeCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
-
 class EditUniformAndBooksFeeCategory(APIView):
     '''Edit the price of uniform and books fee category. for exmaple altering the price of labcoat'''
     permission_classes = [IsAuthenticated]
@@ -191,7 +218,6 @@ class EditUniformAndBooksFeeCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
-
 
 class EditOtherFeeCategory(APIView):
     permission_classes = [IsAuthenticated]
