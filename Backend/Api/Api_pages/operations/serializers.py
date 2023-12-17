@@ -185,27 +185,39 @@ class OtherFeeCategorySerializer (serializers.ModelSerializer):
 class GradeSerializer (serializers.ModelSerializer):
 
     class Meta:
-        fields = ("name")
+        model = Class 
+        fields = ("name", "id")
 
 class StudentSerializer (serializers.ModelSerializer):
 
     class Meta:
-        fields = ("first_name", "last_name", "other_names", "registration_number", "student_id")
+        model = Student
+        fields = ("first_name", "last_name", "other_names", "registration_number", "student_id", "id")
 
 
 class StudentPaymentStatusDetailSerializer (serializers.ModelSerializer):
 
     class Meta:
+        model = PaymentStatus
         fields = ("status", "amount_in_debt", "amount_outstanding")
 
 
 class PaymentHistorySerializer (serializers.ModelSerializer):
 
     class Meta:
+        model = PaymentHistory
         fields = ( "name", "amount_debited", "date_time_initiated", "id" )
 
 
 class PaymentHistoryDetailSerializer (serializers.ModelSerializer):
 
     class Meta:
+        model = PaymentHistory
         fields = "__all__"
+
+
+class CreateStudentSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = Student
+        fields = ("first_name", "last_name", "other_names", "registration_number", "grade")

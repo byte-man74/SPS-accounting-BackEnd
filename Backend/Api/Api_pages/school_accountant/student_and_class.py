@@ -92,7 +92,6 @@ class GetStudentReciepts (APIView):
 
 
 
-
 class GetFullRecieptInfo (APIView):
     '''This API retrieves the full student information'''
     permission_classes = [IsAuthenticated]
@@ -110,9 +109,28 @@ class GetFullRecieptInfo (APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 
-class CreateStudent (APIView):
+
+
+class CreateStudent(APIView):
     '''This API creates a new student'''
 
+    def post(self, request):
+        try:
+            check_account_type(request.user, account_type)
+
+            data = request.data
+            user_school = get_user_school(request.user)
+
+            # Initialize the serializer with both the data and the user school
+            serializer = CreateStudentSerializer(data=data, context={'school': user_school})
+
+            if serializer.is_valid():
+                # Save the serializer and return the data
+                serializer.save()
+                return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
 
 class EditStudent (APIView):
     '''This API updates a student's information'''
