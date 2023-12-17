@@ -65,7 +65,7 @@ class FeesCategory (models.Model):
     def __str__(self):
         return self.name
     
-
+#todo: function to manually create all these stuffs as class is being created
 
 
 class SchoolFeesCategory (models.Model):

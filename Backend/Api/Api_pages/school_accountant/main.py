@@ -19,6 +19,15 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
 
 
+class CreateClass (APIView):
+    '''This function creates a new class'''
+
+class EditClass (APIView):
+    '''This function edits a class'''
+
+class DeleteClass (APIView):
+    '''This function deletes a class'''
+
 
 class GetPercentagePaid (APIView):
     '''This api returns the percentage and the total number of students that have paid fees complete''' 

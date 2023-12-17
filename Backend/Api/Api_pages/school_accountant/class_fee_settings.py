@@ -99,7 +99,6 @@ class EditSchoolFeesCategory(APIView):
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
-
 class EditBusFeeCategory(APIView):
     '''This api exist to edit a single instance of a bus fee. for example editing kuje moring bus fee'''
     permission_classes = [IsAuthenticated]
@@ -132,7 +131,6 @@ class EditBusFeeCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
-
 
 
 class EditUniformAndBooksFeeCategory(APIView):
@@ -169,7 +167,6 @@ class EditUniformAndBooksFeeCategory(APIView):
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
-
 class EditOtherFeeCategory(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -201,13 +198,4 @@ class EditOtherFeeCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
-
-class CreateClass (APIView):
-    '''This function creates a new class'''
-
-class EditClass (APIView):
-    '''This function edits a class'''
-
-class DeleteClass (APIView):
-    '''This function deletes a class'''
 
