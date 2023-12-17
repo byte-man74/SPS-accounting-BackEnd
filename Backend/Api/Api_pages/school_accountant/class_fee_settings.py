@@ -185,6 +185,35 @@ class EditBusFeeCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        
+class CreateUniformAndBooksFeeCategory(APIView):
+    '''This API is used to create a uniform and books fee category'''
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, category):
+        try:
+            # Make sure to replace 'account_type' with the actual account type you are checking
+            check_account_type(request.user, 'account_type')
+            user_school = get_user_school(request.user)
+
+            # Deserialize the incoming data
+            serializer = UniformAndBooksFeeCategorySerializer(data=request.data)
+
+            if serializer.is_valid():
+                # Set the school and save the new UniformAndBooksFeeCategory instance
+                serializer.validated_data['category'] = category
+                serializer.save()
+
+                return Response({"message": "Uniform and books fee category created successfully"}, status=HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        
+
 
 class EditUniformAndBooksFeeCategory(APIView):
     '''Edit the price of uniform and books fee category. for exmaple altering the price of labcoat'''
