@@ -87,9 +87,9 @@ class CreateSchoolFeesCategory(APIView):
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
         
-    def delete(self, request, category_id):
+    def delete(self, request, category):
             try:
-                school_fees_category = SchoolFeesCategory.objects.get(id=category_id)
+                school_fees_category = SchoolFeesCategory.objects.get(id=category)
                 school_fees_category.delete()
                 return Response({"message": "School fees category deleted successfully"}, status=HTTP_204_NO_CONTENT)
 
@@ -159,7 +159,20 @@ class CreateBusFeeCategory(APIView):
             return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        
 
+    def delete(self, request, category):
+        try:
+            bus_fee_category = BusFeeCategory.objects.get(id=category)
+            bus_fee_category.delete()
+            return Response({"message": "Bus fee category deleted successfully"}, status=HTTP_204_NO_CONTENT)
+
+        except BusFeeCategory.DoesNotExist:
+            return Response({"message": "Bus fee category not found"}, status=HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 class EditBusFeeCategory(APIView):
     '''This api exist to edit a single instance of a bus fee. for example editing kuje moring bus fee'''
