@@ -95,6 +95,20 @@ class GetStudentReciepts (APIView):
 
 class GetFullRecieptInfo (APIView):
     '''This API retrieves the full student information'''
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, reciept_id):
+        try:
+            check_account_type(request.user, account_type)
+
+            reciept = PaymentHistory.objects.get(id=reciept_id)
+            serializer = PaymentHistoryDetailSerializer(reciept)
+
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
+
 
 class CreateStudent (APIView):
     '''This API creates a new student'''

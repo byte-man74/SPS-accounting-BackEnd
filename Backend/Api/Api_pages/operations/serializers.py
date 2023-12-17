@@ -202,4 +202,10 @@ class StudentPaymentStatusDetailSerializer (serializers.ModelSerializer):
 class PaymentHistorySerializer (serializers.ModelSerializer):
 
     class Meta:
-        fields = ( "name", "amount_debited", "date_time_initiated" )
+        fields = ( "name", "amount_debited", "date_time_initiated", "id" )
+
+
+class PaymentHistoryDetailSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        fields = "__all__"
