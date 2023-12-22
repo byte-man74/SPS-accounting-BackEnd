@@ -319,7 +319,8 @@ class GetPayrollDetails (APIView):
 
 
 
-
+class GetInAppAuthentication (APIView):
+    '''This is supposed to be for the internal authentication'''
 
 
 
