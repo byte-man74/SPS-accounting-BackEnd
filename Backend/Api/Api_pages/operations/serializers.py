@@ -267,3 +267,9 @@ class CreateClassSerializer (serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['next_class_to_be_promoted_to'] = self.to_representation(instance.next_class_to_be_promoted_to)
         return representation
+
+
+class PayrollDetailSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Payroll
+        fields = '__all__'

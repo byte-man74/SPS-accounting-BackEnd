@@ -293,7 +293,38 @@ class RequeryFailedPayrollTransaction (APIView):
 
 
 
-    pass
+class GetPayrollDetails (APIView):
+
+    def get (self, request, payroll_id):
+        try:
+            check_account_type(self.request.user, account_type)
+            payroll_instance = get_object_or_404(Payroll, id=payroll_id)
+
+            serializer = PayrollDetailSerializer(payroll_instance)
+            return Response(serializer.data, status=HTTP_200_OK)
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
+        except APIException as e:
+            # Handle specific API-related errors and return their details.
+            return Response({"message": str(e.detail)}, status=e.status_code)
+
+        except Exception as e:
+            # For all other exceptions, return a generic error message.
+            return Response({"message": "An error occurred"}, status=HTTP_403_FORBIDDEN)
+
+
+
+
+
+
+
+
+
+
+
 
 
 # framework
