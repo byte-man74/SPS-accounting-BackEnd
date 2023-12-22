@@ -17,6 +17,7 @@ from Api.Api_pages.operations.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import APIException
+account_type = "ACCOUNTANT"
 
 
 class CreateClass(APIView):
@@ -24,6 +25,8 @@ class CreateClass(APIView):
 
     def post(self, request):
         try:
+            # Check if the authenticated user has the required account type.
+            check_account_type(request.user, account_type)
             # Assuming your serializer is named ClassSerializer, replace it with your actual serializer
             serializer = CreateClassSerializer(data=request.data)
 
@@ -41,7 +44,10 @@ class CreateClass(APIView):
 
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
-
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        
 
 class EditClass(APIView):
     '''This function edits and/or deletes a class'''
@@ -49,7 +55,8 @@ class EditClass(APIView):
 
     def patch(self, request, class_id):
         try:
-            # Assuming your serializer is named ClassSerializer, replace it with your actual serializer
+            # Check if the authenticated user has the required account type.
+            check_account_type(request.user, account_type)
             class_instance = Class.objects.get(id=class_id)
             serializer = CreateClassSerializer(instance=class_instance, data=request.data, partial=True)
 
@@ -65,11 +72,11 @@ class EditClass(APIView):
 
         except Class.DoesNotExist:
             return Response({"message": "Class not found"}, status=HTTP_404_NOT_FOUND)
-        except PermissionDenied:
-            return Response({"message": "Permission denied"}, status=HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
-
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
 
 
 class GetPercentagePaid (APIView):
@@ -79,9 +86,23 @@ class GetPercentagePaid (APIView):
 class GetTotalAmountPaid (APIView):
     '''This api returns the total amount of money paid'''
 
-
 class TotalAmountInDebt (APIView):
     '''This api returns the total amount of money estimated to be in debt'''
+    def get(self, request):
+        try:
+            # Check if the authenticated user has the required account type.
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+
+            students = Student.objects.filter(school=user_school)
+
+
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+
 
 
 class GetPaymentSmmaryByClass (APIView):
