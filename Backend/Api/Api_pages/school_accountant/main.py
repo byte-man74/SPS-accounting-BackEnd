@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Api.helper_functions.payment_section.main import get_student_id_from_request
+from Api.helper_functions.payment_section.main import get_student_id_from_request, get_total_amount_in_debt
 from Main.models import Payroll, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
@@ -95,6 +95,10 @@ class TotalAmountInDebt (APIView):
             user_school = get_user_school(request.user)
 
             students = Student.objects.filter(school=user_school)
+
+            debt_amount = get_total_amount_in_debt(students)
+
+            return Response ({"amount_in_debt": float(debt_amount)}, status=HTTP_200_OK)
 
 
         except Exception as e:
