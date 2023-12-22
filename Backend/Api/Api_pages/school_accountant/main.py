@@ -41,13 +41,12 @@ class CreateClass(APIView):
                 return Response({"message": "Class created successfully", "class_id": new_class.id}, status=HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-        except Exception as e:
-            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+            
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
-        
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 class EditClass(APIView):
     '''This function edits and/or deletes a class'''
@@ -101,16 +100,27 @@ class TotalAmountInDebt (APIView):
             return Response ({"amount_in_debt": float(debt_amount)}, status=HTTP_200_OK)
 
 
-        except Exception as e:
-            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
-
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
 class GetPaymentSmmaryByClass (APIView):
     '''This api returns the payment summary statistics of students in the specified class'''
+    def get (self, request, class_id):
+        try:
+            # Check if the authenticated user has the required account type.
+            check_account_type(request.user, account_type)
+
+            grade = Class.objects.get()
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
 class GetGraphOfClassPayment (APIView):
