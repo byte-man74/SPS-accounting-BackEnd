@@ -21,8 +21,9 @@ def get_total_amount_in_debt(students):
 
     return total_amount
 
+
 def get_payment_summary(students):
-    '''This function summarizes the payment status of students.'''
+    '''This function summarizes the payment status of students and returns counts and percentages.'''
     
     # Use Counter to initialize counts for different payment statuses
     status_counts = Counter()
@@ -38,8 +39,19 @@ def get_payment_summary(students):
     student_in_debt = status_counts["IN DEBT"]
     student_outstanding = status_counts["OUTSTANDING"]
 
-    return {
+    # Calculate percentages
+    total_students = len(students)
+    percentage_paid = (student_paid / total_students) * 100 if total_students > 0 else 0
+    percentage_in_debt = (student_in_debt / total_students) * 100 if total_students > 0 else 0
+    percentage_outstanding = (student_outstanding / total_students) * 100 if total_students > 0 else 0
+
+    summary = {
         'student_paid': student_paid,
+        'percentage_paid': percentage_paid,
         'student_in_debt': student_in_debt,
+        'percentage_in_debt': percentage_in_debt,
         'student_outstanding': student_outstanding,
+        'percentage_outstanding': percentage_outstanding,
     }
+
+    return summary

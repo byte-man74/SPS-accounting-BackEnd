@@ -120,6 +120,8 @@ class GetPaymentSmmaryByClass (APIView):
 
             summary = get_payment_summary(students)
 
+            return Response({"data": summary}, status=HTTP_200_OK)
+
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
