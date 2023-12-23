@@ -110,7 +110,10 @@ class GetTotalAmountPaid (APIView):
             # Check if the authenticated user has the required account type.
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
-            school_levy = SchoolLevyAnalytics.objects.get(school=user_school)
+            school_levy_paid = SchoolLevyAnalytics.objects.get(
+                school=user_school).amount_paid
+
+            return Response({"data": school_levy_paid}, status=HTTP_200_OK)
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
@@ -165,3 +168,7 @@ class GetPaymentSmmaryByClass (APIView):
 
 class GetGraphOfClassPayment (APIView):
     '''This api returns the payment graph of all the graph and how much is being paid'''
+
+    def get(self, request):
+
+        pass
