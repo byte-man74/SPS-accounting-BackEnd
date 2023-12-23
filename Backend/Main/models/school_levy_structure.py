@@ -1,3 +1,4 @@
+import string
 from django.db import models
 from Backend.Main.models.fees_structure_models import PaymentHistory, PaymentStatus
 from Backend.Main.models.school_operations_models import Student
@@ -140,8 +141,12 @@ class SchoolLevyAnalytics(models.Model):
     amount_paid = models.BigIntegerField(default=0, null=True)
     amount_in_debt = models.BigIntegerField(default=0, null=True)
     amount_outstanding = models.BigIntegerField(default=0, null=True)
+    percentage_paid = models.IntegerField(default=0, null=True)
+    percentage_of_student_in_debt = models.IntegerField(default=0, null=True)
+    percentage_of_student_outstanding = models.IntegerField(default=0, null=True)
 
-    def __str__(self):
+
+    def __str__(self) -> string:
         return f'{self.school} levy analytics'
 
     def update_levy_record(self):
@@ -185,3 +190,38 @@ class SchoolLevyAnalytics(models.Model):
         self.save()
     
 
+    def update_percentage_summary(self) -> None:
+        """
+        Updates percentage summary of students falling into different payment statuses.
+
+        Calculates the percentages of students who have paid, are outstanding, or in debt
+        based on their payment statuses and updates the respective fields in the model.
+
+        """
+        students_paid = 0
+        students_outstanding = 0
+        students_in_debt = 0
+
+        students = Student.objects.filter(school=self.school)
+
+        for student in students:
+            try:
+                payment_status = PaymentStatus.objects.get(student=student)
+                if payment_status.status == "COMPLETED":
+                    students_paid += 1
+                elif payment_status.status == "IN DEBT":
+                    students_in_debt += 1
+                else:
+                    students_outstanding += 1
+            except PaymentStatus.DoesNotExist:
+                pass
+
+        total_number_of_students = len(students)
+
+        # Calculate percentages only if there are students
+        if total_number_of_students > 0:
+            self.percentage_paid = (students_paid / total_number_of_students) * 100
+            self.percentage_of_student_in_debt = (students_in_debt / total_number_of_students) * 100
+            self.percentage_of_student_outstanding = (students_outstanding / total_number_of_students) * 100
+
+        self.save()

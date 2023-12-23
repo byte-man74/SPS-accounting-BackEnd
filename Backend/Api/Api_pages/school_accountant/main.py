@@ -86,6 +86,19 @@ class GetPercentagePaid (APIView):
 
 class GetTotalAmountPaid (APIView):
     '''This api returns the total amount of money paid'''
+    def get (self, request):
+        try:
+            # Check if the authenticated user has the required account type.
+            check_account_type(request.user, account_type)
+            user_school = get_user_school(request.user)
+            school_levy = SchoolLevyAnalytics.objects.get(school=user_school)
+                     
+
+        except PermissionDenied:
+            # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
+            return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
+        except Exception as e:
+            return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
 
 
 class TotalAmountInDebt (APIView):
@@ -97,9 +110,8 @@ class TotalAmountInDebt (APIView):
             check_account_type(request.user, account_type)
             user_school = get_user_school(request.user)
 
-            students = Student.objects.filter(school=user_school)
-
-            debt_amount = get_total_amount_in_debt(students)
+            school_levy = SchoolLevyAnalytics.objects.get(school=user_school)
+            debt_amount = school_levy.amount_in_debt
 
             return Response({"amount_in_debt": float(debt_amount)}, status=HTTP_200_OK)
 
