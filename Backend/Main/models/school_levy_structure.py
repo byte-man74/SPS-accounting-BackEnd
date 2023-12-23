@@ -1,7 +1,7 @@
 import string
 from django.db import models
-from Backend.Main.models.fees_structure_models import PaymentHistory, PaymentStatus
-from Backend.Main.models.school_operations_models import Student
+from Main.models.fees_structure_models import PaymentHistory, PaymentStatus
+from Main.models.school_operations_models import Student
 from Main.configuration import *
 
 
@@ -137,7 +137,7 @@ class OtherFeeCategory (models.Model):
 
 
 class SchoolLevyAnalytics(models.Model):
-    school = models.OneToOneField("Main.Schol", on_delete=models.CASCADE)
+    school = models.OneToOneField("Main.School", on_delete=models.CASCADE)
     amount_paid = models.BigIntegerField(default=0, null=True)
     amount_in_debt = models.BigIntegerField(default=0, null=True)
     amount_outstanding = models.BigIntegerField(default=0, null=True)
