@@ -145,6 +145,12 @@ class SchoolLevyAnalytics(models.Model):
         return f'{self.school} levy analytics'
 
     def update_levy_record(self):
+        '''
+        Updates the levy analytics based on students' payment statuses and histories.
+
+        Retrieves payment statuses and payment histories for students in the associated school,
+        calculates the total amounts paid, in debt, and outstanding, and updates the instance fields.
+        '''
         amount_in_debt = 0
         amount_outstanding = 0
         amount_paid = 0
@@ -167,10 +173,15 @@ class SchoolLevyAnalytics(models.Model):
                 amount_paid += payment_history.amount_debited
             except PaymentHistory.DoesNotExist:
                 pass
-
         # Update the object's fields and save changes
         self.amount_paid = amount_paid
         self.amount_in_debt = amount_in_debt
         self.amount_outstanding = amount_outstanding
         self.save()
+
+    
+    def reset_levy_record(self):
+        self.amount_paid = 0
+        self.save()
+    
 
