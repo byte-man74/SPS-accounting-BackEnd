@@ -1,4 +1,6 @@
 from django.db import models
+from Backend.Main.models.fees_structure_models import PaymentHistory, PaymentStatus
+from Backend.Main.models.school_operations_models import Student
 from Main.configuration import *
 
 
@@ -130,3 +132,45 @@ class OtherFeeCategory (models.Model):
 
     def __str__(self):
         return f'{self.name} bus fee category for {self.school}'
+    
+
+
+class SchoolLevyAnalytics(models.Model):
+    school = models.OneToOneField("Main.Schol", on_delete=models.CASCADE)
+    amount_paid = models.BigIntegerField(default=0, null=True)
+    amount_in_debt = models.BigIntegerField(default=0, null=True)
+    amount_outstanding = models.BigIntegerField(default=0, null=True)
+
+    def __str__(self):
+        return f'{self.school} levy analytics'
+
+    def update_levy_record(self):
+        amount_in_debt = 0
+        amount_outstanding = 0
+        amount_paid = 0
+
+        # Retrieve students with payments and history for the given school
+        students = Student.objects.filter(school=self.school)
+
+        for student in students:
+            try:
+                payment_status = PaymentStatus.objects.get(student=student)
+                if payment_status.status == "OUTSTANDING":
+                    amount_outstanding += payment_status.amount_outstanding
+                elif payment_status.status == "IN DEBT":
+                    amount_in_debt += payment_status.amount_in_debt
+            except PaymentStatus.DoesNotExist:
+                pass
+
+            try:
+                payment_history = PaymentHistory.objects.get(student=student)
+                amount_paid += payment_history.amount_debited
+            except PaymentHistory.DoesNotExist:
+                pass
+
+        # Update the object's fields and save changes
+        self.amount_paid = amount_paid
+        self.amount_in_debt = amount_in_debt
+        self.amount_outstanding = amount_outstanding
+        self.save()
+

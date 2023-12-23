@@ -41,12 +41,13 @@ class CreateClass(APIView):
                 return Response({"message": "Class created successfully", "class_id": new_class.id}, status=HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-            
+
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
         except Exception as e:
             return Response({"message": f"An error occurred: {str(e)}"}, status=HTTP_400_BAD_REQUEST)
+
 
 class EditClass(APIView):
     '''This function edits and/or deletes a class'''
@@ -57,7 +58,8 @@ class EditClass(APIView):
             # Check if the authenticated user has the required account type.
             check_account_type(request.user, account_type)
             class_instance = Class.objects.get(id=class_id)
-            serializer = CreateClassSerializer(instance=class_instance, data=request.data, partial=True)
+            serializer = CreateClassSerializer(
+                instance=class_instance, data=request.data, partial=True)
 
             if serializer.is_valid():
                 user_school = get_user_school(request.user)
@@ -79,14 +81,16 @@ class EditClass(APIView):
 
 
 class GetPercentagePaid (APIView):
-    '''This api returns the percentage and the total number of students that have paid fees complete''' 
+    '''This api returns the percentage and the total number of students that have paid fees complete'''
 
 
 class GetTotalAmountPaid (APIView):
     '''This api returns the total amount of money paid'''
 
+
 class TotalAmountInDebt (APIView):
     '''This api returns the total amount of money estimated to be in debt'''
+
     def get(self, request):
         try:
             # Check if the authenticated user has the required account type.
@@ -97,8 +101,7 @@ class TotalAmountInDebt (APIView):
 
             debt_amount = get_total_amount_in_debt(students)
 
-            return Response ({"amount_in_debt": float(debt_amount)}, status=HTTP_200_OK)
-
+            return Response({"amount_in_debt": float(debt_amount)}, status=HTTP_200_OK)
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
@@ -109,7 +112,8 @@ class TotalAmountInDebt (APIView):
 
 class GetPaymentSmmaryByClass (APIView):
     '''This api returns the payment summary statistics of students in the specified class'''
-    def get (self, request, class_id):
+
+    def get(self, request, class_id):
         try:
             # Check if the authenticated user has the required account type.
             check_account_type(request.user, account_type)
@@ -122,7 +126,6 @@ class GetPaymentSmmaryByClass (APIView):
 
             return Response({"data": summary}, status=HTTP_200_OK)
 
-
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
@@ -132,4 +135,3 @@ class GetPaymentSmmaryByClass (APIView):
 
 class GetGraphOfClassPayment (APIView):
     '''This api returns the payment graph of all the graph and how much is being paid'''
-
