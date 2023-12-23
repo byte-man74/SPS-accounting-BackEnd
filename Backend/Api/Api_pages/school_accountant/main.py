@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Api.helper_functions.payment_section.main import get_student_id_from_request, get_total_amount_in_debt, get_payment_summary
+from Api.helper_functions.payment_section.main import generate_grade_summary, get_student_id_from_request, get_total_amount_in_debt, get_payment_summary
 from Main.models import Payroll, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
@@ -176,9 +176,10 @@ class GetGraphOfClassPayment (APIView):
             user_school = get_user_school(request.user)
 
             grades = Class.objects.filter(user_school=user_school)
+            result = generate_grade_summary(grades)
 
-            
-
+            return Response({"data": result}, status=HTTP_200_OK)
+         
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
             return Response({"message": "Permission denied"}, status=HTTP_403_FORBIDDEN)
