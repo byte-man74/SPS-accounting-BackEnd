@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django.core.cache import cache
 from rest_framework.exceptions import NotFound
 from django.shortcuts import get_object_or_404
-from Api.helper_functions.payment_section.main import get_student_id_from_request, get_total_amount_in_debt
+from Api.helper_functions.payment_section.main import get_student_id_from_request, get_total_amount_in_debt, get_payment_summary
 from Main.models import Payroll, Operations_account_transaction_record
 from Api.helper_functions.main import *
 from Api.helper_functions.auth_methods import *
@@ -114,7 +114,12 @@ class GetPaymentSmmaryByClass (APIView):
             # Check if the authenticated user has the required account type.
             check_account_type(request.user, account_type)
 
-            grade = Class.objects.get()
+            grade = Class.objects.get(id=class_id)
+
+            students = Student.objects.filter(grade=grade)
+
+            summary = get_payment_summary(students)
+
 
         except PermissionDenied:
             # If the user doesn't have the required permissions, return an HTTP 403 Forbidden response.
