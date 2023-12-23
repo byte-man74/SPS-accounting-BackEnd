@@ -63,8 +63,19 @@ class Class(models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True, null=True)
 
+    amount_paid = models.BigIntegerField(default=0, null=True)
+
     def __str__(self):
         return self.name
+
+
+    def reset_amount_paid (self):
+        self.amount_paid = 0
+        self.save()
+
+    def update_amount_paid (self, updated_amount):
+        self.amount_paid = updated_amount
+        self.save()
 
 
 

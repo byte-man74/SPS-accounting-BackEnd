@@ -1,6 +1,7 @@
+from ast import Dict
 from django.shortcuts import get_object_or_404
-from Backend.Main.models.fees_structure_models import PaymentStatus
-from Main.models.school_operations_models import Student
+from Main.models.fees_structure_models import PaymentStatus
+from Main.models.school_operations_models import Class, Student
 from django.db.models import Sum
 from collections import Counter
 
@@ -55,3 +56,16 @@ def get_payment_summary(students):
     }
 
     return summary
+
+
+def generate_grade_summary(school):
+    """
+    Generates a summary for a bar chart showing the amount paid for each grade.
+    """
+    # Use values() to query specific fields and improve efficiency
+    grades = Class.objects.filter(school=school).values('name', 'amount_paid')
+
+    # Use list comprehension for a more concise and readable code
+    result = [{"name": grade['name'], "amount_paid": grade['amount_paid']} for grade in grades]
+
+    return result
