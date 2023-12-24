@@ -187,19 +187,3 @@ class ApproveTransfer (APIView):
 
         # except Exception as e:
         #     return Response({"message": "An error occurred"}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-class ApproveBulkTransfer (APIView):
-    '''
-    This guy processes multiole transactions and accept their status
-    '''
-
-    def post (self, request, *args, **kwargs):
-        data = request.data 
-
-        transactions = data.get("transactions")
-
-        if transactions is None:
-            return Response({"message":"no transactions were passed"}, status=HTTP_400_BAD_REQUEST)
-        
-        for transaction in transactions:
-            
