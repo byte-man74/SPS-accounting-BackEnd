@@ -78,7 +78,6 @@ class Class(models.Model):
         self.save()
 
 
-
 class Staff_type (models.Model):
     school = models.ForeignKey("Main.School", on_delete=models.CASCADE)
     basic_salary = models.BigIntegerField()
